@@ -100,6 +100,7 @@ bind editor <space> noop
 
 bind index y noop
 
+macro pager \Cu "|urlview<enter>" "call urlview to open links"
 macro index,pager d "<save-message>=[Gmail]/Trash<enter>" "Trash"
 macro index,pager y "<save-message>=[Gmail]/All Mail<enter>" "Archive"
 macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"

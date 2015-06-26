@@ -7,8 +7,9 @@ RUN apt-get update && apt-get install -y \
   git \
   lynx \
   mutt-patched \
-  vim-nox \
+  vim \
   msmtp \
+  urlview \
   --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
