@@ -29,7 +29,7 @@ unset record
 # Normal stuff ----------
 auto_view text/html
 alternative_order text/plain text/html
-set editor="vim +startinsert +':set textwidth=0'"
+set editor="vim +startinsert +':set textwidth=70'"
 set fast_reply = yes
 set abort_nosubject = no
 set abort_unmodified = ask-yes
