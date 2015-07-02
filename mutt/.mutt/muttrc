@@ -127,10 +127,13 @@ macro index,pager a "<pipe-message>goobook add<return>" "add sender to google co
 bind editor <Tab> complete-query
 
 # GPG -------------------------------
+bind compose p pgp-menu
 set pgp_good_sign="^gpg: Good signature from"
-set crypt_replysign="yes"
-set crypt_replysignencrypted="yes"
-set pgp_auto_decode="yes"
+set pgp_use_gpg_agent = yes
+set crypt_replysign= yes
+set crypt_replysignencrypted= yes
+set pgp_auto_decode= yes
+set pgp_sign_as = 9B3B446C
 unset smime_is_default
 
 
