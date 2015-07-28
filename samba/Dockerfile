@@ -1,5 +1,5 @@
 # source: https://github.com/JensErat/docker-samba-publicshare
-# docker run -d  -p 445:445 -p 137:137 -p 138:138 -p 139:139 -v /srv/samba:/srv --env workgroup=workgroup samba
+# docker run -d  -p 445:445 -p 137:137 -p 138:138 -p 139:139 -v /data:/data --env workgroup=workgroup samba
 
 FROM debian:jessie
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
