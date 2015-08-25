@@ -15,13 +15,13 @@ RUN sed -i.bak 's/sid main/sid main contrib/g' /etc/apt/sources.list && \
 	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV FIREFOX_VERSION 40.0
+ENV FIREFOX_VERSION 40.0.2
 
-RUN curl -sSL "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/latest/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2" -o /tmp/firefox.tar.bz2 \
-	&& mkdir -p /opt/firefox \
-	&& tar -xjf /tmp/firefox.tar.bz2 -C /opt/firefox --strip-components 1 \
-	&& rm /tmp/firefox.tar.bz2* \
-	&& ln -s /opt/firefox/firefox /usr/bin/firefox
+RUN curl -sSL "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/latest/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2" -o /tmp/firefox.tar.bz2
+RUN mkdir -p /opt/firefox
+RUN tar -xjf /tmp/firefox.tar.bz2 -C /opt/firefox --strip-components 1
+RUN rm /tmp/firefox.tar.bz2*
+RUN ln -s /opt/firefox/firefox /usr/bin/firefox
 
 COPY local.conf /etc/fonts/local.conf
 

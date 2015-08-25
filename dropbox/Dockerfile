@@ -1,8 +1,8 @@
 # first run:
-# docker run -i -t -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox charliedrage/dropbox
+# docker run -i -t -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
 #
 # normal run:
-# docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox charliedrage/dropbox
+# docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
 
 FROM debian:wheezy
 MAINTAINER Charlie Drage <charlie@charliedrage.com>

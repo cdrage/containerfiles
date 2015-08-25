@@ -1,7 +1,7 @@
 #
 # recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
 #
-# docker run -it -d -v /home/USER/.weechat:/root/.weechat \
+# docker run -it -d \
 # -v /etc/localtime:::/etc/localtime:ro \
 # --name weechat \
 # weechat
@@ -35,4 +35,7 @@ ENV C en_US.UTF-8
 ENV TERM screen-256color
 
 RUN mkdir -p /.weechat
+
+ADD weechat.conf /root/.weechat/weechat.conf
+
 ENTRYPOINT ["weechat-curses"]
