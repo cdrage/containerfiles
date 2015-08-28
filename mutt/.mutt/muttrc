@@ -59,8 +59,9 @@ set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)
 unset mark_old
 
 # Index View Options ---------------------------------
-set sort = 'threads'
-set sort_aux = reverse-date-sent
+set include
+set sort = 'reverse-threads'
+set sort_aux = 'last-date-received'
 set strict_threads = no
 set wrap_search = yes
 set mark_old = no
