@@ -5,7 +5,8 @@ FROM debian:jessie
 
 RUN apt-get update && apt-get install openssl vim git -y
 
-RUN git clone https://github.com/charliedrage/vim.git $HOME/.vim \
+RUN git clone https://github.com/charliedrage/vim.git $HOME/.vim && \
+    cp $HOME/.vim/vimrc $HOME/.vimrc
 
 ADD journal.sh journal.sh
 
