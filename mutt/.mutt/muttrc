@@ -5,6 +5,7 @@ set certificate_file = '~/.mutt/certificates'
 set mailcap_path    = '~/.mutt/mailcap'
 set signature = "~/.mutt/signature"
 set alias_file= "~/.mutt/aliases"
+source $alias_file
 
 # Change the following six lines to match your Gmail account details
 set imap_user = "%MUTT_LOGIN%"
