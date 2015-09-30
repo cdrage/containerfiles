@@ -1,4 +1,17 @@
 # special thanks to jfrazelle for this config
+#  docker run -it --rm \
+#    -e TERM=xterm-256color \
+#    -e MUTT \
+#    -e MUTT_NAME \
+#    -e MUTT_PASS \
+#    -e MUTT_FROM \
+#    -e MUTT_SMTP \
+#    -e MUTT_IMAP \
+#    -v $HOME/.gnupg:/home/user/.gnupg \
+#    -v $HOME/dropbox/etc/aliases.txt:/home/user/.mutt/aliases.txt \
+#    -v /etc/localtime:/etc/localtime:ro \
+#    charliedrage/mutt
+
 FROM debian:stable
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
 

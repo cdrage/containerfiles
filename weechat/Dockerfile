@@ -1,12 +1,12 @@
-#
 # recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
 #
 # docker run -it -d \
-# -v /etc/localtime:::/etc/localtime:ro \
+# -e TERM=xterm-256color \
+# -v /etc/localtime:/etc/localtime:ro \
 # --name weechat \
 # weechat
 #
-# docker attach
+# docker attach weechat
 
 
 FROM ubuntu:14.10
