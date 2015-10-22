@@ -4,7 +4,7 @@ set message_cachedir = '~/.mutt/cache/bodies'
 set certificate_file = '~/.mutt/certificates'
 set mailcap_path    = '~/.mutt/mailcap'
 set signature = "~/.mutt/signature"
-set alias_file= "~/.mutt/aliases"
+set alias_file= "~/.mutt/aliases.txt"
 source $alias_file
 
 # Change the following six lines to match your Gmail account details
@@ -75,7 +75,6 @@ set date_format = "%m/%d"
 folder-hook INBOX "set from=charlie@charliedrage.com" 
 folder-hook kihi "set from=charlie@kihihosting.com"
 folder-hook tickets "set from=charlie@kihihosting.com"
-folder-hook cloudatcost "set from=charlie@cloudatcost.com"
 
 folder-hook tickets 'set include = no'
 folder-hook tickets 'set signature = no'
