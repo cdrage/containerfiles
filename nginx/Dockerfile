@@ -1,7 +1,7 @@
 # source: https://github.com/nginxinc/docker-nginx/blob/master/Dockerfile
 # https://hub.docker.com/_/nginx/
 # usage:
-# docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx
+# docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx
 
 FROM debian:jessie
 
