@@ -1,9 +1,5 @@
 #!/bin/sh
 
-if [ ! -z "$ADDITIONAL_INFO" ]; then
-  ADDITIONAL_INFO=",$*"
-fi
-
 if [ -z "$CLIENT_ADDRESS" ]; then
   echo "\$CLIENT_ADDRESS must be provided" 
   exit 1
@@ -32,11 +28,12 @@ cat << EOF > /etc/sensu/config.json
     "name": "$CLIENT_NAME",
     "address": "$CLIENT_ADDRESS",
     "subscriptions": ["$SUBSCRIPTIONS"],
-    "socket": {
-      "bind":"0.0.0.0",
-      "port":3030
-    }
-    $ADDITIONAL_INFO
+    "keepalive": {
+      "thresholds": {
+        "warning": 60,
+        "critical": 100
+      },
+    "refresh": 300
   },
   "rabbitmq": {
     "ssl": {
