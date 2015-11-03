@@ -1,3 +1,18 @@
+# Source: https://github.com/arypurnomoz/sensu-client.docker
+# docker run \
+#  -v /ssl:/ssl \
+#  -e CLIENT_ADDRESS=10.0.0.1 \
+#  -e CLIENT_NAME=sensu-client \
+#  -e RABBITMQ_HOST=rabbitmq.local \
+#  -e RABBITMQ_PORT=5671 \
+#  -e RABBITMQ_USER=sensu \
+#  -e RABBITMQ_PASS=sensu \
+#  -e SUB=metrics,check \
+#  arypurnomoz/sensu-client \
+#  ' \
+#    "additional": "client-info" \
+#  ' \
+
 FROM debian:latest
 
 ENV REDIS_POST 6379
