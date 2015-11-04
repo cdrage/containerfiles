@@ -34,17 +34,18 @@ cat << EOF > /etc/sensu/config.json
         "critical": 100
       },
     "refresh": 300
+    }
   },
   "rabbitmq": {
-    "ssl": {
-      "cert_chain_file": "/ssl/cert.pem",
-      "private_key_file": "/ssl/key.pem"
-    },
     "host": "$RABBITMQ_HOST",
     "port": $RABBITMQ_PORT,
     "vhost": "$RABBITMQ_VHOST",
     "user": "$RABBITMQ_USER",
-    "password": "$RABBITMQ_PASS"
+    "password": "$RABBITMQ_PASS",
+    "ssl": {
+      "cert_chain_file": "/etc/sensu/ssl/cert.pem",
+      "private_key_file": "/etc/sensu/ssl/key.pem"
+    }
   }
 }
 EOF
