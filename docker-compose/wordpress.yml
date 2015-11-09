@@ -1,0 +1,17 @@
+wordpress:
+  image: wordpress
+  links:
+    - db:mysql
+  environment:
+    WORDPRESS_DB_PASSWORD: SuperSecurePassword
+  ports:
+    - 80:80
+  working_dir: /var/www/html
+  volumes:
+   - /var/www/html:/var/www/html
+
+db:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: SuperSecurePassword
+    MYSQL_DATABASE: wordpress
