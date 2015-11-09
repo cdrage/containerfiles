@@ -1,6 +1,6 @@
 # source: https://github.com/nginxinc/docker-nginx/blob/master/Dockerfile
 # https://hub.docker.com/_/nginx/
-# usage:
+#
 # docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx
 
 FROM debian:jessie
@@ -16,7 +16,6 @@ RUN apt-get update && \
     apt-get install -y ca-certificates nginx=${NGINX_VERSION} && \
     rm -rf /var/lib/apt/lists/*
 
-# forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 

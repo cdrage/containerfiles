@@ -1,6 +1,7 @@
 # source: https://github.com/dperson/transmission
 #
 # docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -d transmission
+#
 # ENVIRO VARIABLES
 # TRUSER - set username for transmission auth
 # TRPASSWD - set password for transmission auth
@@ -9,7 +10,6 @@
 FROM debian:jessie
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
 
-# Install transmission
 RUN export DEBIAN_FRONTEND='noninteractive' && \
     apt-get update -qq && \
     apt-get install -qqy --no-install-recommends transmission-daemon curl \

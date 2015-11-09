@@ -1,3 +1,4 @@
+# You'll have to get LINE.exe first from somewhere ;)
 # docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -H localhost charliedrage/line
 
 FROM ubuntu:trusty

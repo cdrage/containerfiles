@@ -16,7 +16,6 @@ RUN \
 
 COPY smb.conf /etc/samba/smb.conf
 
-# Pregenerate password database to prevent warning messages on container startup
 RUN /usr/sbin/smbd && sleep 10 && smbcontrol smbd shutdown
 
 ENTRYPOINT /usr/sbin/smbd -FSD -d1 --option=workgroup=${workgroup:-workgroup}
