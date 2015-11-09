@@ -1,43 +1,43 @@
 #Dockerfiles
 Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfile comments
-# ./jrl
+### ./jrl
 
 ```bash
 # Encrypted journal (for writing, not logs!)
 # docker run -it --rm -v /bin/txt.aes:/txt.aes jrl
 
 ```
-# ./graphite
+### ./graphite
 
 ```bash
 # docker run -d --name graphite -p 80:80 -p 2003:2003 -p 8125:8125/udp graphite/graphite
 
 ```
-# ./samba
+### ./samba
 
 ```bash
 # source: https://github.com/JensErat/docker-samba-publicshare
 # docker run -d  -p 445:445 -p 137:137 -p 138:138 -p 139:139 -v /data:/data --env workgroup=workgroup samba
 
 ```
-# ./kubernetes
+### ./kubernetes
 
 ```bash
 
 ```
-# ./tor
+### ./tor
 
 ```bash
 
 ```
-# ./dropbox
+### ./dropbox
 
 ```bash
 # docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
 # Remember to look at logs (docker logs dropbox) and click on the link!
 
 ```
-# ./openvpn-client-docker
+### ./openvpn-client-docker
 
 ```bash
 # 
@@ -52,13 +52,13 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 #  to your openvpn conf file!
 
 ```
-# ./peerflix
+### ./peerflix
 
 ```bash
 # docker run -it -p 8888:8888 wikus/peerflix "magnet shit:"
 
 ```
-# ./tor-messenger
+### ./tor-messenger
 
 ```bash
 # Run tor messenger in a container
@@ -67,7 +67,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 #
 
 ```
-# ./openvpn-client
+### ./openvpn-client
 
 ```bash
 # An openvpn-client in a container
@@ -75,7 +75,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # go check your public ip online and you'll see you're connected to the VPN :)
 
 ```
-# ./sensu-client
+### ./sensu-client
 
 ```bash
 # Original Source: https://github.com/arypurnomoz/sensu-client.docker
@@ -101,24 +101,24 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # DEFAULTS
 
 ```
-# ./redis
+### ./redis
 
 ```bash
 # docker run --name redis -d -p 6379:6379 redis
 
 ```
-# ./couchpotato
+### ./couchpotato
 
 ```bash
 # docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
-# ./consul
+### ./consul
 
 ```bash
 
 ```
-# ./mutt
+### ./mutt
 
 ```bash
 # special thanks to jfrazelle for this config
@@ -136,7 +136,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 #    charliedrage/mutt
 
 ```
-# ./weechat
+### ./weechat
 
 ```bash
 # recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
@@ -150,7 +150,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker attach weechat
 
 ```
-# ./nginx
+### ./nginx
 
 ```bash
 # source: https://github.com/nginxinc/docker-nginx/blob/master/Dockerfile
@@ -159,7 +159,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx
 
 ```
-# ./transmission
+### ./transmission
 
 ```bash
 # source: https://github.com/dperson/transmission
@@ -172,19 +172,19 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # TIMEZONE - set zoneinfo timezone
 
 ```
-# ./firefox
+### ./firefox
 
 ```bash
 
 ```
-# ./line
+### ./line
 
 ```bash
 # You'll have to get LINE.exe first from somewhere ;)
 # docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -H localhost charliedrage/line
 
 ```
-# ./wifikill
+### ./wifikill
 
 ```bash
 # DISCLAIMER: Only use this on YOUR OWN network. This script is not responsible for any damages it causes.
@@ -194,7 +194,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker run --rm -it --net=host --cap-add=NET_ADMIN wifikill 
 
 ```
-# ./nomad
+### ./nomad
 
 ```bash
 # Nomad from Hashicorp. github.com/hashicorp/nomad
@@ -217,7 +217,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # and you'll see a redis container spring up on your host :)
 
 ```
-# ./glances
+### ./glances
 
 ```bash
 # Run glances in a container
@@ -231,13 +231,13 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 #	charliedrage/glances
 
 ```
-# ./jekyll
+### ./jekyll
 
 ```bash
 # docker run --label=jekyll --volume=$(pwd):/srv/jekyll -d -p 80:4000 --restart=always jekyll/jekyll jekyll s
 
 ```
-# ./plex
+### ./plex
 
 ```bash
 # source https://github.com/wernight/docker-plex-media-server
@@ -246,7 +246,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker run -d -h server -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
 
 ```
-# ./openvpn-server
+### ./openvpn-server
 
 ```bash
 # original: https://github.com/jpetazzo/dockvpn

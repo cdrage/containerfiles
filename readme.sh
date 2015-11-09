@@ -6,7 +6,7 @@ echo "Git repo for my personal Dockerfiles. README.md is auto-generated from Doc
 for D in `find . -type d`
 do
   if [ -f $D/Dockerfile ]; then
-        echo "#" $D
+        echo "###" $D
         echo
         echo "\`\`\`bash"
         cat $D/Dockerfile | grep "#"
