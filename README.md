@@ -61,6 +61,22 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```bash
 
 ```
+### ./libvirtd
+
+```bash
+# YAY! Libvirtd within Docker! USE DAT KVM VIRTUALIZATION
+# Although this doesn't work very well at the moment (see KVM module errors)
+#
+# docker run
+# --privileged \
+# --net=host
+# -p 16509:16509
+# -v /var/lib/libvirt:/var/lib/libvirt
+# --name libvirtd libvirtd
+#
+# to connect (on client): virsh --connect qemu+tcp://localhost/system
+
+```
 ### ./line
 
 ```bash
