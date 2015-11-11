@@ -9,6 +9,7 @@ wordpress:
   working_dir: /var/www/html
   volumes:
    - /var/www/html:/var/www/html
+   - uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
 
 db:
   image: mariadb
