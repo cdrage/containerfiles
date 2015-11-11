@@ -68,7 +68,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -H localhost charliedrage/line
 
 ```
-### ./mutt
+### ./mutt-gmail
 
 ```bash
 # special thanks to jfrazelle for this config
