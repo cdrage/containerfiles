@@ -11,6 +11,19 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
+### ./dockerflix
+
+```bash
+# DNS proxy (netflix unblocker) open source.
+# fork of: https://github.com/trick77/dockerflix
+# 
+#
+#
+# Create runit services
+# Final cleanup
+# Use baseimage-docker's init system.
+
+```
 ### ./dropbox
 
 ```bash
@@ -100,6 +113,27 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 #    -v $HOME/dropbox/etc/aliases.txt:/home/user/.mutt/aliases.txt \
 #    -v /etc/localtime:/etc/localtime:ro \
 #    charliedrage/mutt
+
+```
+### ./netflix-dnsmasq
+
+```bash
+# DNS cacher/forwarder
+# Set IP as the forwarder :)
+# docker run -p 53:53/udp -e IP=10.10.10.1 -d dnsmasq --name dnsmasq
+# IP is the IP of the sniproxy / haproxy server
+
+```
+### ./netflix-sniproxy
+
+```bash
+# An SNI Proxy of various netflix/hulu/etc. Slightly modified.
+# source: https://github.com/trick77/dockerflix
+#
+# docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
+# Create runit services
+# Final cleanup
+# Use baseimage-docker's init system.
 
 ```
 ### ./nginx
