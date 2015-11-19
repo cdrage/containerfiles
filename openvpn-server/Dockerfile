@@ -1,7 +1,7 @@
 # original: https://github.com/jpetazzo/dockvpn
 # 
-# CID=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp jpetazzo/dockvpn)
-# docker run -t -i -p 8080:8080 --volumes-from $CID jpetazzo/dockvpn serveconfig
+# CID=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp openvpn)
+# docker run -t -i -p 8080:8080 --volumes-from $CID opvenvpn serveconfig
 #
 # curl IP:8080 for config then use your favourite openvpn client :)
 
