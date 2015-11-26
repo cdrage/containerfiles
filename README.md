@@ -152,18 +152,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # IP is the IP of the sniproxy / haproxy server
 
 ```
-### ./netflix-sniproxy
-
-```bash
-# An SNI Proxy of various netflix/hulu/etc. Slightly modified.
-# source: https://github.com/trick77/dockerflix
-#
-# docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
-# Create runit services
-# Final cleanup
-# Use baseimage-docker's init system.
-
-```
 ### ./nginx
 
 ```bash
@@ -171,6 +159,20 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 # https://hub.docker.com/_/nginx/
 #
 # docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx
+
+```
+### ./nmap
+
+```bash
+# Original source: github.com/pandrew/dockerfiles
+# build it yo:
+# docker build -t nmap .
+#
+# and run it!
+# docker run --rm -it --net=host --cap-add=NET_ADMIN nmap
+#
+# ex.
+# docker run --rm -it --net=host --cap-add=NET_ADMIN nmap -v scanme.nmap.org
 
 ```
 ### ./nomad
