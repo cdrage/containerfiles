@@ -9,10 +9,11 @@
 # docker attach weechat
 
 
-FROM ubuntu:14.10
+FROM ubuntu:15.10
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
 
-RUN apt-get update && apt-get -y build-dep weechat
+RUN apt-get update 
+RUN apt-get -y build-dep weechat
 RUN apt-get -y install git
 RUN apt-get -y install openssl ca-certificates
 RUN git clone http://github.com/weechat/weechat
