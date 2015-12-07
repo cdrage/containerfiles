@@ -10,7 +10,7 @@ do
         echo "###" $D
         echo
         echo "\`\`\`bash"
-        cat $D/Dockerfile | grep "#"
+        cat $D/Dockerfile | grep "#" | sed 's/#//'
         echo
         echo "\`\`\`"
   fi
