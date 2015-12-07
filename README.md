@@ -112,6 +112,24 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
   TODO: SSL stuffs
 
 ```
+### ./mosh
+
+```bash
+ 
+ docker run -it --rm \
+ -e TERM=xterm-256color \
+ -v $HOME/.ssh:/root/.ssh \
+ $USER/mosh user@blahblahserver
+
+ how i use it:
+ docker run -it --rm \
+ --net=container:vpn
+ -e TERM=xterm-256color \
+ -v $HOME/.ssh:/root/.ssh \
+ $USER/mosh user@blahblahserver
+ 
+
+```
 ### ./mutt-gmail
 
 ```bash
