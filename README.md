@@ -3,6 +3,28 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./consul
 
 ```bash
+ source: github.com/jfrazelle/dockerfiles
+ THANKS YO
+
+ to run:
+ 
+ docker run -d \
+  --restart always \
+  -v $HOME/.consul:/etc/consul.d \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --net host \
+  -e GOMAXPROCS=2 \
+  --name consul \
+  $USER/consul 
+  agent \
+  -bootstrap-expect 1 \
+  -config-dir /etc/consul.d \
+  -data-dir /data \
+  -encrypt $(docker run --rm $USER/consul keygen) \
+  -ui-dir /usr/src/consul \
+  -server \
+  -dc dc1 \
+  -bind 0.0.0.0
 
 ```
 ### ./couchpotato

@@ -17,7 +17,7 @@
 # Now simply bash into it. Run ./nomad init && ./nomad run example.nomad
 # and you'll see a redis container spring up on your host :)
 
-FROM debian:8
+FROM debian:sid
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
 
 RUN apt-get update && \
@@ -26,6 +26,8 @@ RUN apt-get update && \
 EXPOSE :4646
 EXPOSE :4647
 EXPOSE :4648
+EXPOSE :4648
+EXPOSE :8500
 
 COPY nomad /nomad
 
