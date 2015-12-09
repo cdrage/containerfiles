@@ -15,7 +15,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
   --net host \
   -e GOMAXPROCS=2 \
   --name consul \
-  $USER/consul 
+  $USER/consul \
   agent \
   -bootstrap-expect 1 \
   -config-dir /etc/consul.d \
