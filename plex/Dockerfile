@@ -3,6 +3,13 @@
 # mkdir ~/plex-config
 # chown 797:797 -R ~/plex-config
 # docker run -d -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
+#
+# Note:
+# If you are using this on a remote server (VPS and such), you must edit Preferences.xml within the plex-config 
+# folder and add your network within <Preferences> allowedNetworks="192.168.1.0/255.255.255.0" if you wish
+# to set this up remotely
+#
+# Or you can simply SSH portforward to the server to configure everything
 
 FROM debian:jessie
 
