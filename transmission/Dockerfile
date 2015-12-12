@@ -1,6 +1,6 @@
 # source: https://github.com/dperson/transmission
 #
-# docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -d transmission
+# docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d transmission
 #
 # ENVIRO VARIABLES
 # TRUSER - set username for transmission auth

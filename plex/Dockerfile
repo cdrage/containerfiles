@@ -2,35 +2,34 @@
 
 # mkdir ~/plex-config
 # chown 797:797 -R ~/plex-config
-# docker run -d -h server -v $USER/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
+# docker run -d -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
 
 FROM debian:jessie
 
-
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN useradd --system --uid 797 -M --shell /usr/sbin/nologin plex
-
-RUN touch /bin/start
-RUN chmod +x /bin/start
-
-RUN DOWNLOAD_URL=`curl -Ls https://plex.tv/downloads | grep -o '[^"'"'"']*amd64.deb' | grep -v binaries` && \
-    echo $DOWNLOAD_URL && \
-    curl -L $DOWNLOAD_URL -o plexmediaserver.deb
-RUN dpkg -i plexmediaserver.deb
-RUN rm -f plexmediaserver.deb
-
-RUN rm -f /bin/start
-
-RUN mkdir /config
-RUN chown plex:plex /config
+RUN useradd --system --uid 797 -M --shell /usr/sbin/nologin plex \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+ && DOWNLOAD_URL=`curl -Ls https://plex.tv/downloads \
+    | grep -o '[^"'"'"']*amd64.deb' \
+    | grep -v binaries` \
+ && echo $DOWNLOAD_URL \
+ && curl -L $DOWNLOAD_URL -o plexmediaserver.deb \
+ && touch /bin/start \
+ && chmod +x /bin/start \
+ && dpkg -i plexmediaserver.deb \
+ && rm -f plexmediaserver.deb \
+ && rm -f /bin/start \
+ && apt-get purge -y --auto-remove \
+        curl \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir /config \
+ && chown plex:plex /config
 
 VOLUME /config
 VOLUME /media
-
-USER plex
 
 EXPOSE 32400
 
@@ -44,6 +43,10 @@ ENV PLEX_MEDIA_SERVER_HOME /usr/lib/plexmediaserver
 ENV LD_LIBRARY_PATH /usr/lib/plexmediaserver
 ENV TMPDIR /tmp
 
+ADD *.sh /
+
+USER plex
+
 WORKDIR /usr/lib/plexmediaserver
-CMD test -f /config/Plex\ Media\ Server/plexmediaserver.pid && rm -f /config/Plex\ Media\ Server/plexmediaserver.pid; \
-    ulimit -s $PLEX_MAX_STACK_SIZE && ./Plex\ Media\ Server
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ./Plex\ Media\ Server
