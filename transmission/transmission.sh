@@ -26,11 +26,15 @@ dir="/var/lib/transmission-daemon"
 # Return: the correct zoneinfo file will be symlinked into place
 timezone() { local timezone="${1:-EST5EDT}"
     [[ -e /usr/share/zoneinfo/$timezone ]] || {
-        echo "ERROR: invalid timezone specified" >&2
+        echo "ERROR: invalid timezone specified: $timezone" >&2
         return
     }
 
-    ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+    if [[ $(cat /etc/timezone) != $timezone ]]; then
+        echo "$timezone" >/etc/timezone
+        ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+        dpkg-reconfigure -f noninteractive tzdata >/dev/null 2>&1
+    fi
 }
 
 ### usage: Help
@@ -61,12 +65,15 @@ while getopts ":ht:" opt; do
 done
 shift $(( OPTIND - 1 ))
 
-[[ "${TIMEZONE:-""}" ]] && timezone "$TIMEZONE"
+[[ "${TZ:-""}" ]] && timezone "$TZ"
+[[ "${USERID:-""}" =~ ^[0-9]+$ ]] && usermod -u $USERID debian-transmission
+[[ "${GROUPID:-""}" =~ ^[0-9]+$ ]] && groupmod -g $GROUPID debian-transmission
 
 [[ -d $dir/downloads ]] || mkdir -p $dir/downloads
 [[ -d $dir/incomplete ]] || mkdir -p $dir/incomplete
 [[ -d $dir/info/blocklists ]] || mkdir -p $dir/info/blocklists
-chown -Rh debian-transmission. $dir
+
+chown -Rh debian-transmission. $dir 2>&1 | grep -iv 'Read-only' || :
 
 if [[ $# -ge 1 && -x $(which $1 2>&-) ]]; then
     exec "$@"
@@ -76,8 +83,9 @@ elif [[ $# -ge 1 ]]; then
 elif ps -ef | egrep -v 'grep|transmission.sh' | grep -q transmission; then
     echo "Service already running, please restart container to apply changes"
 else
-    curl -Ls 'http://list.iblocklist.com/?list=bt_level1&fileformat=p2p&archiveformat=gz' |
-                gzip -cd > $dir/info/blocklists/bt_level1
+    url='http://list.iblocklist.com'
+    curl -Ls "$url"'/?list=bt_level1&fileformat=p2p&archiveformat=gz' |
+                gzip -cd >$dir/info/blocklists/bt_level1
     chown debian-transmission. $dir/info/blocklists/bt_level1
     grep -q peer-socket-tos $dir/info/settings.json ||
         sed -i '/"peer-port"/a \
@@ -88,7 +96,7 @@ else
     exec su -l debian-transmission -s /bin/bash -c "exec transmission-daemon \
                 --config-dir $dir/info --blocklist --encryption-preferred \
                 --log-error -e /dev/stdout --global-seedratio 2.0 --dht \
-                --incomplete-dir $dir/incomplete --paused --auth --foreground \
+                --incomplete-dir $dir/incomplete --auth --foreground \
                 --username '${TRUSER:-admin}' --password '${TRPASSWD:-admin}' \
                 --download-dir $dir/downloads --no-portmap --allowed \\* 2>&1"
 fi

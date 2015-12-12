@@ -2,7 +2,7 @@
 
 # mkdir ~/plex-config
 # chown 797:797 -R ~/plex-config
-# docker run -d -h server -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
+# docker run -d -h server -v $USER/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
 
 FROM debian:jessie
 

@@ -1,3 +1,5 @@
+# If you're setting up transmission within Couchpotato, remember to specify the IP of your host directly as well as pass the pass / username you used with transmission
+#
 # docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 FROM debian:jessie
