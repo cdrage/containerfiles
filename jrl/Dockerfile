@@ -14,9 +14,17 @@
 #
 # docker run -it --rm -v /bin/txt.aes:/txt.aes jrl
 
-FROM debian:jessie
+FROM debian:sid
 
-RUN apt-get update && apt-get install openssl vim -y
+RUN apt-get update && apt-get install openssl vim locales -y
+
+RUN locale-gen en_US.UTF-8 ja_JP.UTF-8
+
+RUN touch /etc/default/locale && \
+    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale && \
+    echo "LANG=en_US.UTF-8" >> /etc/default/locale && \
+    echo "set encoding=utf-8" >> ~/.vimrc
+
 
 ADD journal.sh journal.sh
 
