@@ -317,21 +317,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  Or you can simply SSH portforward to the server to configure everything
 
 ```
-### ./rainbowstream
-
-```
- 
- source: github.com/jfrazelle/dockerfiles
- 
- Run Rainbowstream in a container
-
- docker run -it --rm v /etc/localtime:/etc/localtime:ro \
-	-v $HOME/.rainbow_oauth:/root/.rainbow_oauth \ 
-	-v $HOME/.rainbow_config.json:/root/.rainbow_config.json \
-	--name rainbowstream \
-	jess/rainbowstream
-
-```
 ### ./redis
 
 ```
