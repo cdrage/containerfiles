@@ -30,6 +30,8 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./couchpotato
 
 ```bash
+ If you're setting up transmission within Couchpotato, remember to specify the IP of your host directly as well as pass the pass / username you used with transmission
+
  docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
@@ -74,7 +76,20 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./jrl
 
 ```bash
- Encrypted journal (for writing, not logs!)
+ Encrypted journal (for writing your life entries!, not logs!)
+ 
+ Pass in your encrypted txt file and type in your password.
+ It'll then open it up in vim for you to edit and type up your
+ latest entry.
+
+ Remember, this is aes-256-cbc, so it's like hammering a nail
+ with a screwdriver: 
+ http://stackoverflow.com/questions/16056135/how-to-use-openssl-to-encrypt-decrypt-files
+
+ Public / Private key would be better, but hell, this is just a txt file.
+ 
+ Now run it!
+
  docker run -it --rm -v /bin/txt.aes:/txt.aes jrl
 
 ```
@@ -292,7 +307,14 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  source https://github.com/wernight/docker-plex-media-server
  mkdir ~/plex-config
  chown 797:797 -R ~/plex-config
- docker run -d -h server -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
+ docker run -d -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
+
+ Note:
+ If you are using this on a remote server (VPS and such), you must edit Preferences.xml within the plex-config 
+ folder and add your network within <Preferences> allowedNetworks="192.168.1.0/255.255.255.0" if you wish
+ to set this up remotely
+
+ Or you can simply SSH portforward to the server to configure everything
 
 ```
 ### ./rainbowstream
@@ -314,6 +336,12 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 
 ```bash
  docker run --name redis -d -p 6379:6379 redis
+
+```
+### ./redis-browser
+
+```bash
+ just run docker run -p 4567:4567 $USER/redis-browser
 
 ```
 ### ./samba
@@ -349,6 +377,18 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  DEFAULTS
 
 ```
+### ./teamspeak
+
+```bash
+ Source: https://github.com/luzifer-docker/docker-teamspeak3
+
+ To run:
+ docker run --name TS3 -d -p 9987:9987/udp -v ~/ts3:/teamspeak3 --restart=always $USER/ts3
+ 
+ All your files will be located within ~/ts3 (sqlite database, whitelist, etc.)
+ To find out the admin key, use docker logs
+
+```
 ### ./tor
 
 ```bash
@@ -368,7 +408,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```bash
  source: https://github.com/dperson/transmission
 
- docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -d transmission
+ docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d transmission
 
  ENVIRO VARIABLES
  TRUSER - set username for transmission auth
@@ -398,5 +438,19 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  
  To use:
  docker run --rm -it --net=host --cap-add=NET_ADMIN wifikill 
+
+```
+### ./ykpersonalize
+
+```bash
+ Run ykpersonalize in a container (yubico key)
+
+ source: https://github.com/jfrazelle/dockerfiles
+
+ docker run --rm -it \
+ 	--device /dev/bus/usb \
+ 	--device /dev/usb
+	--name ykpersonalize \
+	$USER/ykpersonalize bash
 
 ```
