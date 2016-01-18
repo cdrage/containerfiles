@@ -2,7 +2,7 @@
 Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfile comments
 ### ./consul
 
-```bash
+```
  source: github.com/jfrazelle/dockerfiles
  THANKS YO
 
@@ -29,7 +29,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./couchpotato
 
-```bash
+```
  If you're setting up transmission within Couchpotato, remember to specify the IP of your host directly as well as pass the pass / username you used with transmission
 
  docker run -d -p 5050:5050 --name couchpotato couchpotato
@@ -37,19 +37,19 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./dropbox
 
-```bash
+```
  docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
  Remember to look at logs (docker logs dropbox) and click on the link!
 
 ```
 ### ./firefox
 
-```bash
+```
 
 ```
 ### ./glances
 
-```bash
+```
  Run glances in a container
  SOURCE: https://github.com/nicolargo/glances
 
@@ -63,19 +63,19 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./graphite
 
-```bash
+```
  docker run -d --name graphite -p 80:80 -p 2003:2003 -p 8125:8125/udp graphite/graphite
 
 ```
 ### ./jekyll
 
-```bash
+```
  docker run --label=jekyll --volume=$(pwd):/srv/jekyll -d -p 80:4000 --restart=always jekyll/jekyll jekyll s
 
 ```
 ### ./jrl
 
-```bash
+```
  Encrypted journal (for writing your life entries!, not logs!)
  
  Pass in your encrypted txt file and type in your password.
@@ -95,12 +95,12 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./kubernetes
 
-```bash
+```
 
 ```
 ### ./libvirtd
 
-```bash
+```
  YAY! Libvirtd within Docker! USE DAT KVM VIRTUALIZATION
  Although this doesn't work very well at the moment (see KVM module errors)
 
@@ -116,14 +116,14 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./line
 
-```bash
+```
  You'll have to get LINE.exe first from somewhere ;)
  docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -H localhost charliedrage/line
 
 ```
 ### ./moodle
 
-```bash
+```
   source: https://github.com/playlyfe/docker-moodle
 
   First, grab moodle and extract.
@@ -151,7 +151,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./mosh
 
-```bash
+```
  
  docker run -it --rm \
  -e TERM=xterm-256color \
@@ -169,7 +169,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./mutt-gmail
 
-```bash
+```
  special thanks to jfrazelle for this config
   docker run -it --rm \
     -e TERM=xterm-256color \
@@ -187,7 +187,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./netflix-dnsmasq
 
-```bash
+```
  DNS cacher/forwarder
  Set IP as the forwarder :)
  docker run -p 53:53/udp -e IP=10.10.10.1 -d dnsmasq --name dnsmasq
@@ -201,7 +201,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./netflix-sniproxy
 
-```bash
+```
  DNS proxy (netflix unblocker) open source.
  fork of: https://github.com/trick77/dockerflix
 
@@ -212,7 +212,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./nginx
 
-```bash
+```
  source: https://github.com/nginxinc/docker-nginx/blob/master/Dockerfile
  https://hub.docker.com/_/nginx/
 
@@ -221,7 +221,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./nmap
 
-```bash
+```
  Original source: github.com/pandrew/dockerfiles
  build it yo:
  docker build -t nmap .
@@ -235,7 +235,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./nomad
 
-```bash
+```
  Nomad from Hashicorp. github.com/hashicorp/nomad
 
  To build the Nomad binary:
@@ -258,7 +258,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./openvpn-client
 
-```bash
+```
  An openvpn-client in a container
 
  docker run -it 
@@ -271,7 +271,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./openvpn-client-docker
 
-```bash
+```
  
  docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it openvpn
  
@@ -286,7 +286,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./openvpn-server
 
-```bash
+```
  original: https://github.com/jpetazzo/dockvpn
  
  CID=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp openvpn)
@@ -297,13 +297,13 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./peerflix
 
-```bash
+```
  docker run -it -p 8888:8888 wikus/peerflix "magnet shit:"
 
 ```
 ### ./plex
 
-```bash
+```
  source https://github.com/wernight/docker-plex-media-server
  mkdir ~/plex-config
  chown 797:797 -R ~/plex-config
@@ -319,7 +319,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./rainbowstream
 
-```bash
+```
  
  source: github.com/jfrazelle/dockerfiles
  
@@ -334,26 +334,26 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./redis
 
-```bash
+```
  docker run --name redis -d -p 6379:6379 redis
 
 ```
 ### ./redis-browser
 
-```bash
+```
  just run docker run -p 4567:4567 $USER/redis-browser
 
 ```
 ### ./samba
 
-```bash
+```
  source: https://github.com/JensErat/docker-samba-publicshare
  docker run -d  -p 445:445 -p 137:137 -p 138:138 -p 139:139 -v /data:/data --env workgroup=workgroup samba
 
 ```
 ### ./sensu-client
 
-```bash
+```
  Original Source: https://github.com/arypurnomoz/sensu-client.docker
 
  This container allows you to run sensu in a container (yay) although there are some caveats.
@@ -379,7 +379,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./teamspeak
 
-```bash
+```
  Source: https://github.com/luzifer-docker/docker-teamspeak3
 
  To run:
@@ -391,12 +391,12 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./tor
 
-```bash
+```
 
 ```
 ### ./tor-messenger
 
-```bash
+```
  Run tor messenger in a container
 
  docker run -d -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY $USER/tor-messenger
@@ -405,7 +405,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./transmission
 
-```bash
+```
  source: https://github.com/dperson/transmission
 
  docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d transmission
@@ -418,7 +418,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./weechat
 
-```bash
+```
  recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
 
  docker run -it -d \
@@ -432,7 +432,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./wifikill
 
-```bash
+```
  DISCLAIMER: Only use this on YOUR OWN network. This script is not responsible for any damages it causes.
  This uses ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing by sending a fake MAC address to the victom believing it to be the gateway
  
@@ -442,7 +442,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ```
 ### ./ykpersonalize
 
-```bash
+```
  Run ykpersonalize in a container (yubico key)
 
  source: https://github.com/jfrazelle/dockerfiles

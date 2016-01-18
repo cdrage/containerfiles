@@ -9,7 +9,7 @@ do
   if [ -f $D/Dockerfile ]; then
         echo "###" $D
         echo
-        echo "\`\`\`bash"
+        echo "\`\`\`"
         cat $D/Dockerfile | grep "#" | sed 's/#//'
         echo
         echo "\`\`\`"
