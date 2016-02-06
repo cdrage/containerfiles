@@ -1,5 +1,26 @@
 #Dockerfiles
 Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfile comments
+### ./chrome
+
+```
+ Run Chrome in a container (thx jess)
+
+  docker run -d \
+    --net=container:rh_vpn \
+    --memory 3gb \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e DISPLAY=unix$DISPLAY \
+    -v $HOME/.rh_chrome:/data \
+    -v $HOME/docker_files/chrome_downloads:/root/Downloads \
+    -v /dev/shm:/dev/shm \
+    --device /dev/dri \
+    --name rh_chrome \
+    $USER/chrome --no-sandbox --user-data-dir=/data --test-type
+
+    no sandbox due to issue atm
+
+```
 ### ./consul
 
 ```

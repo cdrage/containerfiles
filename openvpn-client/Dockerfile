@@ -8,6 +8,6 @@
 # go check your public ip online and you'll see you're connected to the VPN :)
 
 FROM alpine
-RUN apk update && apk add openvpn
+RUN apk update && apk add openvpn iptables
 ENTRYPOINT ["openvpn"]
 WORKDIR /etc/openvpn
