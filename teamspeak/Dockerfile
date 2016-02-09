@@ -1,9 +1,11 @@
 # Source: https://github.com/luzifer-docker/docker-teamspeak3
 #
 # To run:
-# docker run --name TS3 -d -p 9987:9987/udp -v ~/ts3:/teamspeak3 --restart=always $USER/ts3
+# docker run --name ts3 -d -p 9987:9987/udp -p 30033:30033/tcp -v ~/ts3:/teamspeak3 $USER/ts3
 # 
-# All your files will be located within ~/ts3 (sqlite database, whitelist, etc.)
+# All your files will be located within ~/ts3 (sqlite database, whitelist, etc.). 
+# This is your persistent folder, so rare pepe do not touch. 
+# If you ever want to upgrade your teamspeak server (dif version or hash), simply point the files to there again.
 # To find out the admin key, use docker logs
 
 FROM ubuntu:15.02
