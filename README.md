@@ -382,6 +382,13 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  DEFAULTS
 
 ```
+### ./sensu-server
+
+```
+ 
+ Todo: Convert to a Docker-compose with multiple separate services
+
+```
 ### ./teamspeak
 
 ```

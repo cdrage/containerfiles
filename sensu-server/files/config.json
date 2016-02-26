@@ -1,0 +1,64 @@
+{
+  "rabbitmq": {
+    "host": "localhost",
+    "port": 5671,
+    "vhost": "/sensu",
+    "user": "sensu",
+    "password": "sensu",
+    "ssl": {
+      "cert_chain_file": "/etc/sensu/ssl/cert.pem",
+      "private_key_file": "/etc/sensu/ssl/key.pem"
+    }
+  },
+  "redis": {
+    "host": "localhost",
+    "port": 6379
+  },
+  "api": {
+    "host": "localhost",
+    "bind": "0.0.0.0",
+    "port": 4567
+  },
+  "ponymailer": {
+    "authenticate":true,
+    "username":"example@gmail.com",
+    "tls":true,
+    "port":"587",
+    "fromname":"Network",
+    "hostname":"smtp.gmail.com",
+    "password":"password",
+    "from":"network@gmail.com",
+    "recipients":[ 
+      "noc@gmail.com"
+      ]
+  },
+  "graphite": {
+    "server":"graphite.mydomain.com",
+    "port":"2003"
+  },
+  "slack": {
+    "token": "mytoken",
+    "team_name": "myteam",
+    "channel": "#general",
+    "bot_name": "sensu",
+    "message_prefix": "@channel"
+  },
+  "handlers": {
+    "default": {
+      "type": "set",
+      "handlers": ["mailer", "slack"]
+    },
+    "mailer": {
+      "type": "pipe",
+      "command": "/opt/sensu/embedded/bin/ruby /etc/sensu/handlers/ponymailer.rb"
+    },
+    "slack": {
+      "type": "pipe",
+      "command": "/opt/sensu/embedded/bin/ruby /etc/sensu/handlers/slack.rb"
+    },
+    "graphite": {
+      "type": "pipe",
+      "command": "/opt/sensu/embedded/bin/ruby /etc/sensu/handlers/graphite-tcp.rb"
+    }
+  }
+}
