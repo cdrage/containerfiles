@@ -110,7 +110,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  
  Now run it!
 
- docker run -it --rm -v /bin/txt.aes:/txt.aes jrl
+ docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro $USER/jrl
 
 ```
 ### ./kubernetes
