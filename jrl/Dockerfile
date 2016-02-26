@@ -29,4 +29,3 @@ RUN touch /etc/default/locale && \
 ADD journal.sh journal.sh
 
 CMD ["./journal.sh"]
-
