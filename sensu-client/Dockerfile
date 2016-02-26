@@ -19,9 +19,8 @@
 #
 # or use the Makefile provided :)
 
-FROM debian:latest
+FROM debian:jessie
 
-# DEFAULTS
 ENV REDIS_POST 6379
 ENV RABBITMQ_PORT 5671
 ENV RABBITMQ_VHOST /sensu

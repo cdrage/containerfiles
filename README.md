@@ -379,7 +379,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
   sensu-client
 
  or use the Makefile provided :)
- DEFAULTS
 
 ```
 ### ./sensu-server
