@@ -384,8 +384,30 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./sensu-server
 
 ```
+ Build it:
+ docker build -t $USER/sensu-server .
  
- Todo: Convert to a Docker-compose with multiple separate services
+ Run it:
+ docker run \
+   -p 3000:3000 \
+   -p 4567:4567 \
+   -p 5671:5671 \
+   -p 15672:15672 \
+   -d \
+   --name sensu-server \
+   $USER/sensu-server
+
+ Either edit the config files under /config or mount them in yourself :)
+
+ If you want to check logs, etc. Either mount them as a separate volume
+ (ex. files /var/log/sensu/sensu-server.log, etc.
+
+ To modify / install more plugins, see things a bit more closer, exec into it
+ docker exec -it sensu-server bash
+
+ TODO: 
+ Split-off into multiple services (use Docker compose)
+ Easier way of mounting config files / volumes
 
 ```
 ### ./teamspeak

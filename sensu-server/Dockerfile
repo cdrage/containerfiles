@@ -1,5 +1,27 @@
+# Build it:
+# docker build -t $USER/sensu-server .
 # 
-# Todo: Convert to a Docker-compose with multiple separate services
+# Run it:
+# docker run \
+#   -p 3000:3000 \
+#   -p 4567:4567 \
+#   -p 5671:5671 \
+#   -p 15672:15672 \
+#   -d \
+#   --name sensu-server \
+#   $USER/sensu-server
+#
+# Either edit the config files under /config or mount them in yourself :)
+#
+# If you want to check logs, etc. Either mount them as a separate volume
+# (ex. files /var/log/sensu/sensu-server.log, etc.
+#
+# To modify / install more plugins, see things a bit more closer, exec into it
+# docker exec -it sensu-server bash
+#
+# TODO: 
+# Split-off into multiple services (use Docker compose)
+# Easier way of mounting config files / volumes
 
 FROM centos:centos6
 
@@ -7,13 +29,11 @@ MAINTAINER Charlie Drage <charlie@charliedrage.com>
 
 #! Basic packages
 RUN rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-RUN yum install -y passwd sudo git wget openssl openssh openssh-server openssh-clients which tar
+RUN yum install -y passwd sudo git wget openssl which tar
 
 #! Create the sensu user
 RUN useradd sensu
 RUN echo "sensu" | passwd sensu --stdin
-RUN sed -ri 's/UsePAM yes/#!UsePAM yes/g' /etc/ssh/sshd_config
-RUN sed -ri 's/#!UsePAM no/UsePAM no/g' /etc/ssh/sshd_config
 RUN echo "sensu ALL=(ALL) ALL" >> /etc/sudoers.d/sensu
 
 #! Install ruby
@@ -38,16 +58,22 @@ RUN mkdir /etc/rabbitmq/ssl
 RUN cp /joemiller.me-intro-to-sensu/server_cert.pem /etc/rabbitmq/ssl/cert.pem
 RUN cp /joemiller.me-intro-to-sensu/server_key.pem /etc/rabbitmq/ssl/key.pem
 RUN cp /joemiller.me-intro-to-sensu/testca/cacert.pem /etc/rabbitmq/ssl/
-ADD ./files/rabbitmq.config /etc/rabbitmq/
+ADD ./config/rabbitmq.config /etc/rabbitmq/
 RUN rabbitmq-plugins enable rabbitmq_management
 
 #! Sensu server
-ADD ./files/sensu.repo /etc/yum.repos.d/
+ADD ./config/sensu.repo /etc/yum.repos.d/
 RUN yum install -y sensu
-ADD ./files/config.json /etc/sensu/
-ADD ./files/checks.json /etc/sensu/conf.d/
+
+#! Add config and checks
+ADD ./config/config.json /etc/sensu/
+ADD ./config/checks.json /etc/sensu/conf.d/
+
+#! Add all handlers
 RUN mkdir -p /etc/sensu/handlers
-ADD ./files/handlers /etc/sensu/handlers/
+ADD ./config/handlers /etc/sensu/handlers/
+
+#! Copy over SSL certs to the sensu directory
 RUN mkdir -p /etc/sensu/ssl
 RUN cp /joemiller.me-intro-to-sensu/client_cert.pem /etc/sensu/ssl/cert.pem
 RUN cp /joemiller.me-intro-to-sensu/client_key.pem /etc/sensu/ssl/key.pem
@@ -57,18 +83,14 @@ RUN /bin/bash -l -c "/opt/sensu/embedded/bin/gem install sensu-plugin pony"
 
 #! Uchiwa sensu control panel
 RUN yum install -y uchiwa
-ADD ./files/uchiwa.json /etc/sensu/
+ADD ./config/uchiwa.json /etc/sensu/
 
 #! Supervisord
 RUN wget http://peak.telecommunity.com/dist/ez_setup.py;python ez_setup.py
 RUN easy_install supervisor
-ADD files/supervisord.conf /etc/supervisord.conf
-
-#! Flap SSH to enable connectivity
-RUN /etc/init.d/sshd start
-RUN /etc/init.d/sshd stop
+ADD ./config/supervisord.conf /etc/supervisord.conf
 
 #! Sensu, uchiwa, RabbitMQ ports + 80/8080/443 for mail/slacker communication
-EXPOSE 22 587 3000 4567 5671 15672 2003 80 8080 443
+EXPOSE 587 3000 4567 5671 15672 2003 80 8080 443
 
 CMD ["/usr/bin/supervisord"]
