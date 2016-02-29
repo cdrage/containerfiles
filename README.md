@@ -381,35 +381,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  or use the Makefile provided :)
 
 ```
-### ./sensu-server
-
-```
- Build it:
- docker build -t $USER/sensu-server .
- 
- Run it:
- docker run \
-   -p 3000:3000 \
-   -p 4567:4567 \
-   -p 5671:5671 \
-   -p 15672:15672 \
-   -d \
-   --name sensu-server \
-   $USER/sensu-server
-
- Either edit the config files under /config or mount them in yourself :)
-
- If you want to check logs, etc. Either mount them as a separate volume
- (ex. files /var/log/sensu/sensu-server.log, etc.
-
- To modify / install more plugins, see things a bit more closer, exec into it
- docker exec -it sensu-server bash
-
- TODO: 
- Split-off into multiple services (use Docker compose)
- Easier way of mounting config files / volumes
-
-```
 ### ./teamspeak
 
 ```
@@ -469,7 +440,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 
 ```
  DISCLAIMER: Only use this on YOUR OWN network. This script is not responsible for any damages it causes.
- This uses ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing by sending a fake MAC address to the victom believing it to be the gateway
+ This uses ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing by sending a fake MAC address to the victim believing it to be the gateway. Thus kicking everyone else off.
  
  To use:
  docker run --rm -it --net=host --cap-add=NET_ADMIN wifikill 
