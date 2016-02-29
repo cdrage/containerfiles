@@ -7,11 +7,13 @@
 # You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 #
 # docker run \
-#  -v /ssl:/etc/sensu/ssl \
-#  -e CLIENT_ADDRESS=10.0.0.1 \
+#  -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
+#  -v ~/key.pem:/etc/sensu/ssl/key.pem \
 #  -e CLIENT_NAME=sensu-client \
+#  -e CLIENT_ADDRESS=10.0.0.1 \
 #  -e RABBITMQ_HOST=rabbitmq.local \
 #  -e RABBITMQ_PORT=5671 \
+#  -e RABBITMQ_VHOST="/sensu" \
 #  -e RABBITMQ_USER=sensu \
 #  -e RABBITMQ_PASS=sensu \
 #  -e SUB=metrics,check \
@@ -21,21 +23,27 @@
 
 FROM debian:jessie
 
+ENV DEBIAN_FRONTEND="noninteractive"
+
 ENV REDIS_POST 6379
 ENV RABBITMQ_PORT 5671
 ENV RABBITMQ_VHOST /sensu
 ENV RABBITMQ_USER sensu
 ENV RABBITMQ_PASS sensu
 
-ADD http://repos.sensuapp.org/apt/pubkey.gpg /tmp/pubkey.gpg
-
 RUN \
-  apt-key add /tmp/pubkey.gpg \
+  apt-get update \
+  && apt-get install -y wget \
+  && wget -q http://repos.sensuapp.org/apt/pubkey.gpg -O- | apt-key add - \
   && echo 'deb http://repos.sensuapp.org/apt sensu main' > /etc/apt/sources.list.d/sensu.list \
   && apt-get update \
+  && apt-get install -y ruby ruby-dev build-essential git procps apt-utils bc ca-certificates \
   && apt-get install -y sensu \
-  && apt-get install -y ruby ruby-dev build-essential git procps apt-utils bc wget ca-certificates \
-  && gem install sensu-plugin redis docker docker-api etcd --no-rdoc --no-ri
+  && gem install sensu-plugin redis --no-rdoc --no-ri
+
+# Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
+RUN \
+  gem install docker docker-api --no-rdoc --no-ri
 
 ADD run.sh /tmp/run.sh
 EXPOSE 3030

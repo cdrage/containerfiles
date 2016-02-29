@@ -368,17 +368,20 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 
  docker run \
-  -v /ssl:/etc/sensu/ssl \
-  -e CLIENT_ADDRESS=10.0.0.1 \
+  -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
+  -v ~/key.pem:/etc/sensu/ssl/key.pem \
   -e CLIENT_NAME=sensu-client \
+  -e CLIENT_ADDRESS=10.0.0.1 \
   -e RABBITMQ_HOST=rabbitmq.local \
   -e RABBITMQ_PORT=5671 \
+  -e RABBITMQ_VHOST="/sensu" \
   -e RABBITMQ_USER=sensu \
   -e RABBITMQ_PASS=sensu \
   -e SUB=metrics,check \
   sensu-client
 
  or use the Makefile provided :)
+ Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
 
 ```
 ### ./teamspeak
