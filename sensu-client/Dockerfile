@@ -4,6 +4,8 @@
 #
 # This is a basic container with NO checks. This is enough to get you setup and connecting to the sensu master. However, in order to add checks you'd have to pass in a folder of plugins (if you wish to pass them as a volume) or add them HERE to the Dockerfile.
 #
+# In my example, I use the docker-api and docker folder since I'll be mounting a -v /checks folder containing a few plugins. This is all optional and you may modify it to your own will.
+#
 # You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 #
 # docker run \
