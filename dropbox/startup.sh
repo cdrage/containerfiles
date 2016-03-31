@@ -15,5 +15,6 @@ chown $UID /home/.dropbox /home/Dropbox /home
 id -u dropbox &>/dev/null || useradd -u $UID -d /home dropbox
 
 # dont know why this doesnt 666 on install, will investigate later
+touch /home/.dropbox-dist/dropbox-lnx.x86_64-3.6.7/futures-2.1.3-py2.7.egg/EGG-INFO/top_level.txt
 chmod 666 /home/.dropbox-dist/dropbox-lnx.x86_64-3.6.7/futures-2.1.3-py2.7.egg/EGG-INFO/top_level.txt || true
 su --login dropbox /home/rundropbox.sh

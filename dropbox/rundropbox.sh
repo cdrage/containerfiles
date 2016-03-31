@@ -3,4 +3,3 @@
 echo "Starting Dropbox daemon"
 ~/.dropbox-dist/dropboxd
 echo "Dropbox daemon quit with status $?"
-
