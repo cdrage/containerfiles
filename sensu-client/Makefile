@@ -18,6 +18,9 @@ all: build
 		-e RABBITMQ_USER=$(RABBIT_USERNAME) \
 		-e RABBITMQ_PASS=$(RABBIT_PASS)\
 		-e SUB=$(SUB) \
+		--privileged \
+		--restart=always \
+		-d \
 		$(USER)/sensu-client
 
 build:

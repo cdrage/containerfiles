@@ -11,6 +11,7 @@
 # docker run \
 #  -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
 #  -v ~/key.pem:/etc/sensu/ssl/key.pem \
+#  -v ~/plugins:/etc/sensu/plugins \
 #  -e CLIENT_NAME=sensu-client \
 #  -e CLIENT_ADDRESS=10.0.0.1 \
 #  -e RABBITMQ_HOST=rabbitmq.local \
