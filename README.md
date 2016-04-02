@@ -84,7 +84,20 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./graphite
 
 ```
- docker run -d --name graphite -p 80:80 -p 2003:2003 -p 8125:8125/udp graphite/graphite
+RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe > /etc/apt/sources.list.d/universe.list
+ dependencies
+ python dependencies
+ install graphite
+ install whisper
+ install carbon
+ install statsd
+ config nginx
+ init django admin
+ logging support
+ daemons
+ default conf setup
+ cleanup
+ defaults
 
 ```
 ### ./jekyll
@@ -372,6 +385,7 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  docker run \
   -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
   -v ~/key.pem:/etc/sensu/ssl/key.pem \
+  -v ~/plugins:/etc/sensu/plugins \
   -e CLIENT_NAME=sensu-client \
   -e CLIENT_ADDRESS=10.0.0.1 \
   -e RABBITMQ_HOST=rabbitmq.local \
@@ -384,6 +398,11 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 
  or use the Makefile provided :)
  Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
+
+```
+### ./ssh
+
+```
 
 ```
 ### ./teamspeak
