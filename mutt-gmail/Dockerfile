@@ -1,12 +1,9 @@
 # special thanks to jfrazelle for this config
 #  docker run -it --rm \
 #    -e TERM=xterm-256color \
-#    -e MUTT \
 #    -e MUTT_NAME \
+#    -e MUTT_EMAIL \
 #    -e MUTT_PASS \
-#    -e MUTT_FROM \
-#    -e MUTT_SMTP \
-#    -e MUTT_IMAP \
 #    -v $HOME/.gnupg:/home/user/.gnupg \
 #    -v $HOME/dropbox/etc/aliases.txt:/home/user/.mutt/aliases.txt \
 #    -v /etc/localtime:/etc/localtime:ro \
@@ -36,7 +33,7 @@ ENV TERM screen-256color
 RUN mkdir -p $HOME/.mutt/cache/headers $HOME/.mutt/cache/bodies && touch $HOME/.mutt/certificates
 ENV LANG C.UTF-8
 
- copy over files
+# copy over files
 COPY  entrypoint.sh /entrypoint.sh
 COPY  .mutt     $HOME/.mutt
 COPY  .msmtprc     $HOME/.msmtprc

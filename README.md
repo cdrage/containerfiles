@@ -206,16 +206,14 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  special thanks to jfrazelle for this config
   docker run -it --rm \
     -e TERM=xterm-256color \
-    -e MUTT \
     -e MUTT_NAME \
+    -e MUTT_EMAIL \
     -e MUTT_PASS \
-    -e MUTT_FROM \
-    -e MUTT_SMTP \
-    -e MUTT_IMAP \
     -v $HOME/.gnupg:/home/user/.gnupg \
     -v $HOME/dropbox/etc/aliases.txt:/home/user/.mutt/aliases.txt \
     -v /etc/localtime:/etc/localtime:ro \
     charliedrage/mutt
+ copy over files
 
 ```
 ### ./netflix-dnsmasq
