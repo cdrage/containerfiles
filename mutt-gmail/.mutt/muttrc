@@ -4,7 +4,7 @@ set message_cachedir = '~/.mutt/cache/bodies'
 set certificate_file = '~/.mutt/certificates'
 set mailcap_path    = '~/.mutt/mailcap'
 set signature = "~/.mutt/signature"
-set alias_file= "~/.mutt/aliases.txt"
+set alias_file= "~/.mutt/aliases"
 source $alias_file
 
 # Change the following six lines to match your Gmail account details
@@ -70,14 +70,6 @@ set uncollapse_jump = yes
 set index_format="%4C %Z %{%b %d} %-15.15n (%4l) %s"
 set date_format = "%m/%d"
 
-# Folder bindings ---------------------------------
-folder-hook INBOX "set from=charlie@charliedrage.com" 
-folder-hook kihi "set from=charlie@kihihosting.com"
-folder-hook tickets "set from=charlie@kihihosting.com"
-
-folder-hook tickets 'set include = no'
-folder-hook tickets 'set signature = no'
-
 # Key bindings -----------------------------
 
 bind compose p postpone-message
@@ -112,7 +104,6 @@ macro index gk '<change-folder>=kihi<enter>'
 macro index gn '<change-folder>=sensu<enter>'
 macro index gt '<change-folder>=tickets<enter>'
 macro index gm '<change-folder>=mailing<enter>'
-macro index gc '<change-folder>=cloudatcost<enter>'
 
 # Side bar ----------------------------
 set sidebar_visible = no

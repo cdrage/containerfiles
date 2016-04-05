@@ -210,10 +210,12 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
     -e MUTT_EMAIL \
     -e MUTT_PASS \
     -v $HOME/.gnupg:/home/user/.gnupg \
-    -v $HOME/dropbox/etc/aliases.txt:/home/user/.mutt/aliases.txt \
+    -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
+    -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
     -v /etc/localtime:/etc/localtime:ro \
     charliedrage/mutt
  copy over files
+ vim settings
 
 ```
 ### ./netflix-dnsmasq
