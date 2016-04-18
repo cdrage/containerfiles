@@ -350,6 +350,12 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  Or you can simply SSH portforward to the server to configure everything
 
 ```
+### ./powerdns-admin
+
+```
+ Source: https://github.com/ivanfilippov/PowerDNS-Admin/blob/docker/Dockerfile
+
+```
 ### ./redis
 
 ```

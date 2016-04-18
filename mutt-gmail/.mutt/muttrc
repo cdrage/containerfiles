@@ -113,11 +113,6 @@ bind index,pager \Co sidebar-open
 macro index,pager b '<enter-command>toggle sidebar_visible<enter>' 
 color sidebar_new yellow default
 
-# Contacts ---------------------------
-set query_command="goobook query '%s'"
-macro index,pager a "<pipe-message>goobook add<return>" "add sender to google contacts"
-bind editor <Tab> complete-query
-
 # GPG -------------------------------
 bind compose p pgp-menu
 set pgp_good_sign="^gpg: Good signature from"
