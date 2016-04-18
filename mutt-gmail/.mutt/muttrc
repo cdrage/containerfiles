@@ -82,8 +82,6 @@ bind index <space>  collapse-thread
 
 macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
 
-#macro index s "<enter-command>unset wait_key<enter><shell-escape>python ~/.mutt/mutt-notmuch-py ~/.mail/temporary/search<enter><change-folder-readonly>+temporary/search<enter>" "search mail (using notmuch)"
-
 macro attach s '<save-entry><bol>/tmp/<eol>'
 macro attach S '<save-entry><bol>~/Downloads/<eol>'
 
@@ -100,10 +98,6 @@ macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
 macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
 macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to starred messages"
 macro index gg '<change-folder>=git<enter>'
-macro index gk '<change-folder>=kihi<enter>'
-macro index gn '<change-folder>=sensu<enter>'
-macro index gt '<change-folder>=tickets<enter>'
-macro index gm '<change-folder>=mailing<enter>'
 
 # Side bar ----------------------------
 set sidebar_visible = no
