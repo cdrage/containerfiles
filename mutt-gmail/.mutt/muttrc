@@ -15,6 +15,7 @@ set realname = "%MUTT_NAME%"
 set folder = "imaps://imap.gmail.com:993"
 set mbox = "+INBOX"
 set sendmail="/usr/bin/msmtp -a gmail"
+set trash = "+[Gmail]/Trash"
 
 
 # Account stuff -----------------------
@@ -92,7 +93,7 @@ bind editor <space> noop
 bind index y noop
 
 macro pager \Cu "|urlview<enter>" "call urlview to open links"
-macro index,pager d "<save-message>=[Gmail]/Trash<enter>" "Trash"
+#macro index,pager d "<save-message>=[Gmail]/Trash<enter>" "Trash"
 macro index,pager y "<save-message>=[Gmail]/All Mail<enter>" "Archive"
 macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
 macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
