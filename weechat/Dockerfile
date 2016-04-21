@@ -4,7 +4,10 @@
 # -e TERM=xterm-256color \
 # -v /etc/localtime:/etc/localtime:ro \
 # --name weechat \
+# -p 40900:40900 \
 # weechat
+#
+# port 40900 is used for weechat relay (if you decide to use it)
 #
 # docker attach weechat
 

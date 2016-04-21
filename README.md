@@ -59,11 +59,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox $USER/dropbox
 
 ```
-### ./firefox
-
-```
-
-```
 ### ./glances
 
 ```
@@ -240,15 +235,6 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  build Dockerfile.uk for uk version
 
 ```
-### ./nginx
-
-```
- source: https://github.com/nginxinc/docker-nginx/blob/master/Dockerfile
- https://hub.docker.com/_/nginx/
-
- docker run --name some-nginx -v /some/content:/usr/share/nginx/html:ro -v /some/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx
-
-```
 ### ./nmap
 
 ```
@@ -347,24 +333,6 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  Or you can simply SSH portforward to the server to configure everything
 
 ```
-### ./powerdns-admin
-
-```
- Source: https://github.com/ivanfilippov/PowerDNS-Admin/blob/docker/Dockerfile
-
-```
-### ./redis
-
-```
- docker run --name redis -d -p 6379:6379 redis
-
-```
-### ./redis-browser
-
-```
- just run docker run -p 4567:4567 $USER/redis-browser
-
-```
 ### ./samba
 
 ```
@@ -458,7 +426,10 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  -e TERM=xterm-256color \
  -v /etc/localtime:/etc/localtime:ro \
  --name weechat \
+ -p 40900:40900 \
  weechat
+
+ port 40900 is used for weechat relay (if you decide to use it)
 
  docker attach weechat
 
