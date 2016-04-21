@@ -50,16 +50,13 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
 ### ./couchpotato
 
 ```
- If you're setting up transmission within Couchpotato, remember to specify the IP of your host directly as well as pass the pass / username you used with transmission
-
  docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
 ### ./dropbox
 
 ```
- docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
- Remember to look at logs (docker logs dropbox) and click on the link!
+ docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox $USER/dropbox
 
 ```
 ### ./firefox

@@ -1,5 +1,4 @@
-# docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox charliedrage/dropbox
-# Remember to look at logs (docker logs dropbox) and click on the link!
+# docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox $USER/dropbox
 
 FROM debian:wheezy
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
