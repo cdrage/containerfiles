@@ -26,7 +26,7 @@ set mail_check = 60
 set timeout = 300
 set imap_keepalive = 300
 unset imap_passive
-unset record
+set record = ""
 
 # Normal stuff ----------
 auto_view text/html
@@ -84,7 +84,7 @@ bind index <space>  collapse-thread
 macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
 
 macro attach s '<save-entry><bol>/tmp/<eol>'
-macro attach S '<save-entry><bol>~/Downloads/<eol>'
+macro attach S '<save-entry><bol>/home/user/Downloads/<eol>'
 
 bind attach <return> view-mailcap
 
