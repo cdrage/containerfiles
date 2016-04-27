@@ -1,9 +1,13 @@
 # original: https://github.com/jpetazzo/dockvpn
 # 
-# CID=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp openvpn)
-# docker run -t -i -p 8080:8080 --volumes-from $CID opvenvpn serveconfig
+# Start the openvpn server:
+# SERVER=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp $USER/openvpn)
 #
-# curl IP:8080 for config then use your favourite openvpn client :)
+# Create a http server to termporarily download the configuration:
+# docker run --rm -ti -p 8080:8080 --volumes-from $SERVER $USER/openvpn serveconfig
+#
+# Download the configuration for your client to use:
+# wget https://IP:8080/ --no-check-certificate -O config.ovpn
 
 FROM ubuntu:precise
 RUN echo deb http://archive.ubuntu.com/ubuntu/ precise main universe > /etc/apt/sources.list.d/precise.list
