@@ -112,11 +112,6 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro $USER/jrl
 
 ```
-### ./kubernetes
-
-```
-
-```
 ### ./libvirtd
 
 ```
@@ -131,13 +126,6 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  --name libvirtd libvirtd
 
  to connect (on client): virsh --connect qemu+tcp://localhost/system
-
-```
-### ./line
-
-```
- You'll have to get LINE.exe first from somewhere ;)
- docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -H localhost charliedrage/line
 
 ```
 ### ./moodle
