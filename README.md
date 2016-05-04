@@ -53,12 +53,6 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
  docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
-### ./dropbox
-
-```
- docker run -d -e UID=$(id -u) -v ~/.dropbox:/home/.dropbox -v ~/dropbox:/home/Dropbox --name dropbox $USER/dropbox
-
-```
 ### ./glances
 
 ```
