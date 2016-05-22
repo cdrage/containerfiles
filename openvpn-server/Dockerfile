@@ -1,10 +1,10 @@
 # original: https://github.com/jpetazzo/dockvpn
 # 
 # Start the openvpn server:
-# SERVER=$(docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp $USER/openvpn)
+# docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp --name vpn $USER/openvpn
 #
 # Create a http server to termporarily download the configuration:
-# docker run --rm -ti -p 8080:8080 --volumes-from $SERVER $USER/openvpn serveconfig
+# docker run --rm -ti -p 8080:8080 --volumes-from vpn $USER/openvpn serveconfig
 #
 # Download the configuration for your client to use:
 # wget https://IP:8080/ --no-check-certificate -O config.ovpn
