@@ -355,6 +355,8 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 
  or use the Makefile provided :)
  Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
+RUN \
+  gem install docker docker-api --no-rdoc --no-ri
 
 ```
 ### ./ssh

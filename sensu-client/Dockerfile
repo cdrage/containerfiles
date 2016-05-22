@@ -45,8 +45,8 @@ RUN \
   && gem install sensu-plugin redis --no-rdoc --no-ri
 
 # Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
-RUN \
-  gem install docker docker-api --no-rdoc --no-ri
+#RUN \
+#  gem install docker docker-api --no-rdoc --no-ri
 
 ADD run.sh /tmp/run.sh
 EXPOSE 3030
