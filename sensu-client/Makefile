@@ -1,5 +1,4 @@
-SSLCERT ?= $(shell bash -c 'read -p "Folder containing cert.pem: " input; echo $$input')
-SSLKEY ?= $(shell bash -c 'read -p "Folder containing key.pem: " input; echo $$input')
+SSL ?= $(shell bash -c 'read -p "Folder containing key.pem + cert.pem: " input; echo $$input')
 CLIENT_ADDRESS ?= $(shell bash -c 'read -p "Client IP Address: " input; echo $$input')
 CLIENT_NAME ?= $(shell bash -c 'read -p "Client Name: " input; echo $$input')
 SUB ?= $(shell bash -c 'read -p "Subscriptions? (comma separated): " input; echo $$input')
@@ -7,10 +6,10 @@ RABBIT_HOST ?= $(shell bash -c 'read -p "RabbitMQ host: " input; echo $$input')
 RABBIT_USERNAME ?= $(shell bash -c 'read -p "RabbitMQ username: " input; echo $$input')
 RABBIT_PASS ?= $(shell bash -c 'read -p "RabbitMQ password: " input; echo $$input')
 
-all: build
+all:
 	docker run \
-	  -v $(SSLCERT)/cert.pem:/etc/sensu/ssl/cert.pem \
-	  -v $(SSLKEY)/key.pem:/etc/sensu/ssl/key.pem \
+	  -v $(SSL)/cert.pem:/etc/sensu/ssl/cert.pem \
+	  -v $(SSL)/key.pem:/etc/sensu/ssl/key.pem \
 		-e CLIENT_NAME=$(CLIENT_NAME) \
 		-e CLIENT_ADDRESS=$(CLIENT_ADDRESS) \
 		-e RABBITMQ_HOST=$(RABBIT_HOST) \
@@ -19,6 +18,7 @@ all: build
 		-e RABBITMQ_PASS=$(RABBIT_PASS)\
 		-e SUB=$(SUB) \
 		--privileged \
+		--name sensu-client \
 		--restart=always \
 		-d \
 		$(USER)/sensu-client
