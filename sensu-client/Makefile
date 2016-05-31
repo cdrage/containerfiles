@@ -1,5 +1,5 @@
 SSLCERT ?= $(shell bash -c 'read -p "Folder containing cert.pem: " input; echo $$input')
-SSLKEY ?= $(shell bash -c 'read -p "Folder containing cert.pem: " input; echo $$input')
+SSLKEY ?= $(shell bash -c 'read -p "Folder containing key.pem: " input; echo $$input')
 CLIENT_ADDRESS ?= $(shell bash -c 'read -p "Client IP Address: " input; echo $$input')
 CLIENT_NAME ?= $(shell bash -c 'read -p "Client Name: " input; echo $$input')
 SUB ?= $(shell bash -c 'read -p "Subscriptions? (comma separated): " input; echo $$input')
