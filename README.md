@@ -1,7 +1,8 @@
 
-Personal Dockerfiles. README.md is auto-generated from Dockerfile comments
+# Dockerfiles
+README.md is auto-generated from Dockerfile comments
 
-List of recommended conatainers: [INDEX](INDEX.md)
+List of recommended containers: [INDEX](INDEX.md)
 ### ./chrome
 
 ```
