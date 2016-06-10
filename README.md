@@ -1,4 +1,7 @@
-Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfile comments
+
+Personal Dockerfiles. README.md is auto-generated from Dockerfile comments
+
+List of recommended conatainers: [INDEX](INDEX.md)
 ### ./chrome
 
 ```
@@ -20,51 +23,12 @@ Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfil
     no sandbox due to issue atm
 
 ```
-### ./consul
-
-```
- source: github.com/jfrazelle/dockerfiles
- THANKS YO
-
- to run:
- 
- docker run -d \
-  --restart always \
-  -v $HOME/.consul:/etc/consul.d \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  --net host \
-  -e GOMAXPROCS=2 \
-  --name consul \
-  $USER/consul \
-  agent \
-  -bootstrap-expect 1 \
-  -config-dir /etc/consul.d \
-  -data-dir /data \
-  -encrypt $(docker run --rm $USER/consul keygen) \
-  -ui-dir /usr/src/consul \
-  -server \
-  -dc dc1 \
-  -bind 0.0.0.0
-
-```
 ### ./couchpotato
 
 ```
+ Couch Potato is a torrent grepper / downloader
+
  docker run -d -p 5050:5050 --name couchpotato couchpotato
-
-```
-### ./glances
-
-```
- Run glances in a container
- SOURCE: https://github.com/nicolargo/glances
-
- docker run --rm -it \
-	--pid host \
-	--ipc host \
-	--net host \
-	--name glances \
-	charliedrage/glances
 
 ```
 ### ./graphite
@@ -84,12 +48,6 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  default conf setup
  cleanup
  defaults
-
-```
-### ./jekyll
-
-```
- docker run --label=jekyll --volume=$(pwd):/srv/jekyll -d -p 80:4000 --restart=always jekyll/jekyll jekyll s
 
 ```
 ### ./jrl
@@ -112,72 +70,31 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
  docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro $USER/jrl
 
 ```
-### ./libvirtd
-
-```
- YAY! Libvirtd within Docker! USE DAT KVM VIRTUALIZATION
- Although this doesn't work very well at the moment (see KVM module errors)
-
- docker run
- --privileged \
- --net=host
- -p 16509:16509
- -v /var/lib/libvirt:/var/lib/libvirt
- --name libvirtd libvirtd
-
- to connect (on client): virsh --connect qemu+tcp://localhost/system
-
-```
-### ./moodle
-
-```
-  source: https://github.com/playlyfe/docker-moodle
-
-  First, grab moodle and extract.
-  wget https://github.com/moodle/moodle/archive/v3.0.0.tar.gz
-  tar -xvf v3.0.0.tar.gz
-  mkdir /var/www
-  mv moodle-3.0.0 /var/www/html
-  
-  Now let's build the docker container
-  docker build -t moodle .
-  docker run -d --name moodle -p 80:80 -p 443:443 -p 3306:3306 -v /var/www/html:/var/www/html moodle
-
-  Permission dat shit
-  chmod -R 777 /var/www/html
-
-  Head over to localhost:80 and proceed through the installation (remember to create the config.php file too during install!)
-
-  MySQL username: moodleuser
-  password: moodle
-
-  All other values default :)
-
-  TODO: SSL stuffs
-
-```
 ### ./mosh
 
 ```
- 
+ Mosh = SSH + mobile connection
+
+ To normally use it:
  docker run -it --rm \
  -e TERM=xterm-256color \
  -v $HOME/.ssh:/root/.ssh \
- $USER/mosh user@blahblahserver
+ cdrage/mosh user@blahblahserver
 
- how i use it:
+ How I use it (since I pipe it through a VPN):
  docker run -it --rm \
  --net=container:vpn
  -e TERM=xterm-256color \
  -v $HOME/.ssh:/root/.ssh \
- $USER/mosh user@blahblahserver
- 
+ cdrage/mosh user@blahblahserver
 
 ```
 ### ./mutt-gmail
 
 ```
- special thanks to jfrazelle for this config
+ My mutt configuration in a docker container
+
+ Special thanks to jfrazelle for this config
   docker run -it --rm \
     -e TERM=xterm-256color \
     -e MUTT_NAME \
@@ -187,7 +104,7 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
     -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
     -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
     -v /etc/localtime:/etc/localtime:ro \
-    charliedrage/mutt
+    cdrage/mutt
  copy over files
  vim settings
 
@@ -195,11 +112,13 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 ### ./netflix-dnsmasq
 
 ```
- DNS cacher/forwarder
- Set IP as the forwarder :)
+ This is used to create a DNS cacher/forwarder in order to
+ spoof the location when accessing Netflix. Similar to how a
+ VPN does it, but this is with DNS.
+
  docker run -p 53:53/udp -e IP=10.10.10.1 -d dnsmasq --name dnsmasq
  IP is the IP of the sniproxy / haproxy server
- if you're running it on the same host, it's your ip (eth0 or whatever)
+ if you're running it on the same host, it's your ip (eth0 or whatever).
 
  WARNING: it's a *really* bad idea to run an open recurse DNS server 
  (prone to DNS DDoS aplification attacks), it's suggested to have some 
@@ -209,26 +128,13 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 ### ./netflix-sniproxy
 
 ```
- DNS proxy (netflix unblocker) open source.
+ DNS proxy (netflix unblocker) open source. Used in conjuction
+ with netflix-dnsmasq :)
  fork of: https://github.com/trick77/dockerflix
 
  docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
 
  build Dockerfile.uk for uk version
-
-```
-### ./nmap
-
-```
- Original source: github.com/pandrew/dockerfiles
- build it yo:
- docker build -t nmap .
-
- and run it!
- docker run --rm -it --net=host --cap-add=NET_ADMIN nmap
-
- ex.
- docker run --rm -it --net=host --cap-add=NET_ADMIN nmap -v scanme.nmap.org
 
 ```
 ### ./nomad
@@ -257,7 +163,7 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 ### ./openvpn-client
 
 ```
- An openvpn-client in a container
+ An openvpn-client in an Alpine Linux container
 
  docker run -it 
  -v /filesblahblah/hacktheplanet.ovpn:/etc/openvpn/hacktheplanet.ovpn \
@@ -270,7 +176,8 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 ### ./openvpn-client-docker
 
 ```
- 
+ OpenVPN within an Ubuntu container
+
  docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it openvpn
  
  then from another container just use --net=container:openvpn
@@ -300,30 +207,11 @@ RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe >
 ### ./peerflix
 
 ```
- docker run -it -p 8888:8888 wikus/peerflix "magnet shit:"
+ Stream from a magnet torrent
 
-```
-### ./plex
+ docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
 
-```
- source https://github.com/wernight/docker-plex-media-server
- mkdir ~/plex-config
- chown 797:797 -R ~/plex-config
- docker run -d -v /root/plex-config:/config -v /data:/media -p 32400:32400 --net=host --name plex plex
-
- Note:
- If you are using this on a remote server (VPS and such), you must edit Preferences.xml within the plex-config 
- folder and add your network within <Preferences> allowedNetworks="192.168.1.0/255.255.255.0" if you wish
- to set this up remotely
-
- Or you can simply SSH portforward to the server to configure everything
-
-```
-### ./samba
-
-```
- source: https://github.com/JensErat/docker-samba-publicshare
- docker run -d  -p 445:445 -p 137:137 -p 138:138 -p 139:139 -v /data:/data --env workgroup=workgroup samba
+ Then open up VLC and use localhost:8888 to view
 
 ```
 ### ./sensu-client
@@ -362,34 +250,23 @@ RUN \
 ### ./ssh
 
 ```
+ SSH in a Docker container :)
 
 ```
 ### ./teamspeak
 
 ```
- Source: https://github.com/luzifer-docker/docker-teamspeak3
+ Praise Gaben! Teamspeak in a docker container :)
+
+ Original *awesome* source: https://github.com/luzifer-docker/docker-teamspeak3
 
  To run:
- docker run --name ts3 -d -p 9987:9987/udp -p 30033:30033/tcp -v ~/ts3:/teamspeak3 $USER/ts3
+ docker run --name teamspeak -d -p 9987:9987/udp -p 30033:30033/tcp -v $HOME/ts:/teamspeak3 cdrage/teamspeak
  
- All your files will be located within ~/ts3 (sqlite database, whitelist, etc.). 
- This is your persistent folder, so rare pepe do not touch. 
+ All your files will be located within ~/ts (sqlite database, whitelist, etc.). 
+ This is your persistent folder. This will containe your credentials, whitelist, etc. So keep it safe.
  If you ever want to upgrade your teamspeak server (dif version or hash), simply point the files to there again.
- To find out the admin key, use docker logs
-
-```
-### ./tor
-
-```
-
-```
-### ./tor-messenger
-
-```
- Run tor messenger in a container
-
- docker run -d -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY $USER/tor-messenger
-
+ To find out the admin key on initial boot. Use docker logs teamspeak
 
 ```
 ### ./transmission
@@ -408,6 +285,8 @@ RUN \
 ### ./weechat
 
 ```
+ Weechat IRC!
+
  recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
 
  docker run -it -d \
@@ -415,7 +294,7 @@ RUN \
  -v /etc/localtime:/etc/localtime:ro \
  --name weechat \
  -p 40900:40900 \
- weechat
+ cdrage/weechat
 
  port 40900 is used for weechat relay (if you decide to use it)
 
@@ -430,19 +309,5 @@ RUN \
  
  To use:
  docker run --rm -it --net=host --cap-add=NET_ADMIN wifikill 
-
-```
-### ./ykpersonalize
-
-```
- Run ykpersonalize in a container (yubico key)
-
- source: https://github.com/jfrazelle/dockerfiles
-
- docker run --rm -it \
- 	--device /dev/bus/usb \
- 	--device /dev/usb
-	--name ykpersonalize \
-	$USER/ykpersonalize bash
 
 ```
