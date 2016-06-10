@@ -1,4 +1,4 @@
-# An openvpn-client in a container
+# An openvpn-client in an Alpine Linux container
 #
 # docker run -it 
 # -v /filesblahblah/hacktheplanet.ovpn:/etc/openvpn/hacktheplanet.ovpn \

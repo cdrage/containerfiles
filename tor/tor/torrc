@@ -1,9 +1,0 @@
-SocksPort 9050 
-
-SocksPolicy accept *
-
-SocksListenAddress 0.0.0.0
-
-ControlPort 9051
-## password12 is the default password
-HashedControlPassword 16:79C8734C30ABD944604B839CEAF5AAC0F61AA500832A4B8BB9BC8042A5

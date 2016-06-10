@@ -1,4 +1,5 @@
-# DNS proxy (netflix unblocker) open source.
+# DNS proxy (netflix unblocker) open source. Used in conjuction
+# with netflix-dnsmasq :)
 # fork of: https://github.com/trick77/dockerflix
 #
 # docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy

@@ -1,16 +1,17 @@
-# 
+# Mosh = SSH + mobile connection
+#
+# To normally use it:
 # docker run -it --rm \
 # -e TERM=xterm-256color \
 # -v $HOME/.ssh:/root/.ssh \
-# $USER/mosh user@blahblahserver
+# cdrage/mosh user@blahblahserver
 #
-# how i use it:
+# How I use it (since I pipe it through a VPN):
 # docker run -it --rm \
 # --net=container:vpn
 # -e TERM=xterm-256color \
 # -v $HOME/.ssh:/root/.ssh \
-# $USER/mosh user@blahblahserver
-# 
+# cdrage/mosh user@blahblahserver
 
 FROM ubuntu:15.10
 

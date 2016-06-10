@@ -1,7 +1,10 @@
 #!/bin/bash
 # ./readme.sh > README.md
 
-echo "Git repo for my personal Dockerfiles. README.md is auto-generated from Dockerfile comments"
+echo ""
+echo "Personal Dockerfiles. README.md is auto-generated from Dockerfile comments"
+echo ""
+echo "List of recommended conatainers: [INDEX](INDEX.md)"
 
 for D in `find . -type d | sort`
 do

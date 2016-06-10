@@ -1,4 +1,8 @@
-# docker run -it -p 8888:8888 wikus/peerflix "magnet shit:"
+# Stream from a magnet torrent
+#
+# docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
+#
+# Then open up VLC and use localhost:8888 to view
 
 FROM node
 RUN npm install -g peerflix

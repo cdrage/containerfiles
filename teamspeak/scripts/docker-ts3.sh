@@ -3,13 +3,13 @@ VOLUME=/teamspeak3
 
 echo " ----- docker-ts3 ------"
 echo "1. Linking host mounted database"
-ln -s $VOLUME/ts3server.sqlitedb /opt/teamspeak3-server_linux-amd64/ts3server.sqlitedb 
+ln -s $VOLUME/ts3server.sqlitedb /opt/teamspeak3-server_linux_amd64/ts3server.sqlitedb 
 
 echo "2. Link the files-folder into the host-mounted volume."
 mkdir -p /teamspeak3/files
-if ! [ -L /opt/teamspeak3-server_linux-amd64/files ]; then
-  rm -rf /opt/teamspeak3-server_linux-amd64/files
-  ln -s /teamspeak3/files /opt/teamspeak3-server_linux-amd64/files
+if ! [ -L /opt/teamspeak3-server_linux_amd64/files ]; then
+  rm -rf /opt/teamspeak3-server_linux_amd64/files
+  ln -s /teamspeak3/files /opt/teamspeak3-server_linux_amd64/files
 fi
 
 echo "3. Starting TS3-Server."
@@ -22,11 +22,11 @@ if [ -f $VOLUME/ts3server.ini ]; then
 	echo "logpath='/teamspeak3/logs/'"
 	echo "licensepath='/teamspeak3/'" 
 	echo "inifile='/teamspeak3/ts3server.ini'"
-	/opt/teamspeak3-server_linux-amd64/ts3server_minimal_runscript.sh \
+	/opt/teamspeak3-server_linux_amd64/ts3server_minimal_runscript.sh \
 		inifile="/teamspeak3/ts3server.ini"
 else
 	echo "$VOLUME/ts3server.ini not found. Creating new config file."
-	/opt/teamspeak3-server_linux-amd64/ts3server_minimal_runscript.sh \
+	/opt/teamspeak3-server_linux_amd64/ts3server_minimal_runscript.sh \
 		query_ip_whitelist="/teamspeak3/query_ip_whitelist.txt" \
 		query_ip_backlist="/teamspeak3/query_ip_blacklist.txt" \
 		logpath="/teamspeak3/logs/" \

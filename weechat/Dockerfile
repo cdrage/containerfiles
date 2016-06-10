@@ -1,3 +1,5 @@
+# Weechat IRC!
+#
 # recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
 #
 # docker run -it -d \
@@ -5,7 +7,7 @@
 # -v /etc/localtime:/etc/localtime:ro \
 # --name weechat \
 # -p 40900:40900 \
-# weechat
+# cdrage/weechat
 #
 # port 40900 is used for weechat relay (if you decide to use it)
 #

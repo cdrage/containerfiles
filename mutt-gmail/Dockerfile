@@ -1,4 +1,6 @@
-# special thanks to jfrazelle for this config
+# My mutt configuration in a docker container
+#
+# Special thanks to jfrazelle for this config
 #  docker run -it --rm \
 #    -e TERM=xterm-256color \
 #    -e MUTT_NAME \
@@ -8,7 +10,7 @@
 #    -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
 #    -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
 #    -v /etc/localtime:/etc/localtime:ro \
-#    charliedrage/mutt
+#    cdrage/mutt
 
 FROM debian:stable
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
