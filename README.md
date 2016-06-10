@@ -32,25 +32,6 @@ List of recommended containers: [INDEX](INDEX.md)
  docker run -d -p 5050:5050 --name couchpotato couchpotato
 
 ```
-### ./graphite
-
-```
-RUN echo deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe > /etc/apt/sources.list.d/universe.list
- dependencies
- python dependencies
- install graphite
- install whisper
- install carbon
- install statsd
- config nginx
- init django admin
- logging support
- daemons
- default conf setup
- cleanup
- defaults
-
-```
 ### ./jrl
 
 ```
