@@ -1,4 +1,4 @@
-#General --------------------------
+# General
 set header_cache = '~/.mutt/cache/headers'
 set message_cachedir = '~/.mutt/cache/bodies'
 set certificate_file = '~/.mutt/certificates'
@@ -7,7 +7,7 @@ set signature = "~/.mutt/signature"
 set alias_file= "~/.mutt/aliases"
 source $alias_file
 
-# Change the following six lines to match your Gmail account details
+# Gmail / Account Settings
 set imap_user = "%MUTT_LOGIN%"
 set imap_pass = "%MUTT_PASS%" # leave blank for prompt
 set from = "%MUTT_FROM%"
@@ -16,9 +16,6 @@ set folder = "imaps://imap.gmail.com:993"
 set mbox = "+INBOX"
 set sendmail="/usr/bin/msmtp -a gmail"
 set trash = "+[Gmail]/Trash"
-
-
-# Account stuff -----------------------
 set spoolfile = '+INBOX'
 set postponed = "+[Gmail]/Drafts"
 set imap_check_subscribed
@@ -28,7 +25,7 @@ set imap_keepalive = 300
 unset imap_passive
 set record = ""
 
-# Normal stuff ----------
+# Normal stuff
 auto_view text/html
 alternative_order text/plain text/html
 set editor="vim +startinsert +':set textwidth=70'"
@@ -53,13 +50,14 @@ set pipe_decode
 set thorough_search
 set smart_wrap=yes
 set status_on_top = yes
+folder-hook . "exec collapse-all" # Collapse threads on start-up similar to Gmail
 
-# Status Bar View -----------------------------------------
+# Status Bar View
 set status_chars  = " *%A"
 set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
 unset mark_old
 
-# Index View Options ---------------------------------
+# Index View
 set include
 set sort = 'reverse-threads'
 set sort_aux = 'last-date-received'
@@ -72,39 +70,32 @@ set uncollapse_jump = yes
 set index_format="%4C %Z %{%b %d} %-15.15n (%4l) %s"
 set date_format = "%m/%d"
 
-# Key bindings -----------------------------
-
+# Key bindings
 bind index - collapse-thread
 bind index _ collapse-all
-
 bind compose p postpone-message
 bind index p recall-message
-
 bind index gg first-entry
 bind index G last-entry
 bind index <tab>    sync-mailbox
 bind index <space>  collapse-thread
-
-macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
-
-macro attach s '<save-entry><bol>/tmp/<eol>'
-macro attach S '<save-entry><bol>/home/user/Downloads/<eol>'
-
 bind attach <return> view-mailcap
-
 bind editor <space> noop
-
 bind index y noop
 
+macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
+macro attach s '<save-entry><bol>/tmp/<eol>'
+macro attach S '<save-entry><bol>/home/user/Downloads/<eol>'
 macro pager \Cu "|urlview<enter>" "call urlview to open links"
-#macro index,pager d "<save-message>=[Gmail]/Trash<enter>" "Trash"
 macro index,pager y "<save-message>=[Gmail]/All Mail<enter>" "Archive"
 macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
 macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
 macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to starred messages"
+
+# My own special folders
 macro index gg '<change-folder>=git<enter>'
 
-# Side bar ----------------------------
+# Side bar
 set sidebar_visible = no
 bind index,pager \Cp sidebar-prev 
 bind index,pager \Cn sidebar-next 
@@ -112,7 +103,7 @@ bind index,pager \Co sidebar-open
 macro index,pager b '<enter-command>toggle sidebar_visible<enter>' 
 color sidebar_new yellow default
 
-# GPG -------------------------------
+# GPG
 bind compose p pgp-menu
 set pgp_good_sign="^gpg: Good signature from"
 set pgp_use_gpg_agent = yes
@@ -123,7 +114,7 @@ set pgp_sign_as = 9B3B446C
 unset smime_is_default
 
 
-# Colours ------------------------------
+# Colours
 
 # general-doesn't-fit stuff
 color normal     color188 color237
@@ -140,6 +131,7 @@ color index      color188 color237 ~N
 color index      color188 color237 ~O
 color index      color174 color237 ~F
 color index      color174 color237 ~D
+
 # header stuff
 color hdrdefault color223 color237
 color header     color223 color237 "^Subject"
@@ -177,3 +169,8 @@ color quoted6    color108 color237
 color quoted7    color116 color237
 color quoted8    color247 color237
 color quoted9    color108 color237
+
+# thread stuff
+color index yellow  default "~v~(!~N)~(!~F)" # collapsed thread with no New or Flagged
+color index red     default "~v~(~F)~(!~N)"  # collapsed thread with Flagged but no New
+color index green   default "~v~(~N)"        # collapsed thread with New

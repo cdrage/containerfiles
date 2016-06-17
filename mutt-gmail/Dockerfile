@@ -42,10 +42,10 @@ COPY  .mutt     $HOME/.mutt
 COPY  .msmtprc     $HOME/.msmtprc
 
 # vim settings
-RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && \
-    cp ~/.vim/.vimrc ~/ && \
-    vim +PluginInstall +qall
+#RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
+#    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && \
+#    cp ~/.vim/.vimrc ~/ && \
+#    vim +PluginInstall +qall
 
 USER root
 RUN chown user:user /home/user/.msmtprc
