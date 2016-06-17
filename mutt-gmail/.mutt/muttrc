@@ -50,7 +50,7 @@ set pipe_decode
 set thorough_search
 set smart_wrap=yes
 set status_on_top = yes
-folder-hook . "exec collapse-all" # Collapse threads on start-up similar to Gmail
+folder-hook . "push <collapse-all>\n" # Collapse on startup
 
 # Status Bar View
 set status_chars  = " *%A"
@@ -62,7 +62,6 @@ set include
 set sort = 'reverse-threads'
 set sort_aux = 'last-date-received'
 set strict_threads = yes
-unset collapse_unread
 set wrap_search = yes
 set mark_old = no
 set collapse_unread = no
