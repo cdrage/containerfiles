@@ -89,6 +89,10 @@ List of recommended containers: [INDEX](INDEX.md)
     cdrage/mutt
  copy over files
  vim settings
+RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && \
+    cp ~/.vim/.vimrc ~/ && \
+    vim +PluginInstall +qall
 
 ```
 ### ./netflix-dnsmasq
