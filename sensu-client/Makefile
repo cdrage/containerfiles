@@ -1,20 +1,20 @@
-SSL ?= $(shell bash -c 'read -p "Folder containing key.pem + cert.pem: " input; echo $$input')
-KEY_SSL ?= $(SSL)
-CLIENT_ADDRESS ?= $(shell bash -c 'read -p "Client IP Address: " input; echo $$input')
-CLIENT_NAME ?= $(shell bash -c 'read -p "Client Name: " input; echo $$input')
-SUB ?= $(shell bash -c 'read -p "Subscriptions? (comma separated): " input; echo $$input')
-RABBIT_HOST ?= $(shell bash -c 'read -p "RabbitMQ host: " input; echo $$input')
-RABBIT_USERNAME ?= $(shell bash -c 'read -p "RabbitMQ username: " input; echo $$input')
-RABBIT_PASS ?= $(shell bash -c 'read -p "RabbitMQ password: " input; echo $$input')
+SSL ?= /etc/sensu/ssl
+IP ?= 1.1.1.1
+NAME ?= sensu
+SUB ?= default
+RABBIT_HOST ?= 1.1.1.1
+RABBIT_PORT ?= 5671
+RABBIT_USERNAME ?= sensu
+RABBIT_PASS ?= sensu
 
 all:
 	docker run \
 	  -v $(SSL)/cert.pem:/etc/sensu/ssl/cert.pem \
 	  -v $(SSL)/key.pem:/etc/sensu/ssl/key.pem \
-		-e CLIENT_NAME=$(CLIENT_NAME) \
-		-e CLIENT_ADDRESS=$(CLIENT_ADDRESS) \
+		-e CLIENT_NAME=$(NAME) \
+		-e IP=$(IP) \
 		-e RABBITMQ_HOST=$(RABBIT_HOST) \
-		-e RABBITMQ_PORT=5671 \
+		-e RABBITMQ_PORT=$(RABBIT_PORT) \
 		-e RABBITMQ_USER=$(RABBIT_USERNAME) \
 		-e RABBITMQ_PASS=$(RABBIT_PASS)\
 		-e SUB=$(SUB) \

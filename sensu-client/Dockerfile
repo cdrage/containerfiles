@@ -9,9 +9,9 @@
 # You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 #
 # docker run \
-#  -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
-#  -v ~/key.pem:/etc/sensu/ssl/key.pem \
-#  -v ~/plugins:/etc/sensu/plugins \
+#  -v /etc/sensu/ssl/cert.pem:/etc/sensu/ssl/cert.pem \
+#  -v /etc/sensu/ssl/key.pem:/etc/sensu/ssl/key.pem \
+#  -v /etc/sensu/plugins:/etc/sensu/plugins \
 #  -e CLIENT_NAME=sensu-client \
 #  -e CLIENT_ADDRESS=10.0.0.1 \
 #  -e RABBITMQ_HOST=rabbitmq.local \
@@ -22,7 +22,9 @@
 #  -e SUB=metrics,check \
 #  sensu-client
 #
-# or use the Makefile provided :)
+# or use the Makefile provided.
+# ex.
+# make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
 
 FROM debian:jessie
 
@@ -44,9 +46,9 @@ RUN \
   && apt-get install -y sensu \
   && gem install sensu-plugin redis --no-rdoc --no-ri
 
-# Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
-#RUN \
-#  gem install docker docker-api --no-rdoc --no-ri
+#! Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
+#! RUN \
+#!  gem install docker docker-api --no-rdoc --no-ri
 
 ADD run.sh /tmp/run.sh
 EXPOSE 3030
