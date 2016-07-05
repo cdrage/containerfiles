@@ -1,22 +1,22 @@
 # Run Chrome in a container (thx jess)
 #
-#  docker run -d \
-#    --net=container:vpn \
-#    --memory 3gb \
-#    -v /etc/localtime:/etc/localtime:ro \
-#    -v /tmp/.X11-unix:/tmp/.X11-unix \
-#    -e DISPLAY=unix$DISPLAY \
-#    -v $HOME/.chrome:/data \
-#    -v $HOME/docker_files/chrome_downloads:/root/Downloads \
-#    -v /dev/shm:/dev/shm \
-#    --device /dev/dri \
-#    --name chrome \
-#    $USER/chrome --no-sandbox --user-data-dir=/data --test-type
+# Note: Disabled sandbox due to running-in-a-container issue with userns 
+# enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 #
-#    no sandbox due to issue atm
+# docker run -d \
+#   --memory 3gb \
+#   -v /etc/localtime:/etc/localtime:ro \
+#   -v /tmp/.X11-unix:/tmp/.X11-unix \
+#   -e DISPLAY=unix$DISPLAY \
+#   -v $HOME/.chrome:/data \
+#   -v $HOME/docker_files/chrome_downloads:/root/Downloads \
+#   -v /dev/shm:/dev/shm \
+#   --device /dev/dri \
+#   --name chrome \
+#   $USER/chrome
 
 FROM debian:sid
-MAINTAINER Jessica Frazelle <jess@docker.com>
+MAINTAINER Charlie Drage <charlie@charliedrage.com>
 
 ADD https://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb /src/google-talkplugin_current_amd64.deb
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /src/google-chrome-stable_current_amd64.deb
@@ -58,4 +58,4 @@ RUN mkdir -p /usr/share/icons/hicolor && \
 COPY local.conf /etc/fonts/local.conf
 
 ENTRYPOINT [ "google-chrome" ]
-CMD [ "--user-data-dir=/data" ]
+CMD [ "--user-data-dir=/data", "--no-sandbox", "--test-type" ]
