@@ -1,6 +1,8 @@
 # Couch Potato is a torrent grepper / downloader
 #
-# docker run -d -p 5050:5050 --name couchpotato couchpotato
+# docker run -d -p 5050:5050 --name couchpotato couchpotato 
+# 
+# pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 
 FROM debian:jessie
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
