@@ -1,11 +1,7 @@
 #!/bin/bash
 # ./readme.sh > README.md
 
-echo ""
-echo "# Dockerfiles"
-echo "README.md is auto-generated from Dockerfile comments"
-echo ""
-echo "List of recommended containers: [INDEX](INDEX.md)"
+cat INTRO.md
 
 for D in `find . -type d | sort`
 do

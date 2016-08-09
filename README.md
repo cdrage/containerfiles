@@ -1,27 +1,32 @@
-
 # Dockerfiles
-README.md is auto-generated from Dockerfile comments
+Welcome! This is a list of Dockerfiles that I use. Some are ones that I have created, other's have been modified for my usage.
 
-List of recommended containers: [INDEX](INDEX.md)
+Each container is automatically built and pushed to [https://hub.docker.com/r/cdrage/](https://hub.docker.com/r/cdrage/) upon each commit.
+
+Otherwise, you may also `git clone https://github.com/cdrage/dockerfiles` and build it yourself.
+
+Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Dockerfile`.
+
+
 ### ./chrome
 
 ```
  Run Chrome in a container (thx jess)
 
-  docker run -d \
-    --net=container:vpn \
-    --memory 3gb \
-    -v /etc/localtime:/etc/localtime:ro \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e DISPLAY=unix$DISPLAY \
-    -v $HOME/.chrome:/data \
-    -v $HOME/docker_files/chrome_downloads:/root/Downloads \
-    -v /dev/shm:/dev/shm \
-    --device /dev/dri \
-    --name chrome \
-    $USER/chrome --no-sandbox --user-data-dir=/data --test-type
+ Note: Disabled sandbox due to running-in-a-container issue with userns 
+ enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 
-    no sandbox due to issue atm
+ docker run -d \
+   --memory 3gb \
+   -v /etc/localtime:/etc/localtime:ro \
+   -v /tmp/.X11-unix:/tmp/.X11-unix \
+   -e DISPLAY=unix$DISPLAY \
+   -v $HOME/.chrome:/data \
+   -v $HOME/docker_files/chrome_downloads:/root/Downloads \
+   -v /dev/shm:/dev/shm \
+   --device /dev/dri \
+   --name chrome \
+   $USER/chrome
 
 ```
 ### ./couchpotato
@@ -29,7 +34,9 @@ List of recommended containers: [INDEX](INDEX.md)
 ```
  Couch Potato is a torrent grepper / downloader
 
- docker run -d -p 5050:5050 --name couchpotato couchpotato
+ docker run -d -p 5050:5050 --name couchpotato couchpotato 
+ 
+ pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 
 ```
 ### ./jrl
@@ -200,6 +207,14 @@ RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
  Then open up VLC and use localhost:8888 to view
 
 ```
+### ./powerdns
+
+```
+## PDNS ###
+## PHP/Nginx ###
+## SUPERVISOR ###
+
+```
 ### ./sensu-client
 
 ```
@@ -214,9 +229,9 @@ RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
  You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 
  docker run \
-  -v ~/cert.pem:/etc/sensu/ssl/cert.pem \
-  -v ~/key.pem:/etc/sensu/ssl/key.pem \
-  -v ~/plugins:/etc/sensu/plugins \
+  -v /etc/sensu/ssl/cert.pem:/etc/sensu/ssl/cert.pem \
+  -v /etc/sensu/ssl/key.pem:/etc/sensu/ssl/key.pem \
+  -v /etc/sensu/plugins:/etc/sensu/plugins \
   -e CLIENT_NAME=sensu-client \
   -e CLIENT_ADDRESS=10.0.0.1 \
   -e RABBITMQ_HOST=rabbitmq.local \
@@ -227,10 +242,9 @@ RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
   -e SUB=metrics,check \
   sensu-client
 
- or use the Makefile provided :)
- Install misc packages (in my case, checking the docker port, thus needing docker + docker-api :)
-RUN \
-  gem install docker docker-api --no-rdoc --no-ri
+ or use the Makefile provided.
+ ex.
+ make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
 
 ```
 ### ./ssh
