@@ -93,13 +93,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
     -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
     -v /etc/localtime:/etc/localtime:ro \
-    cdrage/mutt
- copy over files
- vim settings
-RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && \
-    cp ~/.vim/.vimrc ~/ && \
-    vim +PluginInstall +qall
+    cdrage/mutt-gmail
 
 ```
 ### ./netflix-dnsmasq
@@ -210,9 +204,6 @@ RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
 ### ./powerdns
 
 ```
-## PDNS ###
-## PHP/Nginx ###
-## SUPERVISOR ###
 
 ```
 ### ./sensu-client

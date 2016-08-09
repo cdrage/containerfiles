@@ -10,7 +10,7 @@
 #    -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
 #    -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
 #    -v /etc/localtime:/etc/localtime:ro \
-#    cdrage/mutt
+#    cdrage/mutt-gmail
 
 FROM debian:stable
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
@@ -36,16 +36,10 @@ ENV TERM screen-256color
 RUN mkdir -p $HOME/.mutt/cache/headers $HOME/.mutt/cache/bodies && touch $HOME/.mutt/certificates
 ENV LANG C.UTF-8
 
-# copy over files
+#! copy over files
 COPY  entrypoint.sh /entrypoint.sh
 COPY  .mutt     $HOME/.mutt
 COPY  .msmtprc     $HOME/.msmtprc
-
-# vim settings
-#RUN git clone git://github.com/cdrage/vim.git ~/.vim && \
-#    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && \
-#    cp ~/.vim/.vimrc ~/ && \
-#    vim +PluginInstall +qall
 
 USER root
 RUN chown user:user /home/user/.msmtprc

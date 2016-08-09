@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-### PDNS ###
+#!## PDNS ###
 RUN cd /tmp && wget https://downloads.powerdns.com/releases/deb/pdns-static_${VERSION}_amd64.deb && dpkg -i pdns-static_${VERSION}_amd64.deb && rm pdns-static_${VERSION}_amd64.deb
 RUN useradd --system pdns
 
@@ -30,7 +30,7 @@ COPY assets/pdns/pdns.conf /etc/powerdns/pdns.conf
 COPY assets/pdns/pdns.d/ /etc/powerdns/pdns.d/
 COPY assets/mysql/pdns.sql /pdns.sql
 
-### PHP/Nginx ###
+#!## PHP/Nginx ###
 RUN rm /etc/nginx/sites-enabled/default
 RUN php5enmod mcrypt
 RUN mkdir -p /var/www/html/ \
@@ -43,7 +43,7 @@ COPY assets/poweradmin/config.inc.php /var/www/html/inc/config.inc.php
 COPY assets/mysql/poweradmin.sql /poweradmin.sql
 RUN chown -R www-data:www-data /var/www/html/
 
-### SUPERVISOR ###
+#!## SUPERVISOR ###
 COPY assets/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /start.sh
 
