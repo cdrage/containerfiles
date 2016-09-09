@@ -300,13 +300,3 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker attach weechat
 
 ```
-### ./wifikill
-
-```
- DISCLAIMER: Only use this on YOUR OWN network. This script is not responsible for any damages it causes.
- This uses ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing by sending a fake MAC address to the victim believing it to be the gateway. Thus kicking everyone else off.
- 
- To use:
- docker run --rm -it --net=host --cap-add=NET_ADMIN wifikill 
-
-```
