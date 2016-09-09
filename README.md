@@ -190,6 +190,14 @@ Below is a general overview (with instructions) on each Docker container I use. 
  Download the configuration for your client to use:
  wget https://IP:8080/ --no-check-certificate -O config.ovpn
 
+ NOTE:
+ The keys are generate on EACH reboot and the private key is used in both the server
+ and the client for simplicity reasons. If someone obtains your client information, they will be able 
+ to access the server and perhaps spoof a session. It's recommended that you find an alternative way
+ of deploying a VPN server if you are keen to have 100% security.
+
+ If you wish to re-generate the certificates, simply restart your Docker container.
+
 ```
 ### ./peerflix
 
