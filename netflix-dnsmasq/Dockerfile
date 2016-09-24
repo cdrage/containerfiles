@@ -2,7 +2,7 @@
 # spoof the location when accessing Netflix. Similar to how a
 # VPN does it, but this is with DNS.
 #
-# docker run -p 53:53/udp -e IP=10.10.10.1 -d dnsmasq --name dnsmasq
+# docker run -p 53:53/udp -e IP=10.10.10.1 -d cdrage/dnsmasq --name dnsmasq
 # IP is the IP of the sniproxy / haproxy server
 # if you're running it on the same host, it's your ip (eth0 or whatever).
 #

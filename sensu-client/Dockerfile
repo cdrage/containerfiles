@@ -20,7 +20,7 @@
 #  -e RABBITMQ_USER=sensu \
 #  -e RABBITMQ_PASS=sensu \
 #  -e SUB=metrics,check \
-#  sensu-client
+#  cdrage/sensu-client
 #
 # or use the Makefile provided.
 # ex.

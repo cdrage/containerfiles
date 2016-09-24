@@ -1,6 +1,6 @@
 # OpenVPN within an Ubuntu container
 #
-# docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it openvpn
+# docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it cdrage/openvpn-client-docker
 # 
 # then from another container just use --net=container:openvpn
 # 

@@ -26,7 +26,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -v /dev/shm:/dev/shm \
    --device /dev/dri \
    --name chrome \
-   $USER/chrome
+   cdrage/chrome
 
 ```
 ### ./couchpotato
@@ -34,7 +34,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ```
  Couch Potato is a torrent grepper / downloader
 
- docker run -d -p 5050:5050 --name couchpotato couchpotato 
+ docker run -d -p 5050:5050 --name couchpotato cdrage/couchpotato 
  
  pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 
@@ -56,7 +56,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
  Now run it!
 
- docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro $USER/jrl
+ docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro cdrage/jrl
 
 ```
 ### ./mosh
@@ -103,7 +103,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  spoof the location when accessing Netflix. Similar to how a
  VPN does it, but this is with DNS.
 
- docker run -p 53:53/udp -e IP=10.10.10.1 -d dnsmasq --name dnsmasq
+ docker run -p 53:53/udp -e IP=10.10.10.1 -d cdrage/dnsmasq --name dnsmasq
  IP is the IP of the sniproxy / haproxy server
  if you're running it on the same host, it's your ip (eth0 or whatever).
 
@@ -119,32 +119,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
  with netflix-dnsmasq :)
  fork of: https://github.com/trick77/dockerflix
 
- docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
+ docker run -d -p 80:80 -p 443:443 --name sniproxy cdrage/sniproxy
 
  build Dockerfile.uk for uk version
-
-```
-### ./nomad
-
-```
- Nomad from Hashicorp. github.com/hashicorp/nomad
-
- To build the Nomad binary:
- git clone https://github.com/hashicorp/nomad
- cd nomad && make bin
-
- To use:
- docker run \
- --net=host \
- -v /run/docker.sock:/run/docker.sock \
- --name nomad \
- -p 4646:4646 \
- -p 4647:4647 \
- -p 4648:4648 \
- nomad agent -dev -network-interface YOURINTERFACE(eth0 probably)
-
- Now simply bash into it. Run ./nomad init && ./nomad run example.nomad
- and you'll see a redis container spring up on your host :)
 
 ```
 ### ./openvpn-client
@@ -155,7 +132,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker run -it 
  -v /filesblahblah/hacktheplanet.ovpn:/etc/openvpn/hacktheplanet.ovpn \
  --net=host --device /dev/net/tun:/dev/net/tun --cap-add=NET_ADMIN \
- openvpn-client hacktheplanet.ovpn
+ cdrage/openvpn-client hacktheplanet.ovpn
 
  go check your public ip online and you'll see you're connected to the VPN :)
 
@@ -165,7 +142,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ```
  OpenVPN within an Ubuntu container
 
- docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it openvpn
+ docker run --cap-add=NET_ADMIN --device /dev/net/tun -h openvpn --name openvpn -it cdrage/openvpn-client-docker
  
  then from another container just use --net=container:openvpn
  
@@ -182,10 +159,10 @@ Below is a general overview (with instructions) on each Docker container I use. 
  original: https://github.com/jpetazzo/dockvpn
  
  Start the openvpn server:
- docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp --name vpn $USER/openvpn
+ docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp --name vpn cdrage/openvpn-server
 
  Create a http server to termporarily download the configuration:
- docker run --rm -ti -p 8080:8080 --volumes-from vpn $USER/openvpn serveconfig
+ docker run --rm -ti -p 8080:8080 --volumes-from vpn cdrage/openvpn-server serveconfig
 
  Download the configuration for your client to use:
  wget https://IP:8080/ --no-check-certificate -O config.ovpn
@@ -239,7 +216,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
   -e RABBITMQ_USER=sensu \
   -e RABBITMQ_PASS=sensu \
   -e SUB=metrics,check \
-  sensu-client
+  cdrage/sensu-client
 
  or use the Makefile provided.
  ex.
@@ -273,7 +250,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ```
  source: https://github.com/dperson/transmission
 
- docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d transmission
+ docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d cdrage/transmission
 
  ENVIRO VARIABLES
  TRUSER - set username for transmission auth

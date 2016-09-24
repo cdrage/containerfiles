@@ -2,7 +2,7 @@
 # with netflix-dnsmasq :)
 # fork of: https://github.com/trick77/dockerflix
 #
-# docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
+# docker run -d -p 80:80 -p 443:443 --name sniproxy cdrage/sniproxy
 #
 # build Dockerfile.uk for uk version
 

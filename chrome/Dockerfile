@@ -13,7 +13,7 @@
 #   -v /dev/shm:/dev/shm \
 #   --device /dev/dri \
 #   --name chrome \
-#   $USER/chrome
+#   cdrage/chrome
 
 FROM debian:sid
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
