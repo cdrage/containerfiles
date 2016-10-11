@@ -6,6 +6,7 @@ sed -i "s,%MUTT_LOGIN%,$MUTT_EMAIL,g" "$HOME/.mutt/muttrc"
 sed -i "s,%MUTT_NAME%,$MUTT_NAME,g" "$HOME/.mutt/muttrc"
 sed -i "s,%MUTT_PASS%,$MUTT_PASS,g" "$HOME/.mutt/muttrc"
 sed -i "s,%MUTT_FROM%,$MUTT_EMAIL,g" "$HOME/.mutt/muttrc"
+sed -i "s,%MUTT_PGP_KEY%,$MUTT_PGP_KEY,g" "$HOME/.mutt/muttrc"
 
 # sending mail
 sed -i "s,%MUTT%,$MUTT_EMAIL,g" "$HOME/.msmtprc"

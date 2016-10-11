@@ -109,7 +109,7 @@ set pgp_use_gpg_agent = yes
 set crypt_replysign= yes
 set crypt_replysignencrypted= yes
 set pgp_auto_decode= yes
-set pgp_sign_as = 9B3B446C
+set pgp_sign_as = %MUTT_PGP_KEY%
 unset smime_is_default
 
 
