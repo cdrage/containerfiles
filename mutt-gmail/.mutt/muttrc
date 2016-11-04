@@ -95,7 +95,7 @@ macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to starred message
 macro index gg '<change-folder>=git<enter>'
 
 # Side bar
-set sidebar_visible = no
+set sidebar_visible = yes
 bind index,pager \Cp sidebar-prev 
 bind index,pager \Cn sidebar-next 
 bind index,pager \Co sidebar-open 
