@@ -89,6 +89,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -e MUTT_NAME \
     -e MUTT_EMAIL \
     -e MUTT_PASS \
+    -e MUTT_PGP_KEY \
     -v $HOME/.gnupg:/home/user/.gnupg \
     -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
     -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
