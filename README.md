@@ -59,6 +59,34 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro cdrage/jrl
 
 ```
+### ./moodle
+
+```
+  source: https://github.com/playlyfe/docker-moodle
+
+  First, grab moodle and extract.
+  wget https://github.com/moodle/moodle/archive/v3.0.0.tar.gz
+  tar -xvf v3.0.0.tar.gz
+  mkdir /var/www
+  mv moodle-3.0.0 /var/www/html
+  
+  Now let's build the docker container
+  docker build -t moodle .
+  docker run -d --name moodle -p 80:80 -p 443:443 -p 3306:3306 -v /var/www/html:/var/www/html moodle
+
+  Permission dat shit
+  chmod -R 777 /var/www/html
+
+  Head over to localhost:80 and proceed through the installation (remember to create the config.php file too during install!)
+
+  MySQL username: moodleuser
+  password: moodle
+
+  All other values default :)
+
+  TODO: SSL stuffs
+
+```
 ### ./mosh
 
 ```
