@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
   ca-certificates \
   git \
   lynx \
+  elinks \
   mutt-patched \
   vim \
   msmtp \
