@@ -59,6 +59,20 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro cdrage/jrl
 
 ```
+### ./mattermost-desktop
+
+```
+ Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
+
+ docker run \
+    -d \
+    -e DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v $HOME/.config/Mattermost:/home/user/.config/Mattermost \
+    --name mattermost-desktop \
+    cdrage/mattermost-desktop
+
+```
 ### ./moodle
 
 ```
