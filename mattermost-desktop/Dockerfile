@@ -11,7 +11,7 @@
 FROM debian:sid
 
 #! Version
-ENV MATTERMOST_VERSION 3.4.1
+ENV MATTERMOST_VERSION 3.5.0
 
 #! Install
 RUN apt update && apt install -y wget libgtk2.0-0 libxtst6 libxss1 libgconf-2-4 libnss3 libasound2
