@@ -18,7 +18,7 @@ RUN apt update && apt install -y wget libgtk2.0-0 libxtst6 libxss1 libgconf-2-4 
 RUN cd /tmp && \
 	wget https://releases.mattermost.com/desktop/$MATTERMOST_VERSION/mattermost-desktop-$MATTERMOST_VERSION-linux-x64.tar.gz && \
 	tar xzvf mattermost-desktop-*.tar.gz && \
-	mv mattermost-desktop-linux-x64/ /usr/lib/mattermost/
+	mv mattermost-desktop-$MATTERMOST_VERSION/ /usr/lib/mattermost/
 
 #! Clean
 RUN apt remove --purge -y wget
@@ -28,4 +28,4 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /tmp/* /var/tmp/*
 
 #! Running
-ENTRYPOINT ["/usr/lib/mattermost/Mattermost"]
+ENTRYPOINT ["/usr/lib/mattermost/mattermost-desktop"]
