@@ -1,3 +1,5 @@
+#  Description:
+#
 #  source: https://github.com/playlyfe/docker-moodle
 #
 #  First, grab moodle and extract.
@@ -6,13 +8,6 @@
 #  mkdir /var/www
 #  mv moodle-3.0.0 /var/www/html
 #  
-#  Now let's build the docker container
-#  docker build -t moodle .
-#  docker run -d --name moodle -p 80:80 -p 443:443 -p 3306:3306 -v /var/www/html:/var/www/html moodle
-#
-#  Permission dat shit
-#  chmod -R 777 /var/www/html
-#
 #  Head over to localhost:80 and proceed through the installation (remember to create the config.php file too during install!)
 #
 #  MySQL username: moodleuser
@@ -21,6 +16,20 @@
 #  All other values default :)
 #
 #  TODO: SSL stuffs
+#
+#  Running:
+#
+#  docker run -d \
+#   -p 80:80 \
+#   -p 443:443 \
+#   -p 3306:3306 \
+#   -v /var/www/html:/var/www/html \
+#   --name moodle \
+#   moodle
+#
+#  Setup permissions once running (with the moodle configuration inside):
+#
+#  chmod -R 777 /var/www/html #yolo
 
 FROM ubuntu:trusty
 MAINTAINER Peter John <peter@playlyfe.com>

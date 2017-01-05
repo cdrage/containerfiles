@@ -1,3 +1,5 @@
+# Description:
+#
 # Encrypted journal (for writing your life entries!, not logs!)
 # 
 # Pass in your encrypted txt file and type in your password.
@@ -12,7 +14,12 @@
 # 
 # Now run it!
 #
-# docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro cdrage/jrl
+# Running:
+#
+# docker run -it --rm \
+#   -v ~/txt.enc:/tmp/txt.enc \
+#   -v /etc/localtime:/etc/localtime:ro \
+#   cdrage/jrl
 
 FROM debian:sid
 

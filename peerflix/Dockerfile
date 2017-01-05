@@ -1,4 +1,8 @@
+# Description:
+#
 # Stream from a magnet torrent
+# 
+# Running:
 #
 # docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
 #

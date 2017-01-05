@@ -1,7 +1,12 @@
+# Description:
+#
 # My mutt configuration in a docker container
 #
 # Special thanks to jfrazelle for this config
-#  docker run -it --rm \
+#
+# Running:
+#
+# docker run -it --rm \
 #    -e TERM=xterm-256color \
 #    -e MUTT_NAME \
 #    -e MUTT_EMAIL \

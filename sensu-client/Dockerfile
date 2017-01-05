@@ -1,3 +1,5 @@
+# Description:
+#
 # Original Source: https://github.com/arypurnomoz/sensu-client.docker
 #
 # This container allows you to run sensu in a container (yay) although there are some caveats.
@@ -7,6 +9,9 @@
 # In my example, I use the docker-api and docker folder since I'll be mounting a -v /checks folder containing a few plugins. This is all optional and you may modify it to your own will.
 #
 # You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
+#
+#
+# Running:
 #
 # docker run \
 #  -v /etc/sensu/ssl/cert.pem:/etc/sensu/ssl/cert.pem \

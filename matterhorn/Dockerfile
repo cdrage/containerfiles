@@ -1,8 +1,12 @@
+# Description:
+#
 # A terminal interface for Mattermost via the client Matterhorn
 # https://github.com/matterhorn-chat/matterhorn
 #
 # To run, simply supply a username, hostname and (additionally) a port number.
 # For example:
+# 
+# Running:
 #
 # docker run -it --rm \
 #  -e MM_USER=foobar@domain.com \

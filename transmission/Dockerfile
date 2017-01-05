@@ -1,11 +1,22 @@
-# source: https://github.com/dperson/transmission
+# Description:
 #
-# docker run --name transmission -p 9091:9091 -v /path/to/directory:/var/lib/transmission-daemon/downloads -e TRUSER=admin -e TRPASSWD=admin -d cdrage/transmission
+# source: https://github.com/dperson/transmission
 #
 # ENVIRO VARIABLES
 # TRUSER - set username for transmission auth
 # TRPASSWD - set password for transmission auth
 # TIMEZONE - set zoneinfo timezone
+#
+# Running:
+#
+# docker run \
+#   --name transmission \
+#   -p 9091:9091 \
+#   -v /path/to/directory:/var/lib/transmission-daemon/downloads \
+#   -e TRUSER=admin \
+#   -e TRPASSWD=admin \
+#   -d \
+#   cdrage/transmission
 
 FROM debian:jessie
 MAINTAINER Charlie Drage <charlie@charliedrage.com>
