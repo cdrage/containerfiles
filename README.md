@@ -59,6 +59,23 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker run -it --rm -v ~/txt.enc:/tmp/txt.enc -v /etc/localtime:/etc/localtime:ro cdrage/jrl
 
 ```
+### ./matterhorn
+
+```
+ A terminal interface for Mattermost via the client Matterhorn
+ https://github.com/matterhorn-chat/matterhorn
+
+ To run, simply supply a username, hostname and (additionally) a port number.
+ For example:
+
+ docker run -it --rm \
+  -e MM_USER=foobar@domain.com \
+  -e MM_HOST=gitlab.mattermost.com \
+  -e MM_PORT=443 \
+  --name matterhorn \
+  cdrage/matterhorn
+
+```
 ### ./mattermost-desktop
 
 ```
