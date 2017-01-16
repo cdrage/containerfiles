@@ -21,7 +21,7 @@
 #   -v /etc/localtime:/etc/localtime:ro \
 #   cdrage/jrl
 
-FROM debian:sid
+FROM debian:stable
 
 RUN apt-get update && apt-get install openssl vim locales -y
 
