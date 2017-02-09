@@ -23,7 +23,7 @@ set mail_check = 60
 set timeout = 300
 set imap_keepalive = 300
 unset imap_passive
-set record = ""
+set record = "+[Gmail]/Sent Mail"
 
 # Normal stuff
 auto_view text/html
