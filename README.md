@@ -91,6 +91,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  docker run -it --rm \
   -e MM_USER=foobar@domain.com \
+  -e MM_PASS=foobar \
   -e MM_HOST=gitlab.mattermost.com \
   -e MM_PORT=443 \
   --name matterhorn \
