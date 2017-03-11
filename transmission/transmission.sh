@@ -94,7 +94,7 @@ else
     sed -i '/"speed-limit-up"/s/:.*/: 10,/' $dir/info/settings.json
     sed -i '/"speed-limit-up-enabled"/s/:.*/: true,/' $dir/info/settings.json
     exec su -l debian-transmission -s /bin/bash -c "exec transmission-daemon \
-                --config-dir $dir/info --blocklist --encryption-preferred \
+                --config-dir $dir/info --blocklist --encryption-required \
                 --log-error -e /dev/stdout --global-seedratio 2.0 --dht \
                 --incomplete-dir $dir/incomplete --auth --foreground \
                 --username '${TRUSER:-admin}' --password '${TRPASSWD:-admin}' \
