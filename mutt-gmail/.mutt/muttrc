@@ -50,7 +50,7 @@ set pipe_decode
 set thorough_search
 set smart_wrap=yes
 set status_on_top = yes
-folder-hook . "push <collapse-all>\n" # Collapse on startup
+folder-hook . "exec collapse-all" # Collapse threads on startup
 
 # Status Bar View
 set status_chars  = " *%A"
