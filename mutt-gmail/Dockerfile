@@ -55,4 +55,4 @@ RUN chmod 600 $HOME/.msmtprc
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["mutt-patched", "-F", "~/.mutt/muttrc"]
+CMD mutt-patched -F ~/.mutt/muttrc
