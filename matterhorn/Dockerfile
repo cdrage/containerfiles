@@ -42,6 +42,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 #! Default environment variables
 ENV MM_PORT=443
 
-
 #! Run it!
 CMD ["./matterhorn/dist/build/matterhorn/matterhorn", "-c", "/config.ini"]
