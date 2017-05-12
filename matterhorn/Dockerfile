@@ -21,7 +21,7 @@ FROM debian:testing
 #! Add Haskell
 RUN apt-get update && apt-get install haskell-platform -y
 
-#! Download and install the latest matterhorn + mattermost-api
+#! Download and install the latest matterhorn + mattermost-api :)
 RUN apt-get install git -y && \
       git clone https://github.com/matterhorn-chat/mattermost-api && \
       git clone https://github.com/matterhorn-chat/matterhorn
