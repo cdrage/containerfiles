@@ -16,23 +16,17 @@
 #  --name matterhorn \
 #  cdrage/matterhorn
 
-FROM debian:testing
+FROM debian:sid
 
-#! Add Haskell
-RUN apt-get update && apt-get install haskell-platform -y
+#! Dependencies
+RUN apt-get update && apt-get install tar wget libtinfo-dev ncurses-bin bzip2 -y
 
-#! Download and install the latest matterhorn + mattermost-api :)
-RUN apt-get install git -y && \
-      git clone https://github.com/matterhorn-chat/mattermost-api && \
-      git clone https://github.com/matterhorn-chat/matterhorn
+#! Why they use libtinfoso.6 I do not know, so let's fake it till we make it
+RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so.6
 
-#! Build the binary (this will take a while)
-RUN cd matterhorn && \
-      cabal update && \
-      cabal sandbox init && \
-      cabal sandbox add-source ../mattermost-api && \
-      cabal install --force-reinstalls && \
-      cabal build
+#! Use 3.8
+RUN wget https://github.com/matterhorn-chat/matterhorn/releases/download/30802.0.0/matterhorn-30802.0.0-Linux-x86_64.tar.gz && \
+      tar xf matterhorn-30802.0.0-Linux-x86_64.tar.gz --strip 1
 
 #! Copy over the entrypoint config generation script + config.ini
 COPY entrypoint.sh /entrypoint.sh
@@ -43,4 +37,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 ENV MM_PORT=443
 
 #! Run it!
-CMD ["./matterhorn/dist/build/matterhorn/matterhorn", "-c", "/config.ini"]
+CMD ["./matterhorn", "-c", "/config.ini"]
