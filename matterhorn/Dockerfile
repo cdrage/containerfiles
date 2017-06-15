@@ -25,8 +25,10 @@ RUN apt-get update && apt-get install tar wget libtinfo-dev ncurses-bin bzip2 -y
 RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so.6
 
 #! Use 3.8
-RUN wget https://github.com/matterhorn-chat/matterhorn/releases/download/30802.0.0/matterhorn-30802.0.0-Linux-x86_64.tar.gz && \
-      tar xf matterhorn-30802.0.0-Linux-x86_64.tar.gz --strip 1
+ENV RELEASE="https://github.com/matterhorn-chat/matterhorn/releases/download/30802.1.0/matterhorn-30802.1.0-Linux-x86_64.tar.gz"
+
+RUN wget $RELEASE && \
+      tar xf matterhorn*.tar.gz --strip 1
 
 #! Copy over the entrypoint config generation script + config.ini
 COPY entrypoint.sh /entrypoint.sh
