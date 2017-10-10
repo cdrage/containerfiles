@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # Weechat IRC!
 #
@@ -8,7 +8,7 @@
 #
 # run then docker attach weechat
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run -it -d \

@@ -1,4 +1,4 @@
-# Description:
+# **Description:**
 #
 # OpenVPN within an Ubuntu container
 #
@@ -12,8 +12,9 @@
 #
 #  to your openvpn conf file!
 #
-# Running:
+# **Running:**
 #
+# ```sh
 # docker run \
 #   --cap-add=NET_ADMIN \
 #   --device /dev/net/tun \
@@ -21,6 +22,7 @@
 #   --name openvpn \
 #   -it \
 #   cdrage/openvpn-client-docker
+#   ```
 
 FROM ubuntu:14.04
 

@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # Original Source: https://github.com/arypurnomoz/sensu-client.docker
 #
@@ -11,7 +11,7 @@
 # You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 #
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run \

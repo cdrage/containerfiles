@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # Encrypted journal (for writing your life entries!, not logs!)
 #
@@ -20,7 +20,7 @@
 # 
 # Now run it!
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run -it --rm \

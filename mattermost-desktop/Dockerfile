@@ -1,8 +1,8 @@
-# *Description:*
+# **Description:**
 #
 # Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run \

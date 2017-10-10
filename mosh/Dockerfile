@@ -1,7 +1,7 @@
-# *Description:*
+# **Description:**
 # Mosh = SSH + mobile connection
 #
-# *Running:*
+# **Running:**
 #
 # To normally use it:
 # ```sh

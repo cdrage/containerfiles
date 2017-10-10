@@ -1,9 +1,9 @@
-# *Description:*
+# **Description:**
 #
 # Couch Potato is a torrent grepper / downloader
 # Pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run -d \

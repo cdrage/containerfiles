@@ -1,4 +1,4 @@
-#  *Description:*
+#  **Description:**
 #
 #  source: https://github.com/playlyfe/docker-moodle
 #
@@ -17,7 +17,7 @@
 #
 #  TODO: SSL stuffs
 #
-#  *Running:*
+#  **Running:**
 #
 # ```sh
 #  docker run -d \

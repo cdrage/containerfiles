@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # original: https://github.com/jpetazzo/dockvpn
 #
@@ -10,7 +10,7 @@
 #
 # If you wish to re-generate the certificates, simply restart your Docker container.
 #
-# *Running:*
+# **Running:**
 #
 # Start the openvpn server:
 # ```sh

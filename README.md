@@ -1,46 +1,35 @@
 # Dockerfiles
-Welcome! This is a list of Dockerfiles that I use. Some are ones that I have created, other's have been modified for my usage.
+
+                  ##         .
+            ## ## ##        ==
+         ## ## ## ## ##    ===
+     /"""""""""""""""""\___/ ===
+~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
+     \______ o           __/
+       \    \         __/
+        \____\_______/
+
+All the Dockerfiles I use.
 
 Each container is automatically built and pushed to [https://hub.docker.com/r/cdrage/](https://hub.docker.com/r/cdrage/) upon each commit.
 
-Otherwise, you may also `git clone https://github.com/cdrage/dockerfiles` and build it yourself.
+You may also `git clone https://github.com/cdrage/dockerfiles` and build it yourself (`docker build -t username/container .`).
 
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Dockerfile`.
 
-
+Here be dragons (although open up an issue if you see an error!).
 ### chrome
 
- *Description:*
 
- Run Chrome in a container (thx jess)
-
- Note: Disabled sandbox due to running-in-a-container issue with userns 
- enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
-
- *Running:*
-
- ```sh
- docker run -d \
-   --memory 3gb \
-   -v /etc/localtime:/etc/localtime:ro \
-   -v /tmp/.X11-unix:/tmp/.X11-unix \
-   -e DISPLAY=unix$DISPLAY \
-   -v $HOME/.chrome:/data \
-   -v $HOME/docker_files/chrome_downloads:/root/Downloads \
-   -v /dev/shm:/dev/shm \
-   --device /dev/dri \
-   --name chrome \
-   cdrage/chrome
- ```
 
 ### couchpotato
 
- *Description:*
+ **Description:**
 
  Couch Potato is a torrent grepper / downloader
  Pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run -d \
@@ -51,7 +40,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### jrl
 
- *Description:*
+ **Description:**
 
  Encrypted journal (for writing your life entries!, not logs!)
 
@@ -73,7 +62,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
  Now run it!
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it --rm \
@@ -87,7 +76,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### matterhorn
 
- *Description:*
+ **Description:**
 
  A terminal interface for Mattermost via the client Matterhorn
  https://github.com/matterhorn-chat/matterhorn
@@ -95,7 +84,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  To run, simply supply a username, hostname and (additionally) a port number.
  For example:
  
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it --rm \
@@ -109,11 +98,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### mattermost-desktop
 
- *Description:*
+ **Description:**
 
  Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -127,7 +116,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### moodle
 
-  *Description:*
+  **Description:**
 
   source: https://github.com/playlyfe/docker-moodle
 
@@ -146,7 +135,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
   TODO: SSL stuffs
 
-  *Running:*
+  **Running:**
 
  ```sh
   docker run -d \
@@ -164,10 +153,10 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### mosh
 
- *Description:*
+ **Description:**
  Mosh = SSH + mobile connection
 
- *Running:*
+ **Running:**
 
  To normally use it:
  ```sh
@@ -188,13 +177,13 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### mutt-gmail
 
- *Description:*
+ **Description:**
 
  My mutt configuration in a docker container
 
  Special thanks to jfrazelle for this config
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it --rm \
@@ -212,7 +201,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### netflix-dnsmasq
 
- *Description:*
+ **Description:**
 
  This is used to create a DNS cacher/forwarder in order to
  spoof the location when accessing Netflix. Similar to how a
@@ -225,7 +214,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  (prone to DNS DDoS aplification attacks), it's suggested to have some 
  form of IP firewall for this. (hint: just use iptables)
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -238,7 +227,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### netflix-sniproxy
 
- *Description:*
+ **Description:**
 
  DNS proxy (netflix unblocker) open source. Used in conjuction
  with netflix-dnsmasq :)
@@ -246,7 +235,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  build Dockerfile.uk for uk version
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -259,13 +248,13 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### openvpn-client
 
- *Description:*
+ **Description:**
 
  An openvpn-client in an Alpine Linux container
 
  go check your public ip online and you'll see you're connected to the VPN :)
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it 
@@ -276,7 +265,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### openvpn-client-docker
 
- Description:
+ **Description:**
 
  OpenVPN within an Ubuntu container
 
@@ -290,8 +279,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
   to your openvpn conf file!
 
- Running:
+ **Running:**
 
+ ```sh
  docker run \
    --cap-add=NET_ADMIN \
    --device /dev/net/tun \
@@ -299,10 +289,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
    --name openvpn \
    -it \
    cdrage/openvpn-client-docker
+   ```
 
 ### openvpn-server
 
- *Description:*
+ **Description:**
 
  original: https://github.com/jpetazzo/dockvpn
 
@@ -314,7 +305,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  If you wish to re-generate the certificates, simply restart your Docker container.
 
- *Running:*
+ **Running:**
 
  Start the openvpn server:
  ```sh
@@ -333,11 +324,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### peerflix
 
- *Description:*
+ **Description:**
 
  Stream from a magnet torrent
  
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
@@ -350,7 +341,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### sensu-client
 
- *Description:*
+ **Description:**
 
  Original Source: https://github.com/arypurnomoz/sensu-client.docker
 
@@ -363,7 +354,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -387,12 +378,12 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### ssh
 
- *Description:*
+ **Description:**
  SSH in a Docker container :)
 
 ### teamspeak
 
- *Description:*
+ **Description:**
 
  Source: https://github.com/luzifer-docker/docker-teamspeak3
 
@@ -403,7 +394,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  If you ever want to upgrade your teamspeak server (dif version or hash), simply point the files to there again.
  To find out the admin key on initial boot. Use docker logs teamspeak
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -417,7 +408,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### transmission
 
- *Description:*
+ **Description:**
 
  source: https://github.com/dperson/transmission
 
@@ -426,7 +417,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  TRPASSWD - set password for transmission auth
  TIMEZONE - set zoneinfo timezone
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run \
@@ -441,7 +432,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
 ### weechat
 
- *Description:*
+ **Description:**
 
  Weechat IRC!
 
@@ -451,7 +442,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  run then docker attach weechat
 
- *Running:*
+ **Running:**
 
  ```sh
  docker run -it -d \

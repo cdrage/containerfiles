@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # source: https://github.com/dperson/transmission
 #
@@ -7,7 +7,7 @@
 # TRPASSWD - set password for transmission auth
 # TIMEZONE - set zoneinfo timezone
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run \

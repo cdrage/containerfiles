@@ -1,4 +1,4 @@
-# *Description:*
+# **Description:**
 #
 # Source: https://github.com/luzifer-docker/docker-teamspeak3
 #
@@ -9,7 +9,7 @@
 # If you ever want to upgrade your teamspeak server (dif version or hash), simply point the files to there again.
 # To find out the admin key on initial boot. Use docker logs teamspeak
 #
-# *Running:*
+# **Running:**
 #
 # ```sh
 # docker run \
