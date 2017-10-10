@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # source: https://github.com/dperson/transmission
 #
@@ -7,8 +7,9 @@
 # TRPASSWD - set password for transmission auth
 # TIMEZONE - set zoneinfo timezone
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run \
 #   --name transmission \
 #   -p 9091:9091 \
@@ -17,9 +18,10 @@
 #   -e TRPASSWD=admin \
 #   -d \
 #   cdrage/transmission
+# ```
 
 FROM debian:jessie
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN export DEBIAN_FRONTEND='noninteractive' && \
     apt-get update -qq && \

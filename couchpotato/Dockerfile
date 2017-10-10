@@ -1,17 +1,19 @@
-# Description:
+# *Description:*
 #
 # Couch Potato is a torrent grepper / downloader
 # Pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -d \
 #   -p 5050:5050 \
 #   --name couchpotato \
 #   cdrage/couchpotato 
+# ```
 
 FROM debian:jessie
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN apt-get update -qq && \
   apt-get install -y git openssl curl ca-certificates python-pip python-dev libz-dev libxml2-dev libxslt1-dev gcc && \

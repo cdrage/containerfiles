@@ -1,9 +1,10 @@
-# Description:
+# *Description:*
 #
 # Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run \
 #    -d \
 #    -e DISPLAY \
@@ -11,6 +12,7 @@
 #    -v $HOME/.config/Mattermost:/home/user/.config/Mattermost \
 #    --name mattermost-desktop \
 #    cdrage/mattermost-desktop
+# ```
 
 FROM debian:sid
 

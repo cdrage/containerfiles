@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # This is used to create a DNS cacher/forwarder in order to
 # spoof the location when accessing Netflix. Similar to how a
@@ -11,14 +11,16 @@
 # (prone to DNS DDoS aplification attacks), it's suggested to have some 
 # form of IP firewall for this. (hint: just use iptables)
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run \
 #   -p 53:53/udp \
 #   -e IP=10.10.10.1 \
 #   --name dnsmasq
 #   -d \
-#   cdrage/dnsmasq \
+#   cdrage/dnsmasq
+# ```
 
 FROM ubuntu:trusty
 

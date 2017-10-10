@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # original: https://github.com/jpetazzo/dockvpn
 #
@@ -10,16 +10,22 @@
 #
 # If you wish to re-generate the certificates, simply restart your Docker container.
 #
-# Running:
+# *Running:*
 #
 # Start the openvpn server:
+# ```sh
 # docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp --name vpn cdrage/openvpn-server
+# ```
 #
 # Create a http server to termporarily download the configuration:
+# ```sh
 # docker run --rm -ti -p 8080:8080 --volumes-from vpn cdrage/openvpn-server serveconfig
+# ```
 #
 # Download the configuration for your client to use:
+# ```sh
 # wget https://IP:8080/ --no-check-certificate -O config.ovpn
+# ```
 
 FROM ubuntu:precise
 RUN echo deb http://archive.ubuntu.com/ubuntu/ precise main universe > /etc/apt/sources.list.d/precise.list

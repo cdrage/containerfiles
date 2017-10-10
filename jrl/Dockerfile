@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # Encrypted journal (for writing your life entries!, not logs!)
 #
@@ -20,12 +20,14 @@
 # 
 # Now run it!
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -it --rm \
 #   -v ~/txt.enc:/tmp/txt.enc \
 #   -v /etc/localtime:/etc/localtime:ro \
 #   cdrage/jrl
+# ```
 # 
 # This will ask for your password, decrypt it to a tmp folder and open it in VIM.
 # Once you :wq the file, it'll save.

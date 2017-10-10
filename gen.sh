@@ -6,11 +6,10 @@ cat INTRO.md
 for D in `find . -type d | sort`
 do
   if [ -f $D/Dockerfile ]; then
-        echo "###" $D
+        name=${D:2}
+        echo "### $name"
         echo
-        echo "\`\`\`"
         cat $D/Dockerfile | grep "#" | grep -v "#!" | sed 's/#//'
         echo
-        echo "\`\`\`"
   fi
 done

@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # Weechat IRC!
 #
@@ -8,17 +8,19 @@
 #
 # run then docker attach weechat
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -it -d \
 #   -e TERM=xterm-256color \
 #   -v /etc/localtime:/etc/localtime:ro \
 #   --name weechat \
 #   -p 40900:40900 \
 #   cdrage/weechat
+# ```
 
 FROM ubuntu:15.10
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN apt-get update 
 RUN apt-get -y build-dep weechat

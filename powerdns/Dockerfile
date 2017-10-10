@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 ENV VERSION 3.4.8-1
 

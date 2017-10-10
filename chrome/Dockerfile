@@ -1,12 +1,13 @@
-# Description:
+# *Description:*
 #
 # Run Chrome in a container (thx jess)
 #
 # Note: Disabled sandbox due to running-in-a-container issue with userns 
 # enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -d \
 #   --memory 3gb \
 #   -v /etc/localtime:/etc/localtime:ro \
@@ -18,9 +19,10 @@
 #   --device /dev/dri \
 #   --name chrome \
 #   cdrage/chrome
+# ```
 
 FROM debian:sid
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 ADD https://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb /src/google-talkplugin_current_amd64.deb
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /src/google-chrome-stable_current_amd64.deb

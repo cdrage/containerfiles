@@ -1,4 +1,4 @@
-#  Description:
+#  *Description:*
 #
 #  source: https://github.com/playlyfe/docker-moodle
 #
@@ -17,8 +17,9 @@
 #
 #  TODO: SSL stuffs
 #
-#  Running:
+#  *Running:*
 #
+# ```sh
 #  docker run -d \
 #   -p 80:80 \
 #   -p 443:443 \
@@ -26,6 +27,7 @@
 #   -v /var/www/html:/var/www/html \
 #   --name moodle \
 #   moodle
+# ```
 #
 #  Setup permissions once running (with the moodle configuration inside):
 #

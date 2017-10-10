@@ -1,4 +1,4 @@
-# Description:
+# *Description:*
 #
 # DNS proxy (netflix unblocker) open source. Used in conjuction
 # with netflix-dnsmasq :)
@@ -6,14 +6,16 @@
 #
 # build Dockerfile.uk for uk version
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run \
 #   -d \
 #   -p 80:80 \
 #   -p 443:443 \
 #   --name sniproxy \
 #   cdrage/sniproxy
+# ```
 
 FROM phusion/baseimage:0.9.16
 MAINTAINER trick77 <jan@trick77.com> https://trick77.com/

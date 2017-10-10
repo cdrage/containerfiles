@@ -8,18 +8,18 @@ Otherwise, you may also `git clone https://github.com/cdrage/dockerfiles` and bu
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Dockerfile`.
 
 
-### ./chrome
+### chrome
 
-```
- Description:
+ *Description:*
 
  Run Chrome in a container (thx jess)
 
  Note: Disabled sandbox due to running-in-a-container issue with userns 
  enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -d \
    --memory 3gb \
    -v /etc/localtime:/etc/localtime:ro \
@@ -31,30 +31,31 @@ Below is a general overview (with instructions) on each Docker container I use. 
    --device /dev/dri \
    --name chrome \
    cdrage/chrome
+ ```
 
-```
-### ./couchpotato
+### couchpotato
 
-```
- Description:
+ *Description:*
 
  Couch Potato is a torrent grepper / downloader
  Pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -d \
    -p 5050:5050 \
    --name couchpotato \
    cdrage/couchpotato 
+ ```
 
-```
-### ./jrl
+### jrl
 
-```
- Description:
+ *Description:*
 
  Encrypted journal (for writing your life entries!, not logs!)
+
+ In my case, I enter a timestamp each time I open the file and switch to vim insert mode.
  
  Pass in your encrypted txt file and type in your password.
  It'll then open it up in vim for you to edit and type up your
@@ -64,22 +65,29 @@ Below is a general overview (with instructions) on each Docker container I use. 
  with a screwdriver: 
  http://stackoverflow.com/questions/16056135/how-to-use-openssl-to-encrypt-decrypt-files
 
- Public / Private key would be better, but hell, this is just a txt file.
+ Public / Private key would be better, but hell, this is just a text file.
+
+ Encrypt a text file
+
+ openssl aes-256-cbc -a -salt -in foobar.txt -out foobar.enc
  
  Now run it!
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -it --rm \
    -v ~/txt.enc:/tmp/txt.enc \
    -v /etc/localtime:/etc/localtime:ro \
    cdrage/jrl
+ ```
+ 
+ This will ask for your password, decrypt it to a tmp folder and open it in VIM.
+ Once you :wq the file, it'll save.
 
-```
-### ./matterhorn
+### matterhorn
 
-```
- Description:
+ *Description:*
 
  A terminal interface for Mattermost via the client Matterhorn
  https://github.com/matterhorn-chat/matterhorn
@@ -87,8 +95,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
  To run, simply supply a username, hostname and (additionally) a port number.
  For example:
  
- Running:
+ *Running:*
 
+ ```sh
  docker run -it --rm \
   -e MM_USER=foobar@domain.com \
   -e MM_PASS=foobar \
@@ -96,17 +105,17 @@ Below is a general overview (with instructions) on each Docker container I use. 
   -e MM_PORT=443 \
   --name matterhorn \
   cdrage/matterhorn
+ ```
 
-```
-### ./mattermost-desktop
+### mattermost-desktop
 
-```
- Description:
+ *Description:*
 
  Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
     -d \
     -e DISPLAY \
@@ -114,12 +123,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -v $HOME/.config/Mattermost:/home/user/.config/Mattermost \
     --name mattermost-desktop \
     cdrage/mattermost-desktop
+ ```
 
-```
-### ./moodle
+### moodle
 
-```
-  Description:
+  *Description:*
 
   source: https://github.com/playlyfe/docker-moodle
 
@@ -138,8 +146,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
   TODO: SSL stuffs
 
-  Running:
+  *Running:*
 
+ ```sh
   docker run -d \
    -p 80:80 \
    -p 443:443 \
@@ -147,45 +156,47 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -v /var/www/html:/var/www/html \
    --name moodle \
    moodle
+ ```
 
   Setup permissions once running (with the moodle configuration inside):
 
   chmod -R 777 /var/www/html #yolo
 
-```
-### ./mosh
+### mosh
 
-```
- Description:
+ *Description:*
  Mosh = SSH + mobile connection
 
- Running:
+ *Running:*
 
  To normally use it:
+ ```sh
  docker run -it --rm \
    -e TERM=xterm-256color \
    -v $HOME/.ssh:/root/.ssh \
    cdrage/mosh user@blahblahserver
+ ```
 
  How I use it (since I pipe it through a VPN):
+ ```sh
  docker run -it --rm \
    --net=container:vpn
    -e TERM=xterm-256color \
    -v $HOME/.ssh:/root/.ssh \
    cdrage/mosh user@blahblahserver
+ ```
 
-```
-### ./mutt-gmail
+### mutt-gmail
 
-```
- Description:
+ *Description:*
 
  My mutt configuration in a docker container
 
  Special thanks to jfrazelle for this config
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -it --rm \
     -e TERM=xterm-256color \
     -e MUTT_NAME \
@@ -197,12 +208,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
     -v /etc/localtime:/etc/localtime:ro \
     cdrage/mutt-gmail
+ ```
 
-```
-### ./netflix-dnsmasq
+### netflix-dnsmasq
 
-```
- Description:
+ *Description:*
 
  This is used to create a DNS cacher/forwarder in order to
  spoof the location when accessing Netflix. Similar to how a
@@ -215,20 +225,20 @@ Below is a general overview (with instructions) on each Docker container I use. 
  (prone to DNS DDoS aplification attacks), it's suggested to have some 
  form of IP firewall for this. (hint: just use iptables)
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
    -p 53:53/udp \
    -e IP=10.10.10.1 \
    --name dnsmasq
    -d \
-   cdrage/dnsmasq \
+   cdrage/dnsmasq
+ ```
 
-```
-### ./netflix-sniproxy
+### netflix-sniproxy
 
-```
- Description:
+ *Description:*
 
  DNS proxy (netflix unblocker) open source. Used in conjuction
  with netflix-dnsmasq :)
@@ -236,36 +246,36 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  build Dockerfile.uk for uk version
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
    -d \
    -p 80:80 \
    -p 443:443 \
    --name sniproxy \
    cdrage/sniproxy
+ ```
 
-```
-### ./openvpn-client
+### openvpn-client
 
-```
- Description:
+ *Description:*
 
  An openvpn-client in an Alpine Linux container
 
  go check your public ip online and you'll see you're connected to the VPN :)
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -it 
  -v /filesblahblah/hacktheplanet.ovpn:/etc/openvpn/hacktheplanet.ovpn \
  --net=host --device /dev/net/tun:/dev/net/tun --cap-add=NET_ADMIN \
  cdrage/openvpn-client hacktheplanet.ovpn
+ ```
 
-```
-### ./openvpn-client-docker
+### openvpn-client-docker
 
-```
  Description:
 
  OpenVPN within an Ubuntu container
@@ -290,11 +300,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -it \
    cdrage/openvpn-client-docker
 
-```
-### ./openvpn-server
+### openvpn-server
 
-```
- Description:
+ *Description:*
 
  original: https://github.com/jpetazzo/dockvpn
 
@@ -306,41 +314,43 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  If you wish to re-generate the certificates, simply restart your Docker container.
 
- Running:
+ *Running:*
 
  Start the openvpn server:
+ ```sh
  docker run -d --privileged -p 1194:1194/udp -p 443:443/tcp --name vpn cdrage/openvpn-server
+ ```
 
  Create a http server to termporarily download the configuration:
+ ```sh
  docker run --rm -ti -p 8080:8080 --volumes-from vpn cdrage/openvpn-server serveconfig
+ ```
 
  Download the configuration for your client to use:
+ ```sh
  wget https://IP:8080/ --no-check-certificate -O config.ovpn
+ ```
 
-```
-### ./peerflix
+### peerflix
 
-```
- Description:
+ *Description:*
 
  Stream from a magnet torrent
  
- Running:
+ *Running:*
 
+ ```sh
  docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
+ ```
 
  Then open up VLC and use localhost:8888 to view
 
-```
-### ./powerdns
+### powerdns
 
-```
 
-```
-### ./sensu-client
+### sensu-client
 
-```
- Description:
+ *Description:*
 
  Original Source: https://github.com/arypurnomoz/sensu-client.docker
 
@@ -353,8 +363,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
  You'll also have to modify the checks.json file on the sensu master server in order to make sure you are using the correct plugins in the respective folders.
 
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
   -v /etc/sensu/ssl/cert.pem:/etc/sensu/ssl/cert.pem \
   -v /etc/sensu/ssl/key.pem:/etc/sensu/ssl/key.pem \
@@ -368,37 +379,33 @@ Below is a general overview (with instructions) on each Docker container I use. 
   -e RABBITMQ_PASS=sensu \
   -e SUB=metrics,check \
   cdrage/sensu-client
+ ```
 
  or use the Makefile provided.
  ex.
  make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
 
-```
-### ./ssh
+### ssh
 
-```
- Description:
-
+ *Description:*
  SSH in a Docker container :)
 
-```
-### ./teamspeak
+### teamspeak
 
-```
- Description:
+ *Description:*
+
+ Source: https://github.com/luzifer-docker/docker-teamspeak3
 
  Praise Gaben! Teamspeak in a docker container :)
 
- Original *awesome* source: https://github.com/luzifer-docker/docker-teamspeak3
-
- 
  All your files will be located within ~/ts (sqlite database, whitelist, etc.). 
  This is your persistent folder. This will containe your credentials, whitelist, etc. So keep it safe.
  If you ever want to upgrade your teamspeak server (dif version or hash), simply point the files to there again.
  To find out the admin key on initial boot. Use docker logs teamspeak
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
    --name teamspeak \
    -d \
@@ -406,12 +413,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -p 30033:30033/tcp \
    -v $HOME/ts:/teamspeak3 \
    cdrage/teamspeak
+ ```
 
-```
-### ./transmission
+### transmission
 
-```
- Description:
+ *Description:*
 
  source: https://github.com/dperson/transmission
 
@@ -420,8 +426,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
  TRPASSWD - set password for transmission auth
  TIMEZONE - set zoneinfo timezone
 
- Running:
+ *Running:*
 
+ ```sh
  docker run \
    --name transmission \
    -p 9091:9091 \
@@ -430,12 +437,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -e TRPASSWD=admin \
    -d \
    cdrage/transmission
+ ```
 
-```
-### ./weechat
+### weechat
 
-```
- Description:
+ *Description:*
 
  Weechat IRC!
 
@@ -445,13 +451,14 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  run then docker attach weechat
 
- Running:
+ *Running:*
 
+ ```sh
  docker run -it -d \
    -e TERM=xterm-256color \
    -v /etc/localtime:/etc/localtime:ro \
    --name weechat \
    -p 40900:40900 \
    cdrage/weechat
+ ```
 
-```

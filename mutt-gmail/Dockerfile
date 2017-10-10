@@ -1,11 +1,12 @@
-# Description:
+# *Description:*
 #
 # My mutt configuration in a docker container
 #
 # Special thanks to jfrazelle for this config
 #
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -it --rm \
 #    -e TERM=xterm-256color \
 #    -e MUTT_NAME \
@@ -17,9 +18,10 @@
 #    -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
 #    -v /etc/localtime:/etc/localtime:ro \
 #    cdrage/mutt-gmail
+# ```
 
 FROM debian:stable
-MAINTAINER Charlie Drage <charlie@charliedrage.com>
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN apt-get update && apt-get install -y \
   ca-certificates \

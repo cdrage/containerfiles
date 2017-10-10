@@ -1,10 +1,12 @@
-# Description:
+# *Description:*
 #
 # Stream from a magnet torrent
 # 
-# Running:
+# *Running:*
 #
+# ```sh
 # docker run -it -p 8888:8888 cdrage/peerflix $MAGNET_URL
+# ```
 #
 # Then open up VLC and use localhost:8888 to view
 
