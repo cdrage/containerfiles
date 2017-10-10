@@ -1,1 +1,67 @@
+# **Description:**
 #
+# Run Chrome in a container (thx jess)
+#
+# Note: Disabled sandbox due to running-in-a-container issue with userns 
+# enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
+#
+# **Running:**
+#
+# ```sh
+# docker run -d \
+#   --memory 3gb \
+#   -v /etc/localtime:/etc/localtime:ro \
+#   -v /tmp/.X11-unix:/tmp/.X11-unix \
+#   -e DISPLAY=unix$DISPLAY \
+#   -v $HOME/.chrome:/data \
+#   -v $HOME/docker_files/chrome_downloads:/root/Downloads \
+#   -v /dev/shm:/dev/shm \
+#   --device /dev/dri \
+#   --name chrome \
+#   cdrage/chrome
+# ```
+
+FROM debian:sid
+LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
+
+ADD https://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb /src/google-talkplugin_current_amd64.deb
+ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /src/google-chrome-stable_current_amd64.deb
+
+RUN mkdir -p /usr/share/icons/hicolor && \
+	apt-get update && apt-get install -y \
+	ca-certificates \
+	fonts-liberation \
+	fonts-roboto \
+	fonts-symbola \
+	gconf-service \
+	hicolor-icon-theme \
+	libappindicator1 \
+	libasound2 \
+	libcanberra-gtk-module \
+	libcurl3 \
+	libexif-dev \
+	libfontconfig1 \
+	libfreetype6 \
+	libgconf-2-4 \
+	libgl1-mesa-dri \
+	libgl1-mesa-glx \
+	libnspr4 \
+	libnss3 \
+	libpango1.0-0 \
+	libv4l-0 \
+	libxss1 \
+	libxtst6 \
+	lsb-base \
+	strace \
+	wget \
+	xdg-utils \
+	--no-install-recommends && \
+	dpkg -i '/src/google-chrome-stable_current_amd64.deb' && \
+	dpkg -i '/src/google-talkplugin_current_amd64.deb' \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -rf /src/*.deb
+
+COPY local.conf /etc/fonts/local.conf
+
+ENTRYPOINT [ "google-chrome" ]
+CMD [ "--user-data-dir=/data", "--no-sandbox", "--test-type" ]
