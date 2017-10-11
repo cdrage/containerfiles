@@ -1,0 +1,44 @@
+containers:
+    seafile-init:
+        image: "stratordev/seafile"
+        run:
+            tty: true
+            interactive: true
+            rm: true
+            volume:
+                - "/opt/dockerstore/seafile:/opt/seafile"
+            env:
+                - "SEAFILE_VERSION=5.1.3"
+                - "SEAFILE_ADMIN_EMAIL=root@root.com"
+                - "SEAFILE_ADMIN_PASSWORD=Rw5Knb3d91"
+                - "SEAFILE_HOST=this.ismyhost.com"
+                - "SEAFILE_PORT=28080"
+            cmd: "/init"
+    seafile-upgrade:
+        image: "stratordev/seafile"
+        run:
+            tty: true
+            interactive: true
+            rm: true
+            volume:
+                - "/opt/dockerstore/seafile:/opt/seafile"
+            env:
+                - "SEAFILE_VERSION=6.0.5"
+            cmd: "/upgrade"
+    seafile-clean:
+        image: "stratordev/seafile"
+        run:
+            tty: true
+            interactive: true
+            rm: true
+            volume:
+                - "/opt/dockerstore/seafile:/opt/seafile"
+            entrypoint: "/clean"
+    seafile:
+        image: "stratordev/seafile"
+        run:
+            detach: true
+            publish:
+                - "28080:8080"
+            volume:
+                - "/opt/dockerstore/seafile:/opt/seafile"

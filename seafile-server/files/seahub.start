@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ulimit -n 30000
+su -p - seafile -c"SEAFILE_FASTCGI_HOST=0.0.0.0 /opt/seafile/seafile-server-latest/seahub.sh start-fastcgi 8001"
+r=${PIPESTATUS[0]}
+
+while [ $r -ne 0 ]; do
+  sleep 10
+  su -p - seafile  -c"SEAFILE_FASTCGI_HOST=0.0.0.0 /opt/seafile/seafile-server-latest/seahub.sh start-fastcgi 8001"
+  r=${PIPESTATUS[0]}
+done
+
+while [ true ]; do
+  sleep 10
+done
+

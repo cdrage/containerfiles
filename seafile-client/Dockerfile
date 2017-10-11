@@ -18,13 +18,19 @@
 # The seaf-cli is accessible via:
 #
 # ```sh
-# docker exec seafile-sync /usr/bin/seaf-cli
+# docker exec seafile-client /usr/bin/seaf-cli
 # ```
 #
 # In order to "add" a folder, you must sync it via the "sync" command line action
 #
 # ```sh
-# docker exec seafile-sync /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/YOUR_FOLDER -u YOUR_EMAIL -p YOUR_PASSWORD
+# docker exec seafile-client /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/YOUR_FOLDER -u YOUR_EMAIL -p YOUR_PASSWORD
+# ```
+#
+# To check the status:
+#
+# ```sh
+# docker exec seafile-client /usr/bin/seaf-cli status
 # ```
 
 
