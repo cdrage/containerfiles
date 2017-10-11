@@ -362,6 +362,38 @@ Here be dragons (although open up an issue if you see an error!).
 ### powerdns
 
 
+### seafile-client
+
+ **Description:**
+
+ Source: https://bitbucket.org/xcgd-team/seafile-client
+ After a lot of frustation, I've taken the solution from: https://bitbucket.org/xcgd-team/seafile-client
+ and fiddled around with it for my needs.
+
+ **Running:**
+
+ ```sh
+  docker run \
+  -d \
+  --name seafile-client \
+  -v ~/seafile:/data \
+  --restart=always \
+  cdrage/seafile-client
+ ```
+
+ The seaf-cli is accessible via:
+
+ ```sh
+ docker exec seafile-sync /usr/bin/seaf-cli
+ ```
+
+ In order to "add" a folder, you must sync it via the "sync" command line action
+
+ ```sh
+ docker exec seafile-sync /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/YOUR_FOLDER -u YOUR_EMAIL -p YOUR_PASSWORD
+ ```
+ ln -s
+
 ### sensu-client
 
  **Description:**
