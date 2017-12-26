@@ -27,7 +27,7 @@
 FROM ubuntu:14.04
 
 RUN apt-get update -q
-RUN apt-get install -qy openvpn iptables
+RUN apt-get install -qy openvpn iptables resolvconf
 
 ADD update-resolv-conf /etc/openvpn/update-resolv-conf
 

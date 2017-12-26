@@ -7,6 +7,7 @@
 # **Running:**
 #
 # ```sh
+# mkdir ~/seafile
 #  docker run \
 #  -d \
 #  --name seafile-client \
@@ -24,13 +25,18 @@
 # In order to "add" a folder, you must sync it via the "sync" command line action
 #
 # ```sh
-# docker exec seafile-client /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/YOUR_FOLDER -u YOUR_EMAIL -p YOUR_PASSWORD
+# # change "foobar" to your folder
+# # mkdir must be created first in order to create proper permissions
+# # Due to issues with python + passing in a password, you mush exec into the container to add your initial folder.
+# mkdir -p ~/seafile/foobar
+# docker exec -it seafile-client bash
+# /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/foobar -u YOUR_EMAIL -p YOUR_PASSWORD
 # ```
 #
 # To check the status:
 #
 # ```sh
-# docker exec seafile-client /usr/bin/seaf-cli status
+# docker exec -it seafile-client /usr/bin/seaf-cli status
 # ```
 
 
@@ -50,5 +56,8 @@ RUN mkdir /etc/service/seafiled
 COPY seafiled.sh /etc/service/seafiled/run
 RUN chmod +x /etc/service/seafiled/run
 
-# ln -s
+#! So you can actually docker exec into the container
+RUN echo "export TERM=xterm" >> /root/.bashrc
+
+#! ln -s
 RUN ln -s /etc/ccnet /root/.ccnet

@@ -92,6 +92,10 @@ remote $MY_IP_ADDR 1194 udp
 <connection>
 remote $MY_IP_ADDR 443 tcp-client
 </connection>
+
+script-security 2
+up /etc/openvpn/update-resolv-conf
+down /etc/openvpn/update-resolv-conf
 EOF
 
 [ -f client.http ] || cat >client.http <<EOF

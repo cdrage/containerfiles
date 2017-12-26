@@ -15,5 +15,6 @@
 
 FROM alpine
 RUN apk update && apk add openvpn
+ADD update-resolv-conf /etc/openvpn/update-resolv-conf
 ENTRYPOINT ["openvpn"]
 WORKDIR /etc/openvpn
