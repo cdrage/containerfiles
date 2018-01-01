@@ -5,6 +5,7 @@
 #
 # **Running:**
 #
+# ```sh
 # docker run \
 # -d \
 # -e "SEAFILE_VERSION=6.2.2" \
@@ -16,7 +17,7 @@
 # -p 0.0.0.0:8080:8080 \
 # --name="seafile" \
 # cdrage/seafile-server
-#
+# ```
 #
 # TODO: Write more documentation
 # See: https://github.com/strator-dev/docker-seafile for more details on how to run the garbage collector, etc.

@@ -2,7 +2,7 @@
 #
 # Run Chrome in a container (thx jess)
 #
-# Note: Disabled sandbox due to running-in-a-container issue with userns 
+# **Note:** Disabled sandbox due to running-in-a-container issue with userns 
 # enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 #
 # **Running:**

@@ -1,6 +1,6 @@
 # **Description:**
 #
-# Original Source: https://github.com/arypurnomoz/sensu-client.docker
+# Original source: https://github.com/arypurnomoz/sensu-client.docker
 #
 # This container allows you to run sensu in a container (yay) although there are some caveats.
 #
@@ -31,7 +31,10 @@
 #
 # or use the Makefile provided.
 # ex.
+#
+# ```sh
 # make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
+# ```
 
 FROM debian:jessie
 

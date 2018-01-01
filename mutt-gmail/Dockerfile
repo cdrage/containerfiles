@@ -2,8 +2,6 @@
 #
 # My mutt configuration in a docker container
 #
-# Special thanks to jfrazelle for this config
-#
 # **Running:**
 #
 # ```sh

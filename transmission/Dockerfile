@@ -1,11 +1,13 @@
 # **Description:**
 #
-# source: https://github.com/dperson/transmission
-#
-# ENVIRO VARIABLES
+# Original source: https://github.com/dperson/transmission
+# 
+# ```
+# ENV VARIABLES
 # TRUSER - set username for transmission auth
 # TRPASSWD - set password for transmission auth
 # TIMEZONE - set zoneinfo timezone
+# ```
 #
 # **Running:**
 #
@@ -13,7 +15,7 @@
 # docker run \
 #   --name transmission \
 #   -p 9091:9091 \
-#   -v /path/to/directory:/var/lib/transmission-daemon/downloads \
+#   -v ~/Downloads:/var/lib/transmission-daemon/downloads \
 #   -e TRUSER=admin \
 #   -e TRPASSWD=admin \
 #   -d \

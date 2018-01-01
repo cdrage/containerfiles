@@ -14,9 +14,9 @@
 #
 # Public / Private key would be better, but hell, this is just a text file.
 #
-# Encrypt a text file
+# **First, encrypt a text file:**
 #
-# openssl aes-256-cbc -a -salt -in foobar.txt -out foobar.enc
+# openssl aes-256-cbc -a -md md5 -salt -in foobar.txt -out foobar.enc
 # 
 # Now run it!
 #
@@ -29,7 +29,7 @@
 #   cdrage/jrl
 # ```
 # 
-# This will ask for your password, decrypt it to a tmp folder and open it in VIM.
+# This will ask for your password, decrypt it to a tmp folder and open it in vim.
 # Once you :wq the file, it'll save.
 
 FROM debian:stable

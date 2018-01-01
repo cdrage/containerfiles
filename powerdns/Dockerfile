@@ -1,3 +1,5 @@
+# Notes: TODO
+
 FROM ubuntu:14.04
 LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 

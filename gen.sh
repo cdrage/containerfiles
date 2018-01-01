@@ -7,7 +7,7 @@ for D in `find . -type d | sort`
 do
   if [ -f $D/Dockerfile ]; then
         name=${D:2}
-        echo "### $name"
+        echo "## cdrage/$name"
         echo
         cat $D/Dockerfile | grep "#" | grep -v "#!" | sed 's/#//'
         echo

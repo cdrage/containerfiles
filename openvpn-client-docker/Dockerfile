@@ -4,13 +4,16 @@
 #
 # Run then ctrl+p + ctrl+q after authenticating (this exists the container)
 # 
-# Then from another container just use --net=container:openvpn
+# Then from another container just use `--net=container:openvpn`
 # 
-# remember to add 
+# Remember to add 
+#
+# ```
 #  up /etc/openvpn/update-resolv-conf
 #  down /etc/openvpn/update-resolv-conf
+# ```
 #
-#  to your openvpn conf file!
+# to your `openvpn.conf` file!
 #
 # **Running:**
 #

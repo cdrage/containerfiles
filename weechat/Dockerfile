@@ -6,7 +6,7 @@
 #
 # port 40900 is used for weechat relay (if you decide to use it)
 #
-# run then docker attach weechat
+# run then `docker attach weechat`
 #
 # **Running:**
 #

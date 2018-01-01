@@ -11,7 +11,7 @@
         \____\_______/
 ```
 
-All the Dockerfiles I use.
+All the Dockerfiles I use! Read below for a description of the container you're about to use.
 
 Each container is automatically built and pushed to [https://hub.docker.com/r/cdrage/](https://hub.docker.com/r/cdrage/) upon each commit.
 
@@ -19,14 +19,14 @@ You may also `git clone https://github.com/cdrage/dockerfiles` and build it your
 
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Dockerfile`.
 
-Here be dragons (although open up an issue if you see an error!).
-### chrome
+Open an issue if there's a problem with a container!
+## cdrage/chrome
 
  **Description:**
 
  Run Chrome in a container (thx jess)
 
- Note: Disabled sandbox due to running-in-a-container issue with userns 
+ **Note:** Disabled sandbox due to running-in-a-container issue with userns 
  enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
 
  **Running:**
@@ -45,12 +45,12 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/chrome
  ```
 
-### couchpotato
+## cdrage/couchpotato
 
  **Description:**
 
  Couch Potato is a torrent grepper / downloader
- Pass in -v ./couchpotato_config:/root/.couchpotato for persistent data
+ Pass in `-v ./couchpotato_config:/root/.couchpotato` for persistent data
 
  **Running:**
 
@@ -61,7 +61,18 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/couchpotato 
  ```
 
-### jrl
+ **Running with persistent data:**
+
+ ```sh
+ docker run -d \
+   -p 5050:5050 \
+   --name couchpotato \
+   -v ./couchpotato_config:/root/.couchpotato \
+   cdrage/couchpotato 
+ ```
+
+
+## cdrage/jrl
 
  **Description:**
 
@@ -79,9 +90,9 @@ Here be dragons (although open up an issue if you see an error!).
 
  Public / Private key would be better, but hell, this is just a text file.
 
- Encrypt a text file
+ **First, encrypt a text file:**
 
- openssl aes-256-cbc -a -salt -in foobar.txt -out foobar.enc
+ openssl aes-256-cbc -a -md md5 -salt -in foobar.txt -out foobar.enc
  
  Now run it!
 
@@ -94,10 +105,10 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/jrl
  ```
  
- This will ask for your password, decrypt it to a tmp folder and open it in VIM.
+ This will ask for your password, decrypt it to a tmp folder and open it in vim.
  Once you :wq the file, it'll save.
 
-### matterhorn
+## cdrage/matterhorn
 
  **Description:**
 
@@ -119,7 +130,7 @@ Here be dragons (although open up an issue if you see an error!).
   cdrage/matterhorn
  ```
 
-### mattermost-desktop
+## cdrage/mattermost-desktop
 
  **Description:**
 
@@ -137,24 +148,23 @@ Here be dragons (although open up an issue if you see an error!).
     cdrage/mattermost-desktop
  ```
 
-### moodle
+## cdrage/moodle
 
   **Description:**
 
-  source: https://github.com/playlyfe/docker-moodle
+  Original source: https://github.com/playlyfe/docker-moodle
+
+  **Setup:**
 
   First, grab moodle and extract.
+
+  ```sh
   wget https://github.com/moodle/moodle/archive/v3.0.0.tar.gz
   tar -xvf v3.0.0.tar.gz
   mkdir /var/www
   mv moodle-3.0.0 /var/www/html
+  ```
   
-  Head over to localhost:80 and proceed through the installation (remember to create the config.php file too during install!)
-
-  MySQL username: moodleuser
-  password: moodle
-
-  All other values default :)
 
   TODO: SSL stuffs
 
@@ -170,11 +180,22 @@ Here be dragons (although open up an issue if you see an error!).
    moodle
  ```
 
+  **Setup after running:**
+
   Setup permissions once running (with the moodle configuration inside):
+
+  Head over to localhost:80 and proceed through the installation (remember to create the config.php file too during install!)
+
+  ```sh
+  MySQL username: moodleuser
+  password: moodle
+  ```
+
+  All other values default :)
 
   chmod -R 777 /var/www/html #yolo
 
-### mosh
+## cdrage/mosh
 
  **Description:**
  Mosh = SSH + mobile connection
@@ -198,13 +219,11 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/mosh user@blahblahserver
  ```
 
-### mutt-gmail
+## cdrage/mutt-gmail
 
  **Description:**
 
  My mutt configuration in a docker container
-
- Special thanks to jfrazelle for this config
 
  **Running:**
 
@@ -222,7 +241,7 @@ Here be dragons (although open up an issue if you see an error!).
     cdrage/mutt-gmail
  ```
 
-### netflix-dnsmasq
+## cdrage/netflix-dnsmasq
 
  **Description:**
 
@@ -248,7 +267,7 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/dnsmasq
  ```
 
-### netflix-sniproxy
+## cdrage/netflix-sniproxy
 
  **Description:**
 
@@ -269,7 +288,7 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/sniproxy
  ```
 
-### openvpn-client
+## cdrage/openvpn-client
 
  **Description:**
 
@@ -286,7 +305,7 @@ Here be dragons (although open up an issue if you see an error!).
  cdrage/openvpn-client hacktheplanet.ovpn
  ```
 
-### openvpn-client-docker
+## cdrage/openvpn-client-docker
 
  **Description:**
 
@@ -294,13 +313,16 @@ Here be dragons (although open up an issue if you see an error!).
 
  Run then ctrl+p + ctrl+q after authenticating (this exists the container)
  
- Then from another container just use --net=container:openvpn
+ Then from another container just use `--net=container:openvpn`
  
- remember to add 
+ Remember to add 
+
+ ```
   up /etc/openvpn/update-resolv-conf
   down /etc/openvpn/update-resolv-conf
+ ```
 
-  to your openvpn conf file!
+ to your `openvpn.conf` file!
 
  **Running:**
 
@@ -314,11 +336,11 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/openvpn-client-docker
    ```
 
-### openvpn-server
+## cdrage/openvpn-server
 
  **Description:**
 
- original: https://github.com/jpetazzo/dockvpn
+ Original source: https://github.com/jpetazzo/dockvpn
 
  NOTE:
  The keys are generate on EACH reboot and the private key is used in both the server
@@ -345,7 +367,7 @@ Here be dragons (although open up an issue if you see an error!).
  wget https://IP:8080/ --no-check-certificate -O config.ovpn
  ```
 
-### peerflix
+## cdrage/peerflix
 
  **Description:**
 
@@ -359,14 +381,16 @@ Here be dragons (although open up an issue if you see an error!).
 
  Then open up VLC and use localhost:8888 to view
 
-### powerdns
+## cdrage/powerdns
 
+ Notes: TODO
 
-### seafile-client
+## cdrage/seafile-client
 
  **Description:**
 
- Source: https://bitbucket.org/xcgd-team/seafile-client
+ Original source: https://bitbucket.org/xcgd-team/seafile-client
+
  After a lot of frustation, I've taken the solution from: https://bitbucket.org/xcgd-team/seafile-client
  and fiddled around with it for my needs.
 
@@ -374,12 +398,13 @@ Here be dragons (although open up an issue if you see an error!).
 
  ```sh
  mkdir ~/seafile
-  docker run \
-  -d \
-  --name seafile-client \
-  -v ~/seafile:/data \
-  --restart=always \
-  cdrage/seafile-client
+
+ docker run \
+ -d \
+ --name seafile-client \
+ -v ~/seafile:/data \
+ --restart=always \
+ cdrage/seafile-client
  ```
 
  The seaf-cli is accessible via:
@@ -393,7 +418,8 @@ Here be dragons (although open up an issue if you see an error!).
  ```sh
  # change "foobar" to your folder
  # mkdir must be created first in order to create proper permissions
- # Due to issues with python + passing in a password, you mush exec into the container to add your initial folder.
+ # Due to issues with python + passing in a password, you must
+ # exec into the container to add your initial folder.
  mkdir -p ~/seafile/foobar
  docker exec -it seafile-client bash
  /usr/bin/seaf-cli sync -l YOUR_LIBRARY_ID -s YOUR_SEAFILE_SERVER -d /data/foobar -u YOUR_EMAIL -p YOUR_PASSWORD
@@ -405,7 +431,7 @@ Here be dragons (although open up an issue if you see an error!).
  docker exec -it seafile-client /usr/bin/seaf-cli status
  ```
 
-### seafile-server
+## cdrage/seafile-server
 
  **Description:**
  Seafile server
@@ -414,6 +440,7 @@ Here be dragons (although open up an issue if you see an error!).
 
  **Running:**
 
+ ```sh
  docker run \
  -d \
  -e "SEAFILE_VERSION=6.2.2" \
@@ -425,16 +452,16 @@ Here be dragons (although open up an issue if you see an error!).
  -p 0.0.0.0:8080:8080 \
  --name="seafile" \
  cdrage/seafile-server
-
+ ```
 
  TODO: Write more documentation
  See: https://github.com/strator-dev/docker-seafile for more details on how to run the garbage collector, etc.
 
-### sensu-client
+## cdrage/sensu-client
 
  **Description:**
 
- Original Source: https://github.com/arypurnomoz/sensu-client.docker
+ Original source: https://github.com/arypurnomoz/sensu-client.docker
 
  This container allows you to run sensu in a container (yay) although there are some caveats.
 
@@ -465,14 +492,36 @@ Here be dragons (although open up an issue if you see an error!).
 
  or use the Makefile provided.
  ex.
- make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
 
-### ssh
+ ```sh
+ make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
+ ```
+
+## cdrage/ssh
 
  **Description:**
  SSH in a Docker container :)
 
-### teamspeak
+ **Running:**
+
+ To normally use it:
+ ```sh
+ docker run -it --rm \
+   -e TERM=xterm-256color \
+   -v $HOME/.ssh:/root/.ssh \
+   cdrage/ssh user@blahblahserver
+ ```
+
+ How I use it (since I pipe it through a VPN):
+ ```sh
+ docker run -it --rm \
+   --net=container:vpn
+   -e TERM=xterm-256color \
+   -v $HOME/.ssh:/root/.ssh \
+   cdrage/ssh user@blahblahserver
+ ```
+
+## cdrage/teamspeak
 
  **Description:**
 
@@ -497,16 +546,18 @@ Here be dragons (although open up an issue if you see an error!).
    cdrage/teamspeak
  ```
 
-### transmission
+## cdrage/transmission
 
  **Description:**
 
- source: https://github.com/dperson/transmission
-
- ENVIRO VARIABLES
+ Original source: https://github.com/dperson/transmission
+ 
+ ```
+ ENV VARIABLES
  TRUSER - set username for transmission auth
  TRPASSWD - set password for transmission auth
  TIMEZONE - set zoneinfo timezone
+ ```
 
  **Running:**
 
@@ -514,14 +565,14 @@ Here be dragons (although open up an issue if you see an error!).
  docker run \
    --name transmission \
    -p 9091:9091 \
-   -v /path/to/directory:/var/lib/transmission-daemon/downloads \
+   -v ~/Downloads:/var/lib/transmission-daemon/downloads \
    -e TRUSER=admin \
    -e TRPASSWD=admin \
    -d \
    cdrage/transmission
  ```
 
-### weechat
+## cdrage/weechat
 
  **Description:**
 
@@ -531,7 +582,7 @@ Here be dragons (although open up an issue if you see an error!).
 
  port 40900 is used for weechat relay (if you decide to use it)
 
- run then docker attach weechat
+ run then `docker attach weechat`
 
  **Running:**
 
