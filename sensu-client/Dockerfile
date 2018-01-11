@@ -1,6 +1,6 @@
 # **Description:**
 #
-# Original source: https://github.com/arypurnomoz/sensu-client.docker
+# **Source:** https://github.com/arypurnomoz/sensu-client.docker
 #
 # This container allows you to run sensu in a container (yay) although there are some caveats.
 #

@@ -525,7 +525,7 @@ Open an issue if there's a problem with a container!
  **Description:**
  Seafile server
 
- *Source:** https://github.com/strator-dev/docker-seafile
+ **Source:** https://github.com/strator-dev/docker-seafile
 
  **Running:**
 
@@ -550,7 +550,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Original source: https://github.com/arypurnomoz/sensu-client.docker
+ **Source:** https://github.com/arypurnomoz/sensu-client.docker
 
  This container allows you to run sensu in a container (yay) although there are some caveats.
 

@@ -1,7 +1,7 @@
 # **Description:**
 # Seafile server
 #
-# *Source:** https://github.com/strator-dev/docker-seafile
+# **Source:** https://github.com/strator-dev/docker-seafile
 #
 # **Running:**
 #
