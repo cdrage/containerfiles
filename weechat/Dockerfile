@@ -19,7 +19,7 @@
 #   cdrage/weechat
 # ```
 
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN apt-get update 
