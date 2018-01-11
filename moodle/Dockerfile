@@ -1,6 +1,6 @@
 #  **Description:**
 #
-#  Original source: https://github.com/playlyfe/docker-moodle
+#  **Source:** https://github.com/playlyfe/docker-moodle
 #
 #  **Setup:**
 #

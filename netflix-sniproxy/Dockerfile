@@ -1,8 +1,9 @@
 # **Description:**
 #
+# **Source:** https://github.com/trick77/dockerflix
+#
 # DNS proxy (netflix unblocker) open source. Used in conjuction
 # with netflix-dnsmasq :)
-# fork of: https://github.com/trick77/dockerflix
 #
 # build Dockerfile.uk for uk version
 #

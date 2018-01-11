@@ -134,7 +134,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Original source: https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
+ **Source:** https://github.com/treemo/docker-mattermost-desktop/blob/master/Dockerfile
 
  **Running:**
 
@@ -152,7 +152,7 @@ Open an issue if there's a problem with a container!
 
   **Description:**
 
-  Original source: https://github.com/playlyfe/docker-moodle
+  **Source:** https://github.com/playlyfe/docker-moodle
 
   **Setup:**
 
@@ -271,9 +271,10 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
+ **Source:** https://github.com/trick77/dockerflix
+
  DNS proxy (netflix unblocker) open source. Used in conjuction
  with netflix-dnsmasq :)
- fork of: https://github.com/trick77/dockerflix
 
  build Dockerfile.uk for uk version
 
@@ -340,7 +341,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Original source: https://github.com/jpetazzo/dockvpn
+ **Source:** https://github.com/jpetazzo/dockvpn
 
  NOTE:
  The keys are generate on EACH reboot and the private key is used in both the server
@@ -389,7 +390,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Original source: https://bitbucket.org/xcgd-team/seafile-client
+ **Source:** https://bitbucket.org/xcgd-team/seafile-client
 
  After a lot of frustation, I've taken the solution from: https://bitbucket.org/xcgd-team/seafile-client
  and fiddled around with it for my needs.
@@ -436,7 +437,7 @@ Open an issue if there's a problem with a container!
  **Description:**
  Seafile server
 
- Original source: https://github.com/strator-dev/docker-seafile
+ *Source:** https://github.com/strator-dev/docker-seafile
 
  **Running:**
 
@@ -525,7 +526,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Source: https://github.com/luzifer-docker/docker-teamspeak3
+ **Source:** https://github.com/luzifer-docker/docker-teamspeak3
 
  Praise Gaben! Teamspeak in a docker container :)
 
@@ -550,7 +551,7 @@ Open an issue if there's a problem with a container!
 
  **Description:**
 
- Original source: https://github.com/dperson/transmission
+ *Source:** https://github.com/dperson/transmission
  
  ```
  ENV VARIABLES

@@ -1,6 +1,6 @@
 # **Description:**
 #
-# Original source: https://bitbucket.org/xcgd-team/seafile-client
+# **Source:** https://bitbucket.org/xcgd-team/seafile-client
 #
 # After a lot of frustation, I've taken the solution from: https://bitbucket.org/xcgd-team/seafile-client
 # and fiddled around with it for my needs.

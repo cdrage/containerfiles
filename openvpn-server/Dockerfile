@@ -1,6 +1,6 @@
 # **Description:**
 #
-# Original source: https://github.com/jpetazzo/dockvpn
+# **Source:** https://github.com/jpetazzo/dockvpn
 #
 # NOTE:
 # The keys are generate on EACH reboot and the private key is used in both the server

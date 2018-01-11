@@ -1,6 +1,6 @@
 # **Description:**
 #
-# Source: https://github.com/luzifer-docker/docker-teamspeak3
+# **Source:** https://github.com/luzifer-docker/docker-teamspeak3
 #
 # Praise Gaben! Teamspeak in a docker container :)
 #
