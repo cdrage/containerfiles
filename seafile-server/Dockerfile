@@ -13,7 +13,7 @@
 # -e "SEAFILE_ADMIN_PASSWORD=YOURPASSWORD" \
 # -e "SEAFILE_HOST=0.0.0.0" \
 # -e "SEAFILE_PORT=8080" \
-# -v "/var/seafile:/opt/seafile" \
+# -v /var/seafile:/opt/seafile \
 # -p 0.0.0.0:8080:8080 \
 # --name="seafile" \
 # cdrage/seafile-server

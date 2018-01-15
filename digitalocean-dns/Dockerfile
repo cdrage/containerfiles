@@ -10,16 +10,16 @@
 #
 # ```sh
 # docker run \
-#  --name do \
+#  --name digitalocean-dns \
 #  -d \
-#  -v ~/digitalocean:/config:rw \
+#  -v /var/digitalocean-dns:/config:rw \
 #  --restart=always \
 #  cdrage/digitalocean-dns
 # ``` 
 #
 # **Configuration:**
 #
-# After running, open `~/digitalocean/dodns.conf.js` and edit it to your liking.
+# After running, open `/var/digitalocean-dns/dodns.conf.js` and edit it to your liking.
 
 FROM node:8.1.2-alpine
 MAINTAINER amilassin

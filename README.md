@@ -89,16 +89,16 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  ```sh
  docker run \
-  --name do \
+  --name digitalocean-dns \
   -d \
-  -v ~/digitalocean:/config:rw \
+  -v /var/digitalocean-dns:/config:rw \
   --restart=always \
   cdrage/digitalocean-dns
  ``` 
 
  **Configuration:**
 
- After running, open `~/digitalocean/dodns.conf.js` and edit it to your liking.
+ After running, open `/var/digitalocean-dns/dodns.conf.js` and edit it to your liking.
 
 ## cdrage/jrl
 
@@ -540,7 +540,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  -e "SEAFILE_ADMIN_PASSWORD=YOURPASSWORD" \
  -e "SEAFILE_HOST=0.0.0.0" \
  -e "SEAFILE_PORT=8080" \
- -v "/var/seafile:/opt/seafile" \
+ -v /var/seafile:/opt/seafile \
  -p 0.0.0.0:8080:8080 \
  --name="seafile" \
  cdrage/seafile-server
