@@ -24,8 +24,7 @@ LABEL maintainer="Charlie Drage <charlie@charliedrage.com>"
 
 RUN apt-get update 
 RUN apt-get -y build-dep weechat
-RUN apt-get -y install git
-RUN apt-get -y install openssl ca-certificates
+RUN apt-get -y install locales git openssl ca-certificates
 RUN git clone http://github.com/weechat/weechat
 RUN mkdir weechat/build
 RUN cd weechat/build && cmake .. -DCMAKE_BUILD_TYPE=Debug && make && make install
