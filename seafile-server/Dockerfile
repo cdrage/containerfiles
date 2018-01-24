@@ -61,10 +61,19 @@
 # cdrage/seafile-server
 # ```
 #
+# **Problems uploading files?**
 #
+# So I used https://github.com/jwilder/nginx-proxy for creating a reverse proxy in-front of the container. Big problem is that by default, there is a 100MB client_max_body_size in-front of the nginx proxy. Make sure that THIS has been added to nginx-proxy:
 #
-# TODO: Write more documentation
-# See: https://github.com/strator-dev/docker-seafile for more details on how to run the garbage collector, etc.
+# ```sh
+# client_max_body_size    0;
+# proxy_connect_timeout   36000s;
+# proxy_read_timeout      36000s;
+# proxy_request_buffering off;
+# ```
+#
+# **Other documentation**
+# There's some more documentation that I will add later, but this is based upon a source image. See: https://github.com/strator-dev/docker-seafile for more details on how to run the garbage collector, etc.
 
 
 
