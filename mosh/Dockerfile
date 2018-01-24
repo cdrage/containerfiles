@@ -20,7 +20,7 @@
 #   cdrage/mosh user@blahblahserver
 # ```
 
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 
 RUN apt-get update
 RUN apt-get install -y ssh mosh
