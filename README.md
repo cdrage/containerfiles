@@ -74,7 +74,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/couchpotato 
  ```
 
-
 ## cdrage/digitalocean-dns
 
  **Description:**
