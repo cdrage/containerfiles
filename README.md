@@ -18,7 +18,7 @@ All the Dockerfiles I use.
   - Containers can be started by using simple variables. 
   - Persistency. When passing in a volume, the data will be PERSISTENT. Thus if you `docker rm` and re-create the container, data is neither lost no ovewritten.
   - Each container is automatically built and pushed to https://hub.docker.com/r/cdrage/ on each commit.
-  - You may also `git clone https://github.com/cdrage/dockerfiles` and build it yourself (`docker build -t username/container .`).
+  - You may also `git clone https://github.com/cdrage/dockerfiles` and build it yourself (`docker build -t username/container .`). 
 
 **Descriptions:**
 
