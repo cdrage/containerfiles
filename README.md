@@ -23,6 +23,10 @@ All the Dockerfiles I use.
 **Descriptions:**
 
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Dockerfile`.
+## cdrage/centos7-systemd
+
+ CentOS 7 Systemd base file. Here be dragons.
+
 ## cdrage/chrome
 
  **Description:**
@@ -98,6 +102,12 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Configuration:**
 
  After running, open `/var/digitalocean-dns/dodns.conf.js` and edit it to your liking.
+
+## cdrage/dind-ssh-centos7
+
+ Dockerfile to allow the ability to run docker-in-docker and an SSH server.
+ See: https://github.com/docker-library/docs/tree/master/centos#systemd-integration
+ Also: https://github.com/moby/moby/issues/35317
 
 ## cdrage/jrl
 
