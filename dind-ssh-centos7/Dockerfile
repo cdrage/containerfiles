@@ -11,6 +11,7 @@ MAINTAINER The CentOS Project <cloud-ops@centos.org>
 #! libselinux-python for interaction with selinux
 #! docker because ya know
 #! cronie / crontab added as well
+#! initscripts because of https://github.com/CentOS/sig-cloud-instance-images/issues/28
 RUN yum -y install openssh-server \
       openssh-clients \
       passwd \
@@ -19,7 +20,8 @@ RUN yum -y install openssh-server \
       iptables \
       iproute \
       docker \
-      cronie && \
+      cronie \
+      initscripts && \
       yum clean all
 ADD ./start.sh /start.sh
 RUN mkdir /var/run/sshd
