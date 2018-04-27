@@ -13,6 +13,8 @@ MAINTAINER The CentOS Project <cloud-ops@centos.org>
 #! cronie / crontab added as well
 #! initscripts because of https://github.com/CentOS/sig-cloud-instance-images/issues/28
 RUN yum -y install openssh-server \
+      sshpass \
+      sudo \
       openssh-clients \
       passwd \
       libselinux-python \
