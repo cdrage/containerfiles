@@ -797,6 +797,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
   -e SHMEM="50%" \
   -e PUID="99" \
   -e PGID="100" \
+  -v ~/zm/config:/config \
+  -v ~/zm/data:/var/cache/zoneminder \
   cdrage/zoneminder
  ```
 

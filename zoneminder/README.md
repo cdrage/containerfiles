@@ -20,5 +20,7 @@
   -e SHMEM="50%" \
   -e PUID="99" \
   -e PGID="100" \
+  -v ~/zm/config:/config \
+  -v ~/zm/data:/var/cache/zoneminder \
   cdrage/zoneminder
  ```
