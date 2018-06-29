@@ -12,6 +12,7 @@ docker run -d -p 80:80 -p 443:443 \
 
 # let's encrypt
 docker run -d \
+    --name lets-encrypt \
     -v /var/nginx/certs:/etc/nginx/certs:rw \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
     --volumes-from nginx-proxy \
