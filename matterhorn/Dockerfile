@@ -24,7 +24,7 @@ FROM debian:sid
 RUN apt-get update && apt-get install tar wget libtinfo-dev ncurses-bin bzip2 -y
 
 #! Why they use libtinfoso.6 I do not know, so let's fake it till we make it
-RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so.6
+RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so.5
 
 #! Use release
 ENV RELEASE="https://github.com/matterhorn-chat/matterhorn/releases/download/40901.0.0/matterhorn-40901.0.0-Ubuntu-x86_64.tar.bz2"
