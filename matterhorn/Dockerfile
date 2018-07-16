@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install tar wget libtinfo-dev ncurses-bin bzip2 -y
 #! Why they use libtinfoso.6 I do not know, so let's fake it till we make it
 RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so.6
 
-#! Use 3.8
-ENV RELEASE="https://github.com/matterhorn-chat/matterhorn/releases/download/40000.0.1/matterhorn-40000.0.1-Ubuntu-x86_64.tar.bz2"
+#! Use release
+ENV RELEASE="https://github.com/matterhorn-chat/matterhorn/releases/download/40901.0.0/matterhorn-40901.0.0-Ubuntu-x86_64.tar.bz2"
 
 RUN wget $RELEASE && \
       tar xf matterhorn*.tar.bz2 --strip 1
