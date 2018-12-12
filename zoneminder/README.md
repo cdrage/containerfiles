@@ -12,6 +12,7 @@
 
  ```sh
  docker run -d --name zoneminder \
+ --net bridge \
   --privileged \
   -p 8080:80/tcp \
   -p 8443:443/tcp \

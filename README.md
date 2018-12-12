@@ -78,6 +78,22 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/couchpotato 
  ```
 
+## cdrage/ddns
+
+ **Description:**
+
+ Dynamic DNS for DigitalOcean
+
+ **Source**: https://github.com/gbolo/dockerfiles/tree/master/digitalocean-ddns
+
+ **Running:**
+ docker run \
+ -d \
+ --restart always \
+ -e DODDNS_TOKEN=your_api_key \
+ -e DODDNS_DOMAIN=your.domain.com \
+ cdrage/ddns
+
 ## cdrage/digitalocean-dns
 
  **Description:**
@@ -166,6 +182,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
   --name matterhorn \
   cdrage/matterhorn
  ```
+ RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.6.1 /lib/x86_64-linux-gnu/libtinfo.so.5
 
 ## cdrage/mattermost-desktop
 
@@ -789,6 +806,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  ```sh
  docker run -d --name zoneminder \
+ --net bridge \
   --privileged \
   -p 8080:80/tcp \
   -p 8443:443/tcp \
