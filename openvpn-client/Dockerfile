@@ -14,7 +14,7 @@
 # ```
 
 FROM alpine
-RUN apk update && apk add openvpn
+RUN apk add --no-cache bash openvpn openresolv
 ADD update-resolv-conf /etc/openvpn/update-resolv-conf
 ENTRYPOINT ["openvpn"]
 WORKDIR /etc/openvpn
