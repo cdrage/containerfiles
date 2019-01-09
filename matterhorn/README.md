@@ -17,4 +17,3 @@
   --name matterhorn \
   cdrage/matterhorn
  ```
- RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.6.1 /lib/x86_64-linux-gnu/libtinfo.so.5

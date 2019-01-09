@@ -24,7 +24,7 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install tar wget libtinfo-dev ncurses-bin bzip2 iputils-ping ca-certificates netbase -y
 
 #! Why they use libtinfoso.6 I do not know, so let's fake it till we make it
-# RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.6.1 /lib/x86_64-linux-gnu/libtinfo.so.5
+#! RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.6.1 /lib/x86_64-linux-gnu/libtinfo.so.5
 
 #! Use release
 ENV RELEASE="https://github.com/matterhorn-chat/matterhorn/releases/download/50200.0.0/matterhorn-50200.0.0-Ubuntu-x86_64.tar.bz2"
