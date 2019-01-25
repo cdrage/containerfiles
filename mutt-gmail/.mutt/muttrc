@@ -23,7 +23,7 @@ set mail_check = 60
 set timeout = 300
 set imap_keepalive = 300
 unset imap_passive
-set record = "+[Gmail]/Sent Mail"
+set record = "" # Gmail auto handles sent emails
 
 # Normal stuff
 auto_view text/html
@@ -82,6 +82,7 @@ bind attach <return> view-mailcap
 bind editor <space> noop
 bind index y noop
 
+# Shortcuts
 macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
 macro attach s '<save-entry><bol>/tmp/<eol>'
 macro attach S '<save-entry><bol>/home/user/Downloads/<eol>'
@@ -90,6 +91,13 @@ macro index,pager y "<save-message>=[Gmail]/All Mail<enter>" "Archive"
 macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
 macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
 macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to starred messages"
+
+# Other shortcuts
+macro index,pager d ";s+[Gmail]/Trash<enter><enter>" "Trash"
+macro index,pager u ";s+INBOX<enter><enter>" "Move to Inbox"
+macro index,pager !  <save-message>=[Gmail]/Spam<enter><enter> "Report spam"
+macro index,pager +  <save-message>=[Gmail]/Important<enter><enter> "Mark as Important"
+macro index,pager *  <save-message>=[Gmail]/Starred<enter><enter> "Star Message"
 
 # My own special folders
 macro index gg '<change-folder>=git<enter>'
