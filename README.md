@@ -11,6 +11,7 @@
         \____\_______/
 ```
 
+
 All the Dockerfiles I use.
 
 **Notes:**
@@ -127,6 +128,24 @@ Below is a general overview (with instructions) on each Docker container I use. 
  Dockerfile to allow the ability to run docker-in-docker and an SSH server.
  See: https://github.com/docker-library/docs/tree/master/centos#systemd-integration
  Also: https://github.com/moby/moby/issues/35317
+
+## cdrage/hamsket
+
+ **Description:**
+
+ Run Hamsket in a container (multi-app chat tool)
+
+ **Running:**
+
+ ```sh
+ docker run -d \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DISPLAY=unix$DISPLAY \
+  -v /dev/shm:/dev/shm \
+  --device /dev/dri \
+  --name hamsket \
+  cdrage/hamsket
+ ```
 
 ## cdrage/jrl
 
