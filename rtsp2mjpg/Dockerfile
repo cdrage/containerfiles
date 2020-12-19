@@ -20,7 +20,7 @@
 #
 # **How to use:**
 #
-# Access at http://<ip>:8090/live.jpg and /still.jpg
+# Access at http://<ip>:8090/live.mjpg and /still.jpg
 #
 
 FROM alpine:3.8

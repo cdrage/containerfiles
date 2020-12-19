@@ -541,7 +541,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  **How to use:**
 
- Access at http://<ip>:8090/live.jpg and /still.jpg
+ Access at http://<ip>:8090/live.mjpg and /still.jpg
 
 ## cdrage/samba
 
