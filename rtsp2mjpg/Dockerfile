@@ -34,4 +34,6 @@ ENV FFMPEG_INPUT_OPTS  ""
 ENV FFMPEG_OUTPUT_OPTS  ""
 ENV FFSERVER_LOG_LEVEL "error"
 ENV FFMPEG_LOG_LEVEL  "warning"
+HEALTHCHECK --interval=15s --timeout=1s --retries=3 \
+  CMD curl -f http://localhost:8090/still.jpg --max-time 1 --output /dev/null || exit 1
 ENTRYPOINT stream.sh
