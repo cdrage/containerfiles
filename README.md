@@ -147,6 +147,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
   cdrage/hamsket
  ```
 
+## cdrage/hugo
+
+ **Description:**
+ My Hugo file for hosting my personal wiki / journal / etc.
+
 ## cdrage/jrl
 
  **Description:**
