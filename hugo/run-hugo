@@ -15,7 +15,4 @@
 # limitations under the License.
 
 set -ex
-if [ ! -d ${HUGO_SRC}/themes ]; then
-    ln -s /themes ${HUGO_SRC}/themes
-fi
 hugo $(eval echo $*) # force default CMD env expansion
