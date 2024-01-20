@@ -7,7 +7,7 @@
  **Running:**
 
  ```sh
- docker run -it 
+ podman run -it 
  -v /filesblahblah/hacktheplanet.ovpn:/etc/openvpn/hacktheplanet.ovpn \
  --net=host --device /dev/net/tun:/dev/net/tun --cap-add=NET_ADMIN \
  cdrage/openvpn-client hacktheplanet.ovpn

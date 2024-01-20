@@ -5,7 +5,7 @@
  **Running:**
 
  ```sh
- docker run \
+ podman run \
     -d \
     -e DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \

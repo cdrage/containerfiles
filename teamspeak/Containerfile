@@ -12,7 +12,7 @@
 # **Running:**
 #
 # ```sh
-# docker run \
+# podman run \
 #   --name teamspeak \
 #   -d \
 #   -p 9987:9987/udp \

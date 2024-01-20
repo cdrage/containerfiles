@@ -10,7 +10,7 @@
 # ```sh
 # mkdir ~/seafile
 #
-# docker run \
+# podman run \
 # -d \
 # --name seafile-client \
 # -v ~/seafile:/data \

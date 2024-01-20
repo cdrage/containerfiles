@@ -9,7 +9,7 @@
 # **Running:**
 #
 # ```sh
-# docker run \
+# podman run \
 #  --name digitalocean-dns \
 #  -d \
 #  -v /var/digitalocean-dns:/config:rw \

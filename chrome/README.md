@@ -8,7 +8,7 @@
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
    --memory 3gb \
    -v /etc/localtime:/etc/localtime:ro \
    -v /tmp/.X11-unix:/tmp/.X11-unix \

@@ -18,7 +18,7 @@
 # **Running:**
 #
 # ```sh
-# docker run \
+# podman run \
 #   --cap-add=NET_ADMIN \
 #   --device /dev/net/tun \
 #   -h openvpn \

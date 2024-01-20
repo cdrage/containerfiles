@@ -11,7 +11,7 @@
  **Running:**
 
  ```sh
- docker run -d --name zoneminder \
+ podman run -d --name zoneminder \
  --net bridge \
   --privileged \
   -p 8080:80/tcp \

@@ -19,7 +19,7 @@
   **Running:**
 
  ```sh
-  docker run -d \
+  podman run -d \
    -p 80:80 \
    -p 443:443 \
    -p 3306:3306 \

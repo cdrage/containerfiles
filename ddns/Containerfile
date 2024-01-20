@@ -7,7 +7,7 @@
 # **Running:**
 #
 # ```sh
-# docker run \
+# podman run \
 # -d \
 # --restart always \
 # -e DODDNS_TOKEN=your_api_key \

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker run -d --name="Zoneminder" \
+podman run -d --name="Zoneminder" \
 --net="bridge" \
 --privileged="true" \
 -p 8080:80/tcp \

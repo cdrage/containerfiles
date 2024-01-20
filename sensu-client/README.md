@@ -14,7 +14,7 @@
  **Running:**
 
  ```sh
- docker run \
+ podman run \
   -v /etc/sensu/ssl/cert.pem:/etc/sensu/ssl/cert.pem \
   -v /etc/sensu/ssl/key.pem:/etc/sensu/ssl/key.pem \
   -v /etc/sensu/plugins:/etc/sensu/plugins \

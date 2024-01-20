@@ -14,7 +14,7 @@
  **Running:**
 
  ```sh
- docker run \
+ podman run \
    -p 53:53/udp \
    -e IP=10.10.10.1 \
    --name dnsmasq

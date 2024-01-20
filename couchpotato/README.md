@@ -6,7 +6,7 @@
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
    -p 5050:5050 \
    --name couchpotato \
    cdrage/couchpotato 
@@ -15,7 +15,7 @@
  **Running with persistent data:**
 
  ```sh
- docker run -d \
+ podman run -d \
    -p 5050:5050 \
    --name couchpotato \
    -v ./couchpotato_config:/root/.couchpotato \

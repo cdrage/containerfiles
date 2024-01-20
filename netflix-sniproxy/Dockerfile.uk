@@ -1,7 +1,7 @@
 # DNS proxy (netflix unblocker) open source.
 # fork of: https://github.com/trick77/dockerflix
 #
-# docker run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
+# podman run -d -p 80:80 -p 443:443 --name sniproxy sniproxy
 #
 # build Dockerfile.uk for uk version
 

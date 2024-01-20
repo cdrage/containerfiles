@@ -12,7 +12,7 @@
  **Running:**
 
  ```sh
- docker run \
+ podman run \
    --name transmission \
    -p 9091:9091 \
    -v ~/Downloads:/var/lib/transmission-daemon/downloads \

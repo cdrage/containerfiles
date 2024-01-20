@@ -7,7 +7,7 @@
 # **Running:**
 # 
 # ```sh
-# docker run \
+# podman run \
 #   -d \
 #   --restart=always \
 #   --net=host \

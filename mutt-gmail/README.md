@@ -5,7 +5,7 @@
  **Running:**
 
  ```sh
- docker run -it --rm \
+ podman run -it --rm \
     -e TERM=xterm-256color \
     -e MUTT_NAME \
     -e MUTT_EMAIL \

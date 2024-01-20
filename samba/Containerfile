@@ -9,7 +9,7 @@
 # (how I use it at least)
 #
 # ```sh
-# docker run \
+# podman run \
 #  -it \
 #  --name samba \
 #  -p 139:139 \

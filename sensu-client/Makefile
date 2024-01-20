@@ -8,7 +8,7 @@ RABBIT_USERNAME ?= sensu
 RABBIT_PASS ?= sensu
 
 all:
-	docker run \
+	podman run \
 	  -v $(SSL)/cert.pem:/etc/sensu/ssl/cert.pem \
 	  -v $(SSL)/key.pem:/etc/sensu/ssl/key.pem \
 		-e CLIENT_NAME=$(NAME) \

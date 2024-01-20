@@ -22,7 +22,7 @@
 # **Running:**
 # 
 # ```sh
-# docker run \
+# podman run \
 # -d \
 # -e "SEAFILE_VERSION=6.2.2" \
 # -e "SEAFILE_ADMIN_EMAIL=root@root.com" \
@@ -45,7 +45,7 @@
 # Once you've set that up, it's as simple as doing:
 #
 # ```sh
-# docker run \
+# podman run \
 # -d \
 # -e "SEAFILE_VERSION=6.2.2" \
 # -e "SEAFILE_ADMIN_EMAIL=root@root.com" \

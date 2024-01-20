@@ -23,7 +23,7 @@
  **Running:**
 
  ```sh
- docker run -it --rm \
+ podman run -it --rm \
    -v ~/txt.enc:/tmp/txt.enc \
    -v /etc/localtime:/etc/localtime:ro \
    cdrage/jrl

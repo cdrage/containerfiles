@@ -11,7 +11,7 @@
  **Running:**
 
  ```sh
- docker run -it -d \
+ podman run -it -d \
    -e TERM=xterm-256color \
    -v /etc/localtime:/etc/localtime:ro \
    --name weechat \

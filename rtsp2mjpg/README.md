@@ -7,7 +7,7 @@
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
    -p 8090:8090 \
    -v /etc/localtime:/etc/localtime:ro \
    -e RTSP_URL=rtsp://admin:foobar@192.168.1.36/live \
