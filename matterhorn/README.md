@@ -10,6 +10,7 @@
 
  ```sh
  podman run -it --rm \
+  -v /etc/localtime:/etc/localtime \
   -e MM_USER=foobar@domain.com \
   -e MM_PASS=foobar \
   -e MM_HOST=gitlab.mattermost.com \
