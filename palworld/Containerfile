@@ -1,0 +1,55 @@
+
+# **Description:**
+#
+# Originally from: https://github.com/thijsvanloef/palworld-server-docker
+# 
+# Used to run the "palworld" game
+# 
+# **Running:**
+#
+# ```sh
+# docker run -d \
+#    --name palworld\
+#    -p 8211:8211 \
+#    -p 8221:8221 \
+#    -p 27015:27015 \
+#    -v <palworld-folder>:/palworld/ \
+#    -e PLAYERS=16 \
+#    -e PORT=8211 \
+#    -e MULTITHREADING=true \
+#    -e PUBLIC_IP="" \
+#    -e PUBLIC_PORT="" \
+#    -e COMMUNITY=true \
+#    -e SERVER_NAME="My Palworld Server" \
+#    -e SERVER_PASSWORD="supersecret" \
+#    -e ADMIN_PASSWORD="supersecret" \
+#    -e UPDATE_ON_BOOT=true \
+#    --restart unless-stopped \
+#    thijsvanloef/palworld-server-docker
+# ```
+
+FROM cm2network/steamcmd:root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xdg-user-dirs=0.17-2 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PORT=8211 \
+    PLAYERS=16 \
+    MULTITHREADING=true \
+    COMMUNITY=false \
+    PUBLIC_IP= \
+    PUBLIC_PORT= \
+    SERVER_PASSWORD= \
+    SERVER_NAME= \
+    ADMIN_PASSWORD= \
+    UPDATE_ON_BOOT=true
+
+COPY ./scripts/* /home/steam/server/
+RUN chmod +x /home/steam/server/init.sh /home/steam/server/start.sh
+
+WORKDIR /home/steam/server
+
+EXPOSE 8211/tcp 8221/tcp 27015/udp
+ENTRYPOINT ["/home/steam/server/init.sh"]
