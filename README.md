@@ -130,6 +130,23 @@ Below is a general overview (with instructions) on each Docker container I use. 
  See: https://github.com/docker-library/docs/tree/master/centos#systemd-integration
  Also: https://github.com/moby/moby/issues/35317
 
+## [cdrage/gameserver](/gameserver/Containerfile)
+
+ **Description:**
+
+ Very simple "steam server" container checker.
+ 
+ Checks to see if there is a game server running on port 27015 LOCALLY (same IP as actual server)
+ meant to be ran alongside the steam server container.
+ 
+ **Running:**
+
+ ```sh
+ docker run -d \
+    --name gameserver \
+    -p 3000:3000
+ ```
+
 ## [cdrage/hamsket](/hamsket/Containerfile)
 
  **Description:**

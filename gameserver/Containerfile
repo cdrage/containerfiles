@@ -1,0 +1,33 @@
+# **Description:**
+#
+# Very simple "steam server" container checker.
+# 
+# Checks to see if there is a game server running on port 27015 LOCALLY (same IP as actual server)
+# meant to be ran alongside the steam server container.
+# 
+# **Running:**
+#
+# ```sh
+# docker run -d \
+#    --name gameserver \
+#    -p 3000:3000
+# ```
+
+#! Build Stage
+FROM node:16-alpine
+WORKDIR /app
+COPY . .
+RUN npm ci
+RUN npm audit fix
+RUN npm run build
+
+#! Run Stage
+FROM node:16-alpine
+WORKDIR /app
+COPY --from=0 /app/package*.json ./
+RUN npm ci --production --ignore-scripts
+RUN npm audit fix
+COPY --from=0 /app/build ./
+
+EXPOSE 3000
+CMD ["node", "./index.js"]
