@@ -7,7 +7,7 @@
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
     --name palworld\
     -p 8211:8211 \
     -p 8221:8221 \

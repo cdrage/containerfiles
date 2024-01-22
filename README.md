@@ -181,7 +181,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
     --name gameserver \
     -p 3000:3000
  ```
@@ -577,7 +577,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
     --name palworld\
     -p 8211:8211 \
     -p 8221:8221 \

@@ -8,7 +8,7 @@
  **Running:**
 
  ```sh
- docker run -d \
+ podman run -d \
     --name gameserver \
     -p 3000:3000
  ```
