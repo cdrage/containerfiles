@@ -25,11 +25,50 @@ All the Containerfiles I use.
 
 
 **Descriptions:**
-Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## [cdrage/centos7-systemd](/centos7-systemd/Containerfile)
+Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## Table of Contents
+
+- [centos7-systemd](#centos7-systemd)
+- [chrome](#chrome)
+- [couchpotato](#couchpotato)
+- [ddns](#ddns)
+- [digitalocean-dns](#digitalocean-dns)
+- [dind-ssh-centos7](#dind-ssh-centos7)
+- [gameserver](#gameserver)
+- [hamsket](#hamsket)
+- [helloworld](#helloworld)
+- [hugo](#hugo)
+- [jrl](#jrl)
+- [matterhorn](#matterhorn)
+- [mattermost-desktop](#mattermost-desktop)
+- [moodle](#moodle)
+- [mosh](#mosh)
+- [mosh-centos7](#mosh-centos7)
+- [mutt-gmail](#mutt-gmail)
+- [netflix-dnsmasq](#netflix-dnsmasq)
+- [netflix-sniproxy](#netflix-sniproxy)
+- [nfs-server](#nfs-server)
+- [openvpn-client](#openvpn-client)
+- [openvpn-client-docker](#openvpn-client-docker)
+- [openvpn-server](#openvpn-server)
+- [palworld](#palworld)
+- [peerflix](#peerflix)
+- [powerdns](#powerdns)
+- [rtsp2mjpg](#rtsp2mjpg)
+- [samba](#samba)
+- [seafile-client](#seafile-client)
+- [seafile-server](#seafile-server)
+- [sensu-client](#sensu-client)
+- [ssh](#ssh)
+- [teamspeak](#teamspeak)
+- [transmission](#transmission)
+- [weechat](#weechat)
+- [zoneminder](#zoneminder)
+
+## [centos7-systemd](/centos7-systemd/Containerfile)
 
  CentOS 7 Systemd base file. Here be dragons.
 
-## [cdrage/chrome](/chrome/Containerfile)
+## [chrome](/chrome/Containerfile)
 
  **Description:**
 
@@ -54,7 +93,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/chrome
  ```
 
-## [cdrage/couchpotato](/couchpotato/Containerfile)
+## [couchpotato](/couchpotato/Containerfile)
 
  **Description:**
 
@@ -80,7 +119,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/couchpotato 
  ```
 
-## [cdrage/ddns](/ddns/Containerfile)
+## [ddns](/ddns/Containerfile)
 
  **Description:**
 
@@ -99,7 +138,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  cdrage/ddns
  ```
 
-## [cdrage/digitalocean-dns](/digitalocean-dns/Containerfile)
+## [digitalocean-dns](/digitalocean-dns/Containerfile)
 
  **Description:**
 
@@ -124,13 +163,13 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  After running, open `/var/digitalocean-dns/dodns.conf.js` and edit it to your liking.
 
-## [cdrage/dind-ssh-centos7](/dind-ssh-centos7/Containerfile)
+## [dind-ssh-centos7](/dind-ssh-centos7/Containerfile)
 
  Dockerfile to allow the ability to run docker-in-docker and an SSH server.
  See: https://github.com/docker-library/docs/tree/master/centos#systemd-integration
  Also: https://github.com/moby/moby/issues/35317
 
-## [cdrage/gameserver](/gameserver/Containerfile)
+## [gameserver](/gameserver/Containerfile)
 
  **Description:**
 
@@ -147,7 +186,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -p 3000:3000
  ```
 
-## [cdrage/hamsket](/hamsket/Containerfile)
+## [hamsket](/hamsket/Containerfile)
 
  **Description:**
 
@@ -165,16 +204,16 @@ Below is a general overview (with instructions) on each Docker container I use. 
   cdrage/hamsket
  ```
 
-## [cdrage/helloworld](/helloworld/Containerfile)
+## [helloworld](/helloworld/Containerfile)
 
 
 
-## [cdrage/hugo](/hugo/Containerfile)
+## [hugo](/hugo/Containerfile)
 
  **Description:**
  My Hugo file for hosting my personal wiki / journal / etc.
 
-## [cdrage/jrl](/jrl/Containerfile)
+## [jrl](/jrl/Containerfile)
 
  **Description:**
 
@@ -210,7 +249,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  This will ask for your password, decrypt it to a tmp folder and open it in vim.
  Once you :wq the file, it'll save.
 
-## [cdrage/matterhorn](/matterhorn/Containerfile)
+## [matterhorn](/matterhorn/Containerfile)
 
  **Description:**
 
@@ -233,7 +272,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
   cdrage/matterhorn
  ```
 
-## [cdrage/mattermost-desktop](/mattermost-desktop/Containerfile)
+## [mattermost-desktop](/mattermost-desktop/Containerfile)
 
  **Description:**
 
@@ -251,7 +290,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     cdrage/mattermost-desktop
  ```
 
-## [cdrage/moodle](/moodle/Containerfile)
+## [moodle](/moodle/Containerfile)
 
   **Description:**
 
@@ -298,7 +337,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
   chmod -R 777 /var/www/html #yolo
 
-## [cdrage/mosh](/mosh/Containerfile)
+## [mosh](/mosh/Containerfile)
 
  **Description:**
  Mosh = SSH + mobile connection
@@ -322,7 +361,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/mosh user@blahblahserver
  ```
 
-## [cdrage/mosh-centos7](/mosh-centos7/Containerfile)
+## [mosh-centos7](/mosh-centos7/Containerfile)
 
  **Description:**
  Mosh = SSH + mobile connection
@@ -346,7 +385,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/mosh user@blahblahserver
  ```
 
-## [cdrage/mutt-gmail](/mutt-gmail/Containerfile)
+## [mutt-gmail](/mutt-gmail/Containerfile)
 
  **Description:**
 
@@ -368,7 +407,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     cdrage/mutt-gmail
  ```
 
-## [cdrage/netflix-dnsmasq](/netflix-dnsmasq/Containerfile)
+## [netflix-dnsmasq](/netflix-dnsmasq/Containerfile)
 
  **Description:**
 
@@ -394,7 +433,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/dnsmasq
  ```
 
-## [cdrage/netflix-sniproxy](/netflix-sniproxy/Containerfile)
+## [netflix-sniproxy](/netflix-sniproxy/Containerfile)
 
  **Description:**
 
@@ -416,7 +455,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/sniproxy
  ```
 
-## [cdrage/nfs-server](/nfs-server/Containerfile)
+## [nfs-server](/nfs-server/Containerfile)
 
  **Description:**
  
@@ -448,7 +487,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  sudo mount -v -o vers=4 <IP>:/ /media/mountpoint
  ```
 
-## [cdrage/openvpn-client](/openvpn-client/Containerfile)
+## [openvpn-client](/openvpn-client/Containerfile)
 
  **Description:**
 
@@ -465,7 +504,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  cdrage/openvpn-client hacktheplanet.ovpn
  ```
 
-## [cdrage/openvpn-client-docker](/openvpn-client-docker/Containerfile)
+## [openvpn-client-docker](/openvpn-client-docker/Containerfile)
 
  **Description:**
 
@@ -496,7 +535,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/openvpn-client-docker
    ```
 
-## [cdrage/openvpn-server](/openvpn-server/Containerfile)
+## [openvpn-server](/openvpn-server/Containerfile)
 
  **Description:**
 
@@ -527,7 +566,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  wget https://IP:8080/ --no-check-certificate -O config.ovpn
  ```
 
-## [cdrage/palworld](/palworld/Containerfile)
+## [palworld](/palworld/Containerfile)
 
  **Description:**
 
@@ -558,7 +597,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     thijsvanloef/palworld-server-docker
  ```
 
-## [cdrage/peerflix](/peerflix/Containerfile)
+## [peerflix](/peerflix/Containerfile)
 
  **Description:**
 
@@ -572,11 +611,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  Then open up VLC and use localhost:8888 to view
 
-## [cdrage/powerdns](/powerdns/Containerfile)
+## [powerdns](/powerdns/Containerfile)
 
  Notes: TODO
 
-## [cdrage/rtsp2mjpg](/rtsp2mjpg/Containerfile)
+## [rtsp2mjpg](/rtsp2mjpg/Containerfile)
 
  **Description:**
 
@@ -602,7 +641,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  Access at http://<ip>:8090/live.mjpg and /still.jpg
 
-## [cdrage/samba](/samba/Containerfile)
+## [samba](/samba/Containerfile)
 
  **Description:** 
  
@@ -633,7 +672,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
   -n  
  ``` 
 
-## [cdrage/seafile-client](/seafile-client/Containerfile)
+## [seafile-client](/seafile-client/Containerfile)
 
  **Description:**
 
@@ -679,7 +718,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  docker exec -it seafile-client /usr/bin/seaf-cli status
  ```
 
-## [cdrage/seafile-server](/seafile-server/Containerfile)
+## [seafile-server](/seafile-server/Containerfile)
 
  **Description:**
 
@@ -758,7 +797,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Other documentation**
  There's some more documentation that I will add later, but this is based upon a source image. See: https://github.com/strator-dev/docker-seafile for more details on how to run the garbage collector, etc.
 
-## [cdrage/sensu-client](/sensu-client/Containerfile)
+## [sensu-client](/sensu-client/Containerfile)
 
  **Description:**
 
@@ -798,7 +837,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  make all SSL=/etc/sensu/ssl IP=10.10.10.1 NAME=sensu SUB=default RABBIT_HOST=10.10.10.10 RABBIT_USERNAME=sensu RABBIT_PASS=sensu
  ```
 
-## [cdrage/ssh](/ssh/Containerfile)
+## [ssh](/ssh/Containerfile)
 
  **Description:**
  SSH in a Docker container :)
@@ -822,7 +861,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/ssh user@blahblahserver
  ```
 
-## [cdrage/teamspeak](/teamspeak/Containerfile)
+## [teamspeak](/teamspeak/Containerfile)
 
  **Description:**
 
@@ -847,7 +886,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/teamspeak
  ```
 
-## [cdrage/transmission](/transmission/Containerfile)
+## [transmission](/transmission/Containerfile)
 
  **Description:**
 
@@ -873,7 +912,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/transmission
  ```
 
-## [cdrage/weechat](/weechat/Containerfile)
+## [weechat](/weechat/Containerfile)
 
  **Description:**
 
@@ -896,7 +935,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    cdrage/weechat
  ```
 
-## [cdrage/zoneminder](/zoneminder/Containerfile)
+## [zoneminder](/zoneminder/Containerfile)
 
  **Description:**
 
