@@ -24,5 +24,5 @@
     -e ADMIN_PASSWORD="supersecret" \
     -e UPDATE_ON_BOOT=true \
     --restart unless-stopped \
-    thijsvanloef/palworld-server-docker
+    cdrage/palworld
  ```

@@ -594,7 +594,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
     -e ADMIN_PASSWORD="supersecret" \
     -e UPDATE_ON_BOOT=true \
     --restart unless-stopped \
-    thijsvanloef/palworld-server-docker
+    cdrage/palworld
  ```
 
 ## [peerflix](/peerflix/Containerfile)
