@@ -1,5 +1,19 @@
+# **Description:**
+#
+# Super simple helloworld container
+#
+# **Running:**
+#
+# ```sh
+# podman run -d \
+#   -p 8080:8080 \
+#   --name helloworld \
+#   cdrage/chrome
+# ```
+
 FROM debian:sid
 
+#! Install dependencies
 RUN apt-get update && \
     apt-get upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -7,11 +21,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+#! Files
 COPY main.sh /
 RUN mkdir /www
-
-EXPOSE 80
-
+EXPOSE 8080
 WORKDIR /www
 
+#! Entrypoint
 ENTRYPOINT ["/main.sh"]
