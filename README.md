@@ -35,6 +35,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [dind-ssh-centos7](#dind-ssh-centos7)
 - [gameserver](#gameserver)
 - [hamsket](#hamsket)
+- [hello](#hello)
 - [helloworld](#helloworld)
 - [hugo](#hugo)
 - [jrl](#jrl)
@@ -202,6 +203,24 @@ Below is a general overview (with instructions) on each Docker container I use. 
   --device /dev/dri \
   --name hamsket \
   cdrage/hamsket
+ ```
+
+## [hello](/hello/Containerfile)
+
+ **Description:**
+
+ Super simple hello container
+ that showcases a logo as well as 
+ environment information that may help
+ for diagnosing
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+   -p 8080:8080 \
+   --name helloworld \
+   cdrage/hello
  ```
 
 ## [helloworld](/helloworld/Containerfile)

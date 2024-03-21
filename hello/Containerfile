@@ -1,0 +1,27 @@
+# **Description:**
+#
+# Super simple hello container
+# that showcases a logo as well as 
+# environment information that may help
+# for diagnosing
+#
+# **Running:**
+#
+# ```sh
+# podman run -d \
+#   -p 8080:8080 \
+#   --name helloworld \
+#   cdrage/hello
+# ```
+
+FROM golang:1.21.2
+WORKDIR /app
+
+#! Copy the entire project which includes the public directory, vendoring, etc.
+COPY . .
+
+#! Build your application
+RUN CGO_ENABLED=0 GOOS=linux go build -o /frontend
+
+EXPOSE 8080
+CMD ["/frontend"]
