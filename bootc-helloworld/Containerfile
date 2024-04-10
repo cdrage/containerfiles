@@ -1,0 +1,26 @@
+# **Description:**
+#
+# Here be dragons
+# IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
+#
+# You do not run this as a normal container. Must use a tool such as: 
+# https://github.com/osbuild/bootc-image-builder 
+#
+# In order to make a bootable OS that runs the server on boot.
+#
+# **Running:**
+# 1. Boot OS
+# 2. Visit <ip>:80
+
+FROM quay.io/centos-bootc/centos-bootc-dev:stream9
+
+#! Install HTTP
+RUN dnf -y install httpd && \
+    systemctl enable httpd && \
+    mv /var/www /usr/share/www && \
+    sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
+
+#! Copy over files
+RUN rm /usr/share/httpd/noindex -rf
+COPY index.html /usr/share/www/html
+EXPOSE 80
