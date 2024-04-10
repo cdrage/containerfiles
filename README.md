@@ -235,7 +235,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name helloworld \
-   cdrage/chrome
+   cdrage/hello
  ```
 
 ## [hugo](/hugo/Containerfile)
