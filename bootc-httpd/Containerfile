@@ -1,7 +1,5 @@
 # **Description:**
 #
-# Do not EVER run this in production. You have been warned.
-#
 # Here be dragons
 # IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
 #
@@ -12,9 +10,17 @@
 #
 # **Running:**
 # 1. Boot OS
-# 2. Login as root
+# 2. Visit <ip>:80
 
 FROM quay.io/centos-bootc/centos-bootc:stream9
 
-#! Set password to root:root for testing purposes
-RUN echo "root:root" | chpasswd
+#! Install HTTP
+RUN dnf -y install httpd && \
+    systemctl enable httpd && \
+    mv /var/www /usr/share/www && \
+    sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
+
+#! Copy over files
+RUN rm /usr/share/httpd/noindex -rf
+COPY index.html /usr/share/www/html
+EXPOSE 80

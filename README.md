@@ -28,6 +28,7 @@ All the Containerfiles I use.
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## Table of Contents
 
 - [bootc-helloworld](#bootc-helloworld)
+- [bootc-httpd](#bootc-httpd)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
 - [couchpotato](#couchpotato)
@@ -67,6 +68,24 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [zoneminder](#zoneminder)
 
 ## [bootc-helloworld](/bootc-helloworld/Containerfile)
+
+ **Description:**
+
+ Do not EVER run this in production. You have been warned.
+
+ Here be dragons
+ IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
+
+ You do not run this as a normal container. Must use a tool such as: 
+ https://github.com/osbuild/bootc-image-builder 
+
+ In order to make a bootable OS that runs the server on boot.
+
+ **Running:**
+ 1. Boot OS
+ 2. Login as root
+
+## [bootc-httpd](/bootc-httpd/Containerfile)
 
  **Description:**
 
