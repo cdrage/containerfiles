@@ -1,0 +1,41 @@
+# **Description:**
+#
+# Do not EVER run this in production. You have been warned.
+#
+# Here be dragons
+# IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
+#
+# You do not run this as a normal container. Must use a tool such as: 
+# https://github.com/osbuild/bootc-image-builder 
+#
+# In order to make a bootable OS that runs the server on boot.
+#
+# **Running:**
+# 1. Boot OS
+# 2. Login as root
+
+FROM quay.io/fedora/fedora-bootc:40
+
+#! Set password to root:root for testing purposes
+RUN echo "root:root" | chpasswd
+
+# Use a patched version of rootfiles
+# Checkout the specific pull request (PR#5 in this case)
+RUN dnf install -y rpm-build git dnf-plugins-core
+WORKDIR /usr/src/rootfiles
+RUN git clone https://src.fedoraproject.org/rpms/rootfiles.git . 
+RUN git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
+RUN git checkout origin/pr/5/head
+RUN dnf builddep -y rootfiles.spec
+RUN rpmbuild -bb rootfiles.spec \
+    --define "_topdir `pwd`" \
+    --define "_sourcedir `pwd`" \
+    --define "_specdir `pwd`" \
+    --define "_builddir `pwd`" \
+    --define "_srcrpmdir `pwd`" \
+    --define "_rpmdir `pwd`"
+RUN dnf install -y ./noarch/rootfiles-*.rpm
+RUN dnf clean all
+
+# Install the GUI
+RUN dnf groupinstall "Cinnamon Desktop" --exclude=rootfiles -y
