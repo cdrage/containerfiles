@@ -13,3 +13,6 @@
  **Running:**
  1. Boot OS
  2. Login as root
+ Use a patched version of rootfiles
+ Checkout the specific pull request (PR#5 in this case)
+ Install the GUI

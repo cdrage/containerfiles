@@ -16,9 +16,6 @@
 
 FROM quay.io/fedora/fedora-bootc:40
 
-#! Set password to root:root for testing purposes
-RUN echo "root:root" | chpasswd
-
 # Use a patched version of rootfiles
 # Checkout the specific pull request (PR#5 in this case)
 RUN dnf install -y rpm-build git dnf-plugins-core

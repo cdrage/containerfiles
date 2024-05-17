@@ -1,7 +1,5 @@
  **Description:**
 
- Do not EVER run this in production. You have been warned.
-
  Here be dragons
  IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
 
@@ -12,4 +10,8 @@
 
  **Running:**
  1. Boot OS
- 2. Login as root
+ 2. Visit <ip>:80
+ ARGUMENTS
+ Install selinux requirements for k3s
+ INSTALL K3S
+ Use your public SSH key so you can access the root machine after booting for debugging

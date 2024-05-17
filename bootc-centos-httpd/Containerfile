@@ -23,4 +23,3 @@ RUN dnf -y install httpd && \
 #! Copy over files
 RUN rm /usr/share/httpd/noindex -rf
 COPY index.html /usr/share/www/html
-EXPOSE 80

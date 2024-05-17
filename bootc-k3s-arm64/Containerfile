@@ -1,0 +1,35 @@
+# **Description:**
+#
+# Here be dragons.
+# IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
+#
+# You do not run this as a normal container. Must use a tool such as: 
+# https://github.com/osbuild/bootc-image-builder 
+#
+# In order to make a bootable OS that runs the server on boot.
+#
+# **Running:**
+# 1. Boot OS
+# 2. Visit <ip>:80
+
+FROM quay.io/centos-bootc/centos-bootc:stream9
+
+# ARGUMENTS
+ARG token
+ARG sshpubkey
+
+# Install selinux requirements for k3s
+RUN dnf install -y selinux-policy-base
+RUN dnf install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/aarch64/os/Packages/container-selinux-2.228.0-1.el9.noarch.rpm
+RUN dnf install -y https://github.com/k3s-io/k3s-selinux/releases/download/v1.5.stable.1/k3s-selinux-1.5-1.el9.noarch.rpm
+
+# INSTALL K3S
+RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s-arm64; chmod a+x /usr/local/bin/k3s
+RUN echo "K3S_TOKEN=${token}" > /etc/systemd/system/k3s.service.env
+COPY usr/ /usr/
+RUN systemctl enable k3s.service
+
+# Use your public SSH key so you can access the root machine after booting for debugging
+RUN set -eu; mkdir -p /usr/ssh && \
+  echo 'AuthorizedKeysFile /usr/ssh/%u.keys .ssh/authorized_keys .ssh/authorized_keys2' >> /etc/ssh/sshd_config.d/30-auth-system.conf && \
+  echo ${sshpubkey} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys

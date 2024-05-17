@@ -27,10 +27,10 @@ All the Containerfiles I use.
 **Descriptions:**
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## Table of Contents
 
-- [bootc-centos-helloworld](#bootc-centos-helloworld)
+- [aviation-checklist](#aviation-checklist)
 - [bootc-centos-httpd](#bootc-centos-httpd)
-- [bootc-fedora-helloworld](#bootc-fedora-helloworld)
-- [bootc-rhel-helloworld](#bootc-rhel-helloworld)
+- [bootc-fedora-gui](#bootc-fedora-gui)
+- [bootc-k3s-arm64](#bootc-k3s-arm64)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
 - [couchpotato](#couchpotato)
@@ -69,23 +69,21 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [weechat](#weechat)
 - [zoneminder](#zoneminder)
 
-## [bootc-centos-helloworld](/bootc-centos-helloworld/Containerfile)
+## [aviation-checklist](/aviation-checklist/Containerfile)
 
  **Description:**
 
- Do not EVER run this in production. You have been warned.
-
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ Used to generate aviation checklists. Based on the work by https://github.com/freerobby/aviation-checklist
+ with the patch https://github.com/freerobby/aviation-checklist/pull/2
 
  **Running:**
- 1. Boot OS
- 2. Login as root
+
+ ```sh
+ podman run -d \
+   -p 8080:80 \
+   --name aviation-checklist \
+   cdrage/aviation-checklist
+ ```
 
 ## [bootc-centos-httpd](/bootc-centos-httpd/Containerfile)
 
@@ -103,7 +101,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  1. Boot OS
  2. Visit <ip>:80
 
-## [bootc-fedora-helloworld](/bootc-fedora-helloworld/Containerfile)
+## [bootc-fedora-gui](/bootc-fedora-gui/Containerfile)
 
  **Description:**
 
@@ -120,12 +118,13 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Running:**
  1. Boot OS
  2. Login as root
+ Use a patched version of rootfiles
+ Checkout the specific pull request (PR#5 in this case)
+ Install the GUI
 
-## [bootc-rhel-helloworld](/bootc-rhel-helloworld/Containerfile)
+## [bootc-k3s-arm64](/bootc-k3s-arm64/Containerfile)
 
  **Description:**
-
- Do not EVER run this in production. You have been warned.
 
  Here be dragons
  IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
@@ -137,7 +136,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  **Running:**
  1. Boot OS
- 2. Login as root
+ 2. Visit <ip>:80
+ ARGUMENTS
+ Install selinux requirements for k3s
+ INSTALL K3S
+ Use your public SSH key so you can access the root machine after booting for debugging
 
 ## [centos7-systemd](/centos7-systemd/Containerfile)
 
