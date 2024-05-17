@@ -1,12 +1,7 @@
  **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ This Containerfile creates a simple httpd server on CentOS Stream 9. So you can run a web server on boot. This will be accessible on port 80.
 
  **Running:**
  1. Boot OS

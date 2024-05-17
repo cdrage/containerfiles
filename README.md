@@ -30,7 +30,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [aviation-checklist](#aviation-checklist)
 - [bootc-centos-httpd](#bootc-centos-httpd)
 - [bootc-fedora-gui](#bootc-fedora-gui)
-- [bootc-k3s-arm64](#bootc-k3s-arm64)
+- [bootc-k3s-master-arm64](#bootc-k3s-master-arm64)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
 - [couchpotato](#couchpotato)
@@ -88,14 +88,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ## [bootc-centos-httpd](/bootc-centos-httpd/Containerfile)
 
  **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ This Containerfile creates a simple httpd server on CentOS Stream 9. So you can run a web server on boot. This will be accessible on port 80.
 
  **Running:**
  1. Boot OS
@@ -104,43 +99,37 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ## [bootc-fedora-gui](/bootc-fedora-gui/Containerfile)
 
  **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- Do not EVER run this in production. You have been warned.
-
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ This Containerfile is meant for testing GUI loading with the bootc extension using fedora:40.
+ there are no users created in this image, so you will need to create a user to login from within the Containerfile using the "ARG" directive and a public SSH key.
+ This is also very unstable..
 
  **Running:**
- 1. Boot OS
- 2. Login as root
- Use a patched version of rootfiles
- Checkout the specific pull request (PR#5 in this case)
- Install the GUI
+ 1. Create disk image using the above extension
+ 2. Boot OS
+ 3. See that it is a GUI that was loaded (cinnamon desktop)
+ 4. Login with the user and password you passed in.
 
-## [bootc-k3s-arm64](/bootc-k3s-arm64/Containerfile)
+## [bootc-k3s-master-arm64](/bootc-k3s-master-arm64/Containerfile)
 
  **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ This Containerfile creates a k3s master on arm64 using CentOS Stream 9. So you can run a k8s server on boot.
+ 
+ Notes:
+ * the default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
+ * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
+ * The k3s token is passed in as an argument, you must provide it with `--build-arg token=<token>`
+ * The SSH public key is passed in as an argument, you must provide it with `--build-arg sshpubkey=<sshpubkey>`
 
  **Running:**
- 1. Boot OS
- 2. Visit <ip>:80
- ARGUMENTS
- Install selinux requirements for k3s
- INSTALL K3S
- Use your public SSH key so you can access the root machine after booting for debugging
+ 1. Create disk image using the above extension
+ 2. Boot OS
+ 3. See that it creates the k3s server on boot
+ 4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
+ 5. Then use `kubectl` to interact with the server
 
 ## [centos7-systemd](/centos7-systemd/Containerfile)
 

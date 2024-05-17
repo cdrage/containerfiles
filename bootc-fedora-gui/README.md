@@ -1,18 +1,12 @@
  **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- Do not EVER run this in production. You have been warned.
-
- Here be dragons
- IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications.
-
- You do not run this as a normal container. Must use a tool such as: 
- https://github.com/osbuild/bootc-image-builder 
-
- In order to make a bootable OS that runs the server on boot.
+ This Containerfile is meant for testing GUI loading with the bootc extension using fedora:40.
+ there are no users created in this image, so you will need to create a user to login from within the Containerfile using the "ARG" directive and a public SSH key.
+ This is also very unstable..
 
  **Running:**
- 1. Boot OS
- 2. Login as root
- Use a patched version of rootfiles
- Checkout the specific pull request (PR#5 in this case)
- Install the GUI
+ 1. Create disk image using the above extension
+ 2. Boot OS
+ 3. See that it is a GUI that was loaded (cinnamon desktop)
+ 4. Login with the user and password you passed in.
