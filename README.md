@@ -165,7 +165,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
  * hostname=k8snode
- * server=https://IP:6443
+ * server=https://IPADDRESS:6443
  * token=MySuperSecretK3sToken
  * sshpubkey=MySSHPublicKeyNOTThePrivateKey
 
