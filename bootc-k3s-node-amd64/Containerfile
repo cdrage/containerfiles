@@ -1,13 +1,17 @@
 # **Description:**
 # > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 #
-# This Containerfile creates a k3s master on arm64 using CentOS Stream 9. So you can run a k8s server on boot.
-# 
+# This Containerfile creates a k3s NODE on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+#
+# You must know the IP address of the master in order for these nodes to connect.
+#
 # Notes:
-# * the default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
-# * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
-# * The k3s token is passed in as an argument, you must provide it with `--build-arg token=<token>`
-# * The SSH public key is passed in as an argument, you must provide it with `--build-arg sshpubkey=<sshpubkey>`
+# * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
+#
+# Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
+# * server=https://<IP-ADDRESS>:6443
+# * token=MySuperSecretK3sToken
+# * sshpubkey=MySSHPublicKeyNOTThePrivateKey
 #
 # **Running:**
 # 1. Create disk image using the above extension
@@ -19,6 +23,8 @@
 FROM quay.io/centos-bootc/centos-bootc:stream9
 
 #! ARGUMENTS
+#! Intentionally left blank so users know to pass them in... the build will fail if they don't.
+ARG server
 ARG token
 ARG sshpubkey
 
@@ -27,9 +33,10 @@ RUN dnf install -y selinux-policy-base
 RUN dnf install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/aarch64/os/Packages/container-selinux-2.228.0-1.el9.noarch.rpm
 RUN dnf install -y https://github.com/k3s-io/k3s-selinux/releases/download/v1.5.stable.1/k3s-selinux-1.5-1.el9.noarch.rpm
 
-#! INSTALL K3S
-RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s-arm64; chmod a+x /usr/local/bin/k3s
+#! INSTALL AMD64 K3S
+RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
 RUN echo "K3S_TOKEN=${token}" > /etc/systemd/system/k3s.service.env
+RUN echo "K3S_URL=${server}" >> /etc/systemd/system/k3s.service.env
 COPY usr/ /usr/
 RUN systemctl enable k3s.service
 

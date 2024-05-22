@@ -1,0 +1,19 @@
+# **Description:**
+# > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+#
+# This Containerfile creates a simple httpd server on Fedora. So you can run a web server on boot. This will be accessible on port 80.
+#
+# **Running:**
+# 1. Boot OS
+# 2. Visit <ip>:80
+FROM quay.io/fedora/fedora-bootc:40
+
+#! Install HTTP
+RUN dnf -y install httpd && \
+    systemctl enable httpd && \
+    mv /var/www /usr/share/www && \
+    sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
+
+#! Copy over files
+RUN rm /usr/share/httpd/noindex -rf
+COPY index.html /usr/share/www/html
