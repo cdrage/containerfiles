@@ -30,7 +30,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [aviation-checklist](#aviation-checklist)
 - [bootc-centos-httpd](#bootc-centos-httpd)
 - [bootc-fedora-gui](#bootc-fedora-gui)
-- [bootc-k3s-master-arm64](#bootc-k3s-master-arm64)
+- [bootc-fedora-httpd](#bootc-fedora-httpd)
+- [bootc-k3s-master-amd64](#bootc-k3s-master-amd64)
+- [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
 - [couchpotato](#couchpotato)
@@ -111,18 +113,61 @@ Below is a general overview (with instructions) on each Docker container I use. 
  3. See that it is a GUI that was loaded (cinnamon desktop)
  4. Login with the user and password you passed in.
 
-## [bootc-k3s-master-arm64](/bootc-k3s-master-arm64/Containerfile)
+## [bootc-fedora-httpd](/bootc-fedora-httpd/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- This Containerfile creates a k3s master on arm64 using CentOS Stream 9. So you can run a k8s server on boot.
+ This Containerfile creates a simple httpd server on Fedora. So you can run a web server on boot. This will be accessible on port 80.
+
+ **Running:**
+ 1. Boot OS
+ 2. Visit <ip>:80
+
+## [bootc-k3s-master-amd64](/bootc-k3s-master-amd64/Containerfile)
+
+ **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+
+ This Containerfile creates a k3s master on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+
+ In my setup, I have networking done on the ROUTER side where it will automatically assign an IP address based on the MAC.
+ It is ideal to take note of this IP address as it will be needed for the nodes to join the cluster.
  
  Notes:
- * the default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
+ * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
- * The k3s token is passed in as an argument, you must provide it with `--build-arg token=<token>`
- * The SSH public key is passed in as an argument, you must provide it with `--build-arg sshpubkey=<sshpubkey>`
+
+ Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
+ * token=MySuperSecretK3sToken
+ * sshpubkey=MySSHPublicKeyNOTThePrivateKey
+ * hostname=k8smaster
+
+ **Running:**
+ 1. Create disk image using the above extension
+ 2. Boot OS
+ 3. See that it creates the k3s server on boot
+ 4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
+ 5. Then use `kubectl` to interact with the server
+
+## [bootc-k3s-node-amd64](/bootc-k3s-node-amd64/Containerfile)
+
+ **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+
+ This Containerfile creates a k3s NODE on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+
+ You must know the IP address of the master in order for these nodes to connect.
+
+ Notes:
+ * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
+ * a unique hostname must be set or else it is rejected by the master k3s server for being not unique
+
+ Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
+ * hostname=k8snode
+ * server=https://<IP-ADDRESS>:6443
+ * token=MySuperSecretK3sToken
+ * sshpubkey=MySSHPublicKeyNOTThePrivateKey
 
  **Running:**
  1. Create disk image using the above extension
