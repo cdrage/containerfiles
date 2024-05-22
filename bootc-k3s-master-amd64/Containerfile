@@ -13,6 +13,7 @@
 # Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
 # * token=MySuperSecretK3sToken
 # * sshpubkey=MySSHPublicKeyNOTThePrivateKey
+# * hostname=k8smaster
 #
 # **Running:**
 # 1. Create disk image using the above extension
@@ -25,6 +26,7 @@ FROM quay.io/centos-bootc/centos-bootc:stream9
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.
+ARG hostname
 ARG token
 ARG sshpubkey
 
@@ -32,6 +34,9 @@ ARG sshpubkey
 RUN dnf install -y selinux-policy-base
 RUN dnf install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/aarch64/os/Packages/container-selinux-2.228.0-1.el9.noarch.rpm
 RUN dnf install -y https://github.com/k3s-io/k3s-selinux/releases/download/v1.5.stable.1/k3s-selinux-1.5-1.el9.noarch.rpm
+
+#! Set hostname
+RUN echo ${hostname} > /etc/hostname
 
 #! INSTALL AMD64 K3S
 RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
