@@ -165,16 +165,15 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
  * hostname=k8snode
- * server=https://<IP-ADDRESS>:6443
+ * server=https://IP:6443
  * token=MySuperSecretK3sToken
  * sshpubkey=MySSHPublicKeyNOTThePrivateKey
 
  **Running:**
  1. Create disk image using the above extension
  2. Boot OS
- 3. See that it creates the k3s server on boot
- 4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
- 5. Then use `kubectl` to interact with the server
+ 3. See that it creates the k3s agent on boot / connects to the k8s server
+ 4. use kubectl get nodes and you should see your server.
 
 ## [centos7-systemd](/centos7-systemd/Containerfile)
 
