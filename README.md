@@ -138,10 +138,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
 
- Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
- * token=MySuperSecretK3sToken
- * sshpubkey=MySSHPublicKeyNOTThePrivateKey
- * hostname=k8smaster
+ Arguments are required in order to build this image with both your k3s K3S_TOKEN and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
+ * HOSTNAME=k8smaster
+ * K3S_TOKEN=MySuperSecretK3sToken
+ * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
+ * K8S_VERSION=1.29.4
 
  **Running:**
  1. Create disk image using the above extension
@@ -164,10 +165,11 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * a unique hostname must be set or else it is rejected by the master k3s server for being not unique
 
  Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
- * hostname=k8snode
- * server=https://IPADDRESS:6443
- * token=MySuperSecretK3sToken
- * sshpubkey=MySSHPublicKeyNOTThePrivateKey
+ * HOSTNAME=k8smaster
+ * K3S_URL=https://k8smaster:6443
+ * K3S_TOKEN=MySuperSecretK3sToken
+ * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
+ * K8S_VERSION=1.29.4
 
  **Running:**
  1. Create disk image using the above extension

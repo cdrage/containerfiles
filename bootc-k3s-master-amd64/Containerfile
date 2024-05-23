@@ -10,10 +10,11 @@
 # * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
 # * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
 #
-# Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
-# * token=MySuperSecretK3sToken
-# * sshpubkey=MySSHPublicKeyNOTThePrivateKey
-# * hostname=k8smaster
+# Arguments are required in order to build this image with both your k3s K3S_TOKEN and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
+# * HOSTNAME=k8smaster
+# * K3S_TOKEN=MySuperSecretK3sToken
+# * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
+# * K8S_VERSION=1.29.4
 #
 # **Running:**
 # 1. Create disk image using the above extension
@@ -26,20 +27,24 @@ FROM quay.io/centos-bootc/centos-bootc:stream9
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.
-ARG hostname
-ARG token
-ARG sshpubkey
+ARG HOSTNAME
+ARG K3S_TOKEN
+ARG SSH_PUBLIC_KEY
+ARG K8S_VERSION=1.29.4
 
 #! Set hostname
-RUN echo ${hostname} > /etc/hostname
+RUN echo ${HOSTNAME} > /etc/hostname
 
-#! INSTALL AMD64 K3S
-RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
-RUN echo "K3S_TOKEN=${token}" > /etc/systemd/system/k3s.service.env
+#! Install AMD64 k3s
+RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v${K8S_VERSION}%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
+RUN echo "K3S_TOKEN=${K3S_TOKEN}" > /etc/systemd/system/k3s.service.env
 COPY usr/ /usr/
 RUN systemctl enable k3s.service
 
-#! Add the SSH key from sshpubkey so we can actually get the kubeconfig file
+#! Install AMD64 kubectl for internal testing
+RUN curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${K8S_VERSION}/bin/linux/amd64/kubectl; chmod a+x /usr/local/bin/kubectl
+
+#! Add the SSH key from SSH_PUBLIC_KEY so we can actually get the kubeconfig file
 RUN set -eu; mkdir -p /usr/ssh && \
   echo 'AuthorizedKeysFile /usr/ssh/%u.keys .ssh/authorized_keys .ssh/authorized_keys2' >> /etc/ssh/sshd_config.d/30-auth-system.conf && \
-  echo ${sshpubkey} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys
+  echo ${SSH_PUBLIC_KEY} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys
