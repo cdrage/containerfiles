@@ -1,0 +1,38 @@
+# **Description:**
+#
+# Yeah...
+#
+# Based on https://github.com/modem7/docker-rickroll/tree/master
+#
+# **Running:**
+#
+# ```sh
+# podman run -d \
+#   -p 8080:8080 \
+#   --name rickroll \
+#   cdrage/rickroll
+# ```
+
+FROM nginxinc/nginx-unprivileged:1.26.0-alpine
+
+USER root
+
+ARG UID=101
+ARG GID=101
+
+#! Copy files into image
+COPY MP4/1080/*.mp4 /usr/share/nginx/html/
+COPY --chmod=755 scripts/*.sh /docker-entrypoint.d/
+COPY --chmod=755 scripts/index/80-index.sh /docker-entrypoint.d/
+
+#! Change permissions to index.html
+RUN chown $UID:0 /usr/share/nginx/html/index.html
+
+#! Document what port is required
+EXPOSE 8080
+
+STOPSIGNAL SIGQUIT
+
+USER $UID
+
+CMD ["nginx", "-g", "daemon off;"]

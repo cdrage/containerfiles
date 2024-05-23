@@ -60,6 +60,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [palworld](#palworld)
 - [peerflix](#peerflix)
 - [powerdns](#powerdns)
+- [rickroll](#rickroll)
 - [rtsp2mjpg](#rtsp2mjpg)
 - [samba](#samba)
 - [seafile-client](#seafile-client)
@@ -756,6 +757,23 @@ Below is a general overview (with instructions) on each Docker container I use. 
 ## [powerdns](/powerdns/Containerfile)
 
  Notes: TODO
+
+## [rickroll](/rickroll/Containerfile)
+
+ **Description:**
+
+ Yeah...
+
+ Based on https://github.com/modem7/docker-rickroll/tree/master
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+   -p 8080:8080 \
+   --name rickroll \
+   cdrage/rickroll
+ ```
 
 ## [rtsp2mjpg](/rtsp2mjpg/Containerfile)
 
