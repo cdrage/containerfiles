@@ -35,6 +35,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
+- [compile-test](#compile-test)
 - [couchpotato](#couchpotato)
 - [ddns](#ddns)
 - [digitalocean-dns](#digitalocean-dns)
@@ -138,6 +139,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
+ * k3s is loaded with NO LOADBALANCER. I use metallb locally, and I have added --disable=servicelb to the systemd service file
 
  Arguments are required in order to build this image with both your k3s K3S_TOKEN and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
  * HOSTNAME=k8smaster
@@ -206,6 +208,19 @@ Below is a general overview (with instructions) on each Docker container I use. 
    --name chrome \
    cdrage/chrome
  ```
+
+## [compile-test](/compile-test/Containerfile)
+
+ **Description:**
+
+ Does nothing. Just compiles the linux kernel.
+
+ Used for benchmarking running `podman build`.
+
+ **Running:**
+
+ N/A. Just `podman build` it.
+    && sed -i 's/ CONFIG_DEBUG_INFO is not set/CONFIG_DEBUG_INFO=n/' .config
 
 ## [couchpotato](/couchpotato/Containerfile)
 
