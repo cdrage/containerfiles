@@ -12,7 +12,8 @@ EnvironmentFile=-/etc/systemd/system/k3s.service.env
 ExecStartPre=/bin/sh -xc '! /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service 2>/dev/null'
 
 # I PREFER NO TRAEFIK / I use nginx-ingress instead, feel free to disable this or add your own customizations.
-ExecStart=/usr/local/bin/k3s server --disable=traefik
+# Disables servicelb as well as I use metallb instead.
+ExecStart=/usr/local/bin/k3s server --disable=traefik --disable=servicelb
 
 KillMode=process
 Delegate=yes
