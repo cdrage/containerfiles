@@ -34,7 +34,6 @@ ARG SSH_PUBLIC_KEY
 ARG K8S_VERSION=1.29.4
 
 #! Set hostname
-RUN echo ${HOSTNAME} > /etc/hostname
 RUN hostnamectl set-hostname ${HOSTNAME}
 
 #! Install AMD64 k3s
