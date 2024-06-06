@@ -1,1 +1,3 @@
 *.swp
+build-args.conf
+auth.json

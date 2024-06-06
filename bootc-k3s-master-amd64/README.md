@@ -5,6 +5,10 @@
 
  In my setup, I have networking done on the ROUTER side where it will automatically assign an IP address based on the MAC.
  It is ideal to take note of this IP address as it will be needed for the nodes to join the cluster.
+
+ **PRIVATE REGISTRY:** 
+ If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
+ this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
  
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
@@ -23,3 +27,5 @@
  3. See that it creates the k3s server on boot
  4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
  5. Then use `kubectl` to interact with the server
+ COPY auth.json /etc/ostree/auth.json
+ Add tailscale

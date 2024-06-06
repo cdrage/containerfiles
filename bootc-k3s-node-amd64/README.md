@@ -5,6 +5,10 @@
 
  You must know the IP address of the master in order for these nodes to connect.
 
+ **PRIVATE REGISTRY:** 
+ If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
+ this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
+
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * a unique hostname must be set or else it is rejected by the master k3s server for being not unique
@@ -21,3 +25,4 @@
  2. Boot OS
  3. See that it creates the k3s agent on boot / connects to the k8s server
  4. use kubectl get nodes and you should see your server.
+ COPY auth.json /etc/ostree/auth.json
