@@ -150,7 +150,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * K3S_TOKEN=MySuperSecretK3sToken
  * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
  * K8S_VERSION=1.29.4
-
  **Running:**
  1. Create disk image using the above extension
  2. Boot OS
