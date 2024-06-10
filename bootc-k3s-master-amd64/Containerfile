@@ -35,7 +35,7 @@ FROM quay.io/centos-bootc/centos-bootc:stream9
 ARG HOSTNAME
 ARG K3S_TOKEN
 ARG SSH_PUBLIC_KEY
-ARG K8S_VERSION=1.29.4
+ARG K8S_VERSION=1.30.1
 
 #! Set hostname
 RUN echo "${HOSTNAME}" > /etc/hostname
@@ -56,9 +56,3 @@ RUN curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${K8S_VERSION}/bi
 RUN set -eu; mkdir -p /usr/ssh && \
   echo 'AuthorizedKeysFile /usr/ssh/%u.keys .ssh/authorized_keys .ssh/authorized_keys2' >> /etc/ssh/sshd_config.d/30-auth-system.conf && \
   echo ${SSH_PUBLIC_KEY} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys
-
-# Add tailscale
-RUN dnf config-manager --add-repo https://pkgs.tailscale.com/stable/centos/9/tailscale.repo && \
-    dnf -y install tailscale && \
-    dnf clean all && \
-    ln -s ../tailscaled.service /usr/lib/systemd/system/default.target.wants

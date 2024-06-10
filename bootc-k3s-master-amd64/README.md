@@ -27,4 +27,3 @@
  4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
  5. Then use `kubectl` to interact with the server
  COPY auth.json /etc/ostree/auth.json
- Add tailscale

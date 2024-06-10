@@ -157,7 +157,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
  5. Then use `kubectl` to interact with the server
  COPY auth.json /etc/ostree/auth.json
- Add tailscale
 
 ## [bootc-k3s-node-amd64](/bootc-k3s-node-amd64/Containerfile)
 
@@ -167,7 +166,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  This Containerfile creates a k3s NODE on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
 
  You must know the IP address of the master in order for these nodes to connect.
-
  **PRIVATE REGISTRY:** 
  If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
  this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
