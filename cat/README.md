@@ -1,6 +1,6 @@
  **Description:**
 
- Yeah...
+ Spinning maxwell the cat
 
  Based on https://github.com/modem7/docker-rickroll/tree/master
 
@@ -9,6 +9,6 @@
  ```sh
  podman run -d \
    -p 8080:8080 \
-   --name rickroll \
-   cdrage/rickroll
+   --name cat \
+   cdrage/cat
  ```

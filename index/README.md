@@ -1,12 +1,12 @@
- **Description:**
+**Description:**
 
- Super simple helloworld container
+ Index page of k8s.land
 
  **Running:**
 
  ```sh
  podman run -d \
    -p 8080:8080 \
-   --name helloworld \
-   cdrage/hello
+   --name index \
+   cdrage/index
  ```

@@ -33,6 +33,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [bootc-fedora-httpd](#bootc-fedora-httpd)
 - [bootc-k3s-master-amd64](#bootc-k3s-master-amd64)
 - [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
+- [cat](#cat)
 - [centos7-systemd](#centos7-systemd)
 - [chrome](#chrome)
 - [compile-test](#compile-test)
@@ -45,6 +46,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [hello](#hello)
 - [helloworld](#helloworld)
 - [hugo](#hugo)
+- [index](#index)
 - [jrl](#jrl)
 - [matterhorn](#matterhorn)
 - [mattermost-desktop](#mattermost-desktop)
@@ -187,6 +189,23 @@ Below is a general overview (with instructions) on each Docker container I use. 
  3. See that it creates the k3s agent on boot / connects to the k8s server
  4. use kubectl get nodes and you should see your server.
  COPY auth.json /etc/ostree/auth.json
+
+## [cat](/cat/Containerfile)
+
+ **Description:**
+
+ Spinning maxwell the cat
+
+ Based on https://github.com/modem7/docker-rickroll/tree/master
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+   -p 8080:8080 \
+   --name cat \
+   cdrage/cat
+ ```
 
 ## [centos7-systemd](/centos7-systemd/Containerfile)
 
@@ -363,7 +382,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  **Description:**
 
- Super simple helloworld container
+ Super simple helloworld container that says the hostname of the container
 
  **Running:**
 
@@ -378,6 +397,21 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  **Description:**
  My Hugo file for hosting my personal wiki / journal / etc.
+
+## [index](/index/Containerfile)
+
+**Description:**
+
+ Index page of k8s.land
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+   -p 8080:8080 \
+   --name index \
+   cdrage/index
+ ```
 
 ## [jrl](/jrl/Containerfile)
 

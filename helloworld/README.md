@@ -1,6 +1,6 @@
  **Description:**
 
- Super simple helloworld container
+ Super simple helloworld container that says the hostname of the container
 
  **Running:**
 
