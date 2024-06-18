@@ -1,14 +1,14 @@
-# **Description:**
+#**Description:**
 #
-# Super simple helloworld container that says the hostname of the container
+# Index page of k8s.land
 #
 # **Running:**
 #
 # ```sh
 # podman run -d \
 #   -p 8080:8080 \
-#   --name helloworld \
-#   cdrage/hello
+#   --name index \
+#   cdrage/index
 # ```
 
 FROM debian:sid
@@ -26,6 +26,7 @@ COPY main.sh /
 RUN mkdir /www
 EXPOSE 8080
 WORKDIR /www
+COPY index.html /www/index.html
 
 #! Entrypoint
 ENTRYPOINT ["/main.sh"]
