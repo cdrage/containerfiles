@@ -16,19 +16,29 @@
             font-size: 1vw; /* Adjusts the size of the ASCII art based on the width of the viewport */
             text-align: center;
             line-height: 1; /* Adjust line height to avoid gaps between lines of ASCII */
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: rainbow 5s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
 <body>
     <pre>
- ___  __    ________  ________       ___       ________  ________   ________     
-|\  \|\  \ |\   __  \|\   ____\     |\  \     |\   __  \|\   ___  \|\   ___ \    
-\ \  \/  /|\ \  \|\  \ \  \___|_    \ \  \    \ \  \|\  \ \  \\ \  \ \  \_|\ \   
- \ \   ___  \ \   __  \ \_____  \    \ \  \    \ \   __  \ \  \\ \  \ \  \ \\ \  
-  \ \  \\ \  \ \  \|\  \|____|\  \  __\ \  \____\ \  \ \  \ \  \\ \  \ \  \_\\ \ 
+ ___  __    ________  ________       ___       ________  ________   ________
+|\  \|\  \ |\   __  \|\   ____\     |\  \     |\   __  \|\   ___  \|\   ___ \
+\ \  \/  /|\ \  \|\  \ \  \___|_    \ \  \    \ \  \|\  \ \  \\ \  \ \  \_|\ \
+ \ \   ___  \ \   __  \ \_____  \    \ \  \    \ \   __  \ \  \\ \  \ \  \ \\ \
+  \ \  \\ \  \ \  \|\  \|____|\  \  __\ \  \____\ \  \ \  \ \  \\ \  \ \  \_\\ \
    \ \__\\ \__\ \_______\____\_\  \|\__\ \_______\ \__\ \__\ \__\\ \__\ \_______\
     \|__| \|__|\|_______|\_________\|__|\|_______|\|__|\|__|\|__| \|__|\|_______|
-                        \|_________|                                             
+                        \|_________|
     </pre>
 </body>
 </html>
