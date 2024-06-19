@@ -13,7 +13,7 @@
  * a unique hostname must be set or else it is rejected by the master k3s server for being not unique
 
  Arguments are required in order to build this image with both your k3s token and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
- * HOSTNAME=k8smaster
+ * HOSTNAME=k8snode1
  * K3S_URL=https://k8smaster:6443
  * K3S_TOKEN=MySuperSecretK3sToken
  * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
