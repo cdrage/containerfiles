@@ -56,7 +56,6 @@ RUN echo "HOSTNAME=${HOSTNAME}" > /etc/systemd/system/hostname.service.env
 RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v${K8S_VERSION}%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
 RUN echo "K3S_TOKEN=${K3S_TOKEN}" > /etc/systemd/system/k3s.service.env
 RUN echo "K3S_URL=${K3S_URL}" >> /etc/systemd/system/k3s.service.env
-RUN systemctl enable k3s.service
 
 #! Install AMD64 kubectl for internal testing
 RUN curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${K8S_VERSION}/bin/linux/amd64/kubectl; chmod a+x /usr/local/bin/kubectl
@@ -65,3 +64,8 @@ RUN curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${K8S_VERSION}/bi
 RUN set -eu; mkdir -p /usr/ssh && \
   echo 'AuthorizedKeysFile /usr/ssh/%u.keys .ssh/authorized_keys .ssh/authorized_keys2' >> /etc/ssh/sshd_config.d/30-auth-system.conf && \
   echo ${SSH_PUBLIC_KEY} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys
+
+
+#! Enable all the services we will be using
+RUN systemctl enable k3s.service
+RUN systemctl enable hostname.service

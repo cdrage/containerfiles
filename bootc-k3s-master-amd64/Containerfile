@@ -67,3 +67,4 @@ RUN set -eu; mkdir -p /usr/ssh && \
 
 #! Enable all the services we will be using
 RUN systemctl enable k3s.service
+RUN systemctl enable hostname.service
