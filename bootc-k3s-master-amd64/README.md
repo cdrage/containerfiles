@@ -10,6 +10,11 @@
  If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
  this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
  
+ **GPU:**
+ * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-fedora` / see `bootc-nvidia-base-fedora` folder for more details.
+ * GPU drivers will be built + loaded on each boot.
+ * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
+
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
