@@ -8,6 +8,11 @@
 # **PRIVATE REGISTRY:** 
 # If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
 # this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
+
+# **Expanding your rootfs:**
+# * If you want your OS to expand it's rootfs automatically, ENABLE THIS `# RUN systemctl enable bootc-generic-growpart.service` from the Containerfile.
+# * This is disabled by default as it can be dangerous if you are not using a VM or a disk that can be expanded.
+# * This is good for situations like cloud providers, usb sticks, etc.
 #
 # **GPU:**
 # * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-fedora` / see `bootc-nvidia-base-fedora` folder for more details.
@@ -32,6 +37,7 @@
 # 4. use kubectl get nodes and you should see your server.
 
 FROM quay.io/centos-bootc/centos-bootc:stream9
+#! FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.
@@ -69,3 +75,8 @@ RUN set -eu; mkdir -p /usr/ssh && \
 #! Enable all the services we will be using
 RUN systemctl enable k3s.service
 RUN systemctl enable hostname.service
+
+#! If you want your OS to expand it's rootfs automatically, ENABLE THIS.
+#! This is disabled by default as it can be dangerous if you are not using a VM or a disk that can be expanded.
+#! This is good for situations like cloud providers, usb sticks, etc.
+#! RUN systemctl enable bootc-generic-growpart.service

@@ -7,6 +7,10 @@
  **PRIVATE REGISTRY:** 
  If you want to pull from a private registry. Uncomment the "COPY auth.json /etc/ostree/auth.json" line and add your auth.json file.
  this auth.json file is typically found in ~/.config/containers/auth.json for podman users.
+ **Expanding your rootfs:**
+ * If you want your OS to expand it's rootfs automatically, ENABLE THIS `# RUN systemctl enable bootc-generic-growpart.service` from the Containerfile.
+ * This is disabled by default as it can be dangerous if you are not using a VM or a disk that can be expanded.
+ * This is good for situations like cloud providers, usb sticks, etc.
 
  **GPU:**
  * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-fedora` / see `bootc-nvidia-base-fedora` folder for more details.
