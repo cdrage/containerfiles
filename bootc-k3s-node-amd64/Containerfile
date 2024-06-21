@@ -35,8 +35,13 @@ ARG K3S_TOKEN
 ARG SSH_PUBLIC_KEY
 ARG K8S_VERSION=1.30.1
 
+#! Copy over all usr files
+COPY usr/ /usr/
+
 #! Set hostname
-RUN echo "${HOSTNAME}" > /etc/hostname
+#! Hostname does NOT work due to: https://gitlab.com/fedora/bootc/tracker/-/issues/25
+#! Instead there is a oneshot systemd service that sets the hostname on boot
+RUN echo "HOSTNAME=${HOSTNAME}" > /etc/systemd/system/hostname.service.env
 
 #! UNCOMMENT if you want to add auth.json for pulling images from a private registry for bootc
 # COPY auth.json /etc/ostree/auth.json
@@ -45,7 +50,6 @@ RUN echo "${HOSTNAME}" > /etc/hostname
 RUN curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v${K8S_VERSION}%2Bk3s1/k3s; chmod a+x /usr/local/bin/k3s
 RUN echo "K3S_TOKEN=${K3S_TOKEN}" > /etc/systemd/system/k3s.service.env
 RUN echo "K3S_URL=${K3S_URL}" >> /etc/systemd/system/k3s.service.env
-COPY usr/ /usr/
 RUN systemctl enable k3s.service
 
 #! Install AMD64 kubectl for internal testing

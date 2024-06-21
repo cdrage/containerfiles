@@ -1,0 +1,12 @@
+[Unit]
+Description=Set system hostname from environment file
+Before=network.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/systemd/system/hostname.service.env
+ExecStart=/usr/bin/hostnamectl set-hostname ${HOSTNAME}
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

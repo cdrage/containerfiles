@@ -1,0 +1,16 @@
+[Unit]
+Description=Bootc User Overlay and NVIDIA Setup
+DefaultDependencies=no
+Before=sysinit.target
+Before=basic.target nvidia-toolkit-firstboot.service k3s.service
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bootc useroverlay
+ExecStart=/usr/bin/akmods --force
+ExecStart=/usr/sbin/modprobe nvidia
+RemainAfterExit=true
+
+[Install]
+WantedBy=sysinit.target
