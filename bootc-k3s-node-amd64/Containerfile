@@ -37,7 +37,8 @@
 # 4. use kubectl get nodes and you should see your server.
 
 FROM quay.io/centos-bootc/centos-bootc:stream9
-#! FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora
+#! Use the below base image if you want to use GPU (you'll have to built it yourself FYI!)
+#! FROM ghcr.io/cdrage/bootc-nvidia-base-fedora
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.
