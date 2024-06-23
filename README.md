@@ -35,7 +35,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
 - [bootc-nvidia-base-fedora](#bootc-nvidia-base-fedora)
 - [cat](#cat)
-- [ddns](#ddns)
 - [gameserver](#gameserver)
 - [hello](#hello)
 - [helloworld](#helloworld)
@@ -217,25 +216,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -p 8080:8080 \
    --name cat \
    ghcr.io/cdrage/cat
- ```
-
-## [ddns](/ddns/Containerfile)
-
- **Description:**
-
- Dynamic DNS for DigitalOcean
-
- **Source**: https://github.com/gbolo/dockerfiles/tree/master/digitalocean-ddns
-
- **Running:**
-
- ```sh
- podman run \
- -d \
- --restart always \
- -e DODDNS_TOKEN=your_api_key \
- -e DODDNS_DOMAIN=your.domain.com \
- ghcr.io/cdrage/ddns
  ```
 
 ## [gameserver](/gameserver/Containerfile)
