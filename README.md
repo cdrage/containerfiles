@@ -18,11 +18,11 @@
 All the Containerfiles I use.
 
 **Notes:**
+  - Pushed to [`ghcr.io/`](https://ghcr.io) GitHub image registry, EXCEPT for `bootc-` directories.
+  - bootc directories are special and are not pushed.
   - Scroll down on how to run it.
   - Containers can be started by using simple variables. 
-  - Each container is automatically built and pushed to https://hub.docker.com/r/cdrage/ on each commit.
   - You may also `git clone https://github.com/cdrage/containerfiles` and build it yourself (`podman build -t username/container .` or `docker build -t username/container`). 
-
 
 **Descriptions:**
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## Table of Contents
@@ -36,21 +36,15 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [bootc-nvidia-base-fedora](#bootc-nvidia-base-fedora)
 - [cat](#cat)
 - [centos7-systemd](#centos7-systemd)
-- [chrome](#chrome)
 - [ddns](#ddns)
-- [digitalocean-dns](#digitalocean-dns)
 - [gameserver](#gameserver)
 - [hello](#hello)
 - [helloworld](#helloworld)
 - [hugo](#hugo)
 - [index](#index)
 - [jrl](#jrl)
-- [mutt-gmail](#mutt-gmail)
 - [palworld](#palworld)
-- [powerdns](#powerdns)
 - [rickroll](#rickroll)
-- [ssh](#ssh)
-- [transmission](#transmission)
 - [weechat](#weechat)
 
 ## [aviation-checklist](/aviation-checklist/Containerfile)
@@ -66,7 +60,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:80 \
    --name aviation-checklist \
-   cdrage/aviation-checklist
+   ghcr.io/cdrage/aviation-checklist
  ```
 
 ## [bootc-centos-httpd](/bootc-centos-httpd/Containerfile)
@@ -231,31 +225,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  CentOS 7 Systemd base file. Here be dragons.
 
-## [chrome](/chrome/Containerfile)
-
- **Description:**
-
- Run Chrome in a container (thx jess)
-
- **Note:** Disabled sandbox due to running-in-a-container issue with userns 
- enabled in kernel, see: https://github.com/jfrazelle/dockerfiles/issues/149
-
- **Running:**
-
- ```sh
- podman run -d \
-   --memory 3gb \
-   -v /etc/localtime:/etc/localtime:ro \
-   -v /tmp/.X11-unix:/tmp/.X11-unix \
-   -e DISPLAY=unix$DISPLAY \
-   -v $HOME/.chrome:/data \
-   -v $HOME/docker_files/chrome_downloads:/root/Downloads \
-   -v /dev/shm:/dev/shm \
-   --device /dev/dri \
-   --name chrome \
-   cdrage/chrome
- ```
-
 ## [ddns](/ddns/Containerfile)
 
  **Description:**
@@ -274,31 +243,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  -e DODDNS_DOMAIN=your.domain.com \
  cdrage/ddns
  ```
-
-## [digitalocean-dns](/digitalocean-dns/Containerfile)
-
- **Description:**
-
- **Source:** https://github.com/AMilassin/docker-dodns
-
- Docker to update DigitalOcean DNS similar to DynDNS.
-
- It's as easy as running the container and then editing the configuration file.
- 
- **Running:**
-
- ```sh
- podman run \
-  --name digitalocean-dns \
-  -d \
-  -v /var/digitalocean-dns:/config:rw \
-  --restart=always \
-  cdrage/digitalocean-dns
- ``` 
-
- **Configuration:**
-
- After running, open `/var/digitalocean-dns/dodns.conf.js` and edit it to your liking.
 
 ## [gameserver](/gameserver/Containerfile)
 
@@ -406,28 +350,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  This will ask for your password, decrypt it to a tmp folder and open it in vim.
  Once you :wq the file, it'll save.
 
-## [mutt-gmail](/mutt-gmail/Containerfile)
-
- **Description:**
-
- My mutt configuration in a docker container
-
- **Running:**
-
- ```sh
- podman run -it --rm \
-    -e TERM=xterm-256color \
-    -e MUTT_NAME \
-    -e MUTT_EMAIL \
-    -e MUTT_PASS \
-    -e MUTT_PGP_KEY \
-    -v $HOME/.gnupg:/home/user/.gnupg \
-    -v $HOME/dropbox/etc/signature:/home/user/.mutt/signature \
-    -v $HOME/dropbox/etc/aliases:/home/user/.mutt/aliases \
-    -v /etc/localtime:/etc/localtime:ro \
-    cdrage/mutt-gmail
- ```
-
 ## [palworld](/palworld/Containerfile)
 
  **Description:**
@@ -459,10 +381,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
     cdrage/palworld
  ```
 
-## [powerdns](/powerdns/Containerfile)
-
- Notes: TODO
-
 ## [rickroll](/rickroll/Containerfile)
 
  **Description:**
@@ -478,56 +396,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
    -p 8080:8080 \
    --name rickroll \
    cdrage/rickroll
- ```
-
-## [ssh](/ssh/Containerfile)
-
- **Description:**
- SSH in a Docker container :)
-
- **Running:**
-
- To normally use it:
- ```sh
- podman run -it --rm \
-   -e TERM=xterm-256color \
-   -v $HOME/.ssh:/root/.ssh \
-   cdrage/ssh user@blahblahserver
- ```
-
- How I use it (since I pipe it through a VPN):
- ```sh
- podman run -it --rm \
-   --net=container:vpn
-   -e TERM=xterm-256color \
-   -v $HOME/.ssh:/root/.ssh \
-   cdrage/ssh user@blahblahserver
- ```
-
-## [transmission](/transmission/Containerfile)
-
- **Description:**
-
- *Source:** https://github.com/dperson/transmission
- 
- ```
- ENV VARIABLES
- TRUSER - set username for transmission auth
- TRPASSWD - set password for transmission auth
- TIMEZONE - set zoneinfo timezone
- ```
-
- **Running:**
-
- ```sh
- podman run \
-   --name transmission \
-   -p 9091:9091 \
-   -v ~/Downloads:/var/lib/transmission-daemon/downloads \
-   -e TRUSER=admin \
-   -e TRPASSWD=admin \
-   -d \
-   cdrage/transmission
  ```
 
 ## [weechat](/weechat/Containerfile)

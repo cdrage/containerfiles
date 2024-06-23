@@ -1,4 +1,0 @@
-application/pdf; pdftohtml -q -stdout %s | w3m -T text/html; copiousoutput
-application/msword; wvWare -x /usr/lib/wv/wvHtml.xml %s 2>/dev/null | w3m -T text/html; copiousoutput
-application/octet-stream ; echo %s "can be anything..."                    ; copiousoutput
-text/html                ; /usr/bin/elinks -dump %s ; nametemplate=%s.html ; copiousoutput

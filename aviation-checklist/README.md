@@ -9,5 +9,5 @@
  podman run -d \
    -p 8080:80 \
    --name aviation-checklist \
-   cdrage/aviation-checklist
+   ghcr.io/cdrage/aviation-checklist
  ```
