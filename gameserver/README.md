@@ -11,4 +11,5 @@
  podman run -d \
     --name gameserver \
     -p 3000:3000
+    ghcr.io/cdrage/gameserver
  ```

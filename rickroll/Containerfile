@@ -10,7 +10,7 @@
 # podman run -d \
 #   -p 8080:8080 \
 #   --name rickroll \
-#   cdrage/rickroll
+#   ghcr.io/cdrage/rickroll
 # ```
 
 FROM nginxinc/nginx-unprivileged:1.26.0-alpine

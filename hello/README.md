@@ -11,5 +11,5 @@
  podman run -d \
    -p 8080:8080 \
    --name helloworld \
-   cdrage/hello
+   ghcr.io/cdrage/hello
  ```

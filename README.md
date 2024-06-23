@@ -35,7 +35,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
 - [bootc-nvidia-base-fedora](#bootc-nvidia-base-fedora)
 - [cat](#cat)
-- [centos7-systemd](#centos7-systemd)
 - [ddns](#ddns)
 - [gameserver](#gameserver)
 - [hello](#hello)
@@ -45,7 +44,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [jrl](#jrl)
 - [palworld](#palworld)
 - [rickroll](#rickroll)
-- [weechat](#weechat)
 
 ## [aviation-checklist](/aviation-checklist/Containerfile)
 
@@ -218,12 +216,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name cat \
-   cdrage/cat
+   ghcr.io/cdrage/cat
  ```
-
-## [centos7-systemd](/centos7-systemd/Containerfile)
-
- CentOS 7 Systemd base file. Here be dragons.
 
 ## [ddns](/ddns/Containerfile)
 
@@ -241,7 +235,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  --restart always \
  -e DODDNS_TOKEN=your_api_key \
  -e DODDNS_DOMAIN=your.domain.com \
- cdrage/ddns
+ ghcr.io/cdrage/ddns
  ```
 
 ## [gameserver](/gameserver/Containerfile)
@@ -259,6 +253,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
     --name gameserver \
     -p 3000:3000
+    ghcr.io/cdrage/gameserver
  ```
 
 ## [hello](/hello/Containerfile)
@@ -276,7 +271,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name helloworld \
-   cdrage/hello
+   ghcr.io/cdrage/hello
  ```
 
 ## [helloworld](/helloworld/Containerfile)
@@ -291,13 +286,21 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name helloworld \
-   cdrage/hello
+   ghcr.io/cdrage/hello
  ```
 
 ## [hugo](/hugo/Containerfile)
 
  **Description:**
  My Hugo file for hosting my personal wiki / journal / etc.
+
+ **Running:**
+ podman run -d \
+   -p 1313:1313 \
+   --name hugo \
+   -v /path/to/hugo:/src \
+   -v /path/to/hugo/public:/dest \
+   ghcr.io/cdrage/hugo
 
 ## [index](/index/Containerfile)
 
@@ -311,7 +314,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name index \
-   cdrage/index
+   ghcr.io/cdrage/index
  ```
 
 ## [jrl](/jrl/Containerfile)
@@ -344,7 +347,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -it --rm \
    -v ~/txt.enc:/tmp/txt.enc \
    -v /etc/localtime:/etc/localtime:ro \
-   cdrage/jrl
+   ghcr.io/cdrage/jrl
  ```
  
  This will ask for your password, decrypt it to a tmp folder and open it in vim.
@@ -395,29 +398,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -d \
    -p 8080:8080 \
    --name rickroll \
-   cdrage/rickroll
- ```
-
-## [weechat](/weechat/Containerfile)
-
- **Description:**
-
- Weechat IRC!
-
- recommended to daemonize it and run in background for collection of logs, etc while idle, simply attach to container.  ctrl+p ctrl+q to quit
-
- port 40900 is used for weechat relay (if you decide to use it)
-
- run then `docker attach weechat`
-
- **Running:**
-
- ```sh
- podman run -it -d \
-   -e TERM=xterm-256color \
-   -v /etc/localtime:/etc/localtime:ro \
-   --name weechat \
-   -p 40900:40900 \
-   cdrage/weechat
+   ghcr.io/cdrage/rickroll
  ```
 

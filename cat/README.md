@@ -10,5 +10,5 @@
  podman run -d \
    -p 8080:8080 \
    --name cat \
-   cdrage/cat
+   ghcr.io/cdrage/cat
  ```

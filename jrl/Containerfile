@@ -26,7 +26,7 @@
 # podman run -it --rm \
 #   -v ~/txt.enc:/tmp/txt.enc \
 #   -v /etc/localtime:/etc/localtime:ro \
-#   cdrage/jrl
+#   ghcr.io/cdrage/jrl
 # ```
 # 
 # This will ask for your password, decrypt it to a tmp folder and open it in vim.

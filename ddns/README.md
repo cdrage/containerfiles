@@ -12,5 +12,5 @@
  --restart always \
  -e DODDNS_TOKEN=your_api_key \
  -e DODDNS_DOMAIN=your.domain.com \
- cdrage/ddns
+ ghcr.io/cdrage/ddns
  ```
