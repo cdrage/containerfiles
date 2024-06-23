@@ -1,0 +1,56 @@
+name: Push & build images on each commit
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    environment: registry
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+        
+    - name: Log in
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Build and push images
+      run: |
+        ls -lah
+        for dir in */; do
+          repo_name=$(basename "$dir")
+          if [[ "$repo_name" == bootc-* ]]; then
+            echo "Skipping $repo_name: Ignored by pattern"
+            continue
+          fi
+          if [ -d "$dir" ]; then
+            if [ -f "$dir/Containerfile" ]; then
+              echo "Building and pushing $repo_name"
+              cd $dir
+              docker buildx build --platform linux/amd64,linux/arm64 \
+                -t ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${repo_name} \
+                --push -f Containerfile .
+              cd ..
+            else
+              echo "Skipping $repo_name: No Containerfile found"
+            fi
+          else
+            echo "Skipping $dir: Not a directory"
+          fi
+        done
+
