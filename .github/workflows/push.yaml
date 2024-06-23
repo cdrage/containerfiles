@@ -42,9 +42,10 @@ jobs:
             if [ -f "$dir/Containerfile" ]; then
               echo "Building and pushing $repo_name"
               cd $dir
-              docker buildx build --platform linux/amd64,linux/arm64 \
+              docker build --platform linux/amd64 \
                 -t ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${repo_name} \
-                --push -f Containerfile .
+                -f Containerfile .
+              docker push ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${repo_name}
               cd ..
             else
               echo "Skipping $repo_name: No Containerfile found"
