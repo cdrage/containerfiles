@@ -9,7 +9,7 @@ Before=podman-restart.service podman.service
 
 [Service]
 Type=oneshot
-ExecStartPre=/usr/bin/mkdir -p /etc/cdi
+ExecStart=-/usr/bin/mkdir -p /etc/cdi
 ExecStart=/bin/bash -c '/usr/bin/nvidia-ctk cdi generate > /etc/cdi/nvidia.yaml'
 RemainAfterExit=yes
 

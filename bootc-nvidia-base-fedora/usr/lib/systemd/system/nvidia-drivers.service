@@ -10,7 +10,7 @@ Before=podman-restart.service podman.service
 # but I do not know how to get the nvidia driver to work without usroverlay to build the kernel and load it.
 [Service]
 Type=oneshot
-ExecStartPre=/usr/bin/bootc usroverlay
+ExecStart=-/usr/bin/bootc usroverlay
 ExecStart=/usr/sbin/akmods --force
 ExecStart=/usr/sbin/modprobe nvidia
 RemainAfterExit=true
