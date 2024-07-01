@@ -26,6 +26,10 @@
 # 3. Use nvidia-smi command within the booted container image to see if it works.
 FROM quay.io/fedora/fedora-bootc:40
 
+#! before ANYTHING, we update to the latest kernel..
+#! this is to prevent any "missing kernel modules" on boot from happening.
+RUN dnf update -y kernel kernel-modules
+
 #! install from rpmfusion
 RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
