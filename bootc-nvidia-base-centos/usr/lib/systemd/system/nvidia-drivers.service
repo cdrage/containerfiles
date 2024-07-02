@@ -1,0 +1,24 @@
+[Unit]
+Description=Bootc User Overlay and NVIDIA Setup will generate the kernel module and load the nvidia driver
+
+# Done before k3s and toolkit-firstboot
+Before=nvidia-toolkit-firstboot.service
+# Must be done BEFORE the podman-restart.service or podman.service (if using API) in case we are using GPU for podman for testing nvidia-smi
+Before=podman-restart.service podman.service
+
+# Ensure it runs before multi-user.target which would load 
+# services such as k3s, etc.
+Before=multi-user.target
+
+# VERY VERY BAD way of implementing this as we have to do usroverlay just to get the nvidia driver to work
+# but I do not know how to get the nvidia driver to work without usroverlay to build the kernel and load it.
+[Service]
+Type=oneshot
+ExecStart=-/usr/bin/bootc usroverlay
+ExecStart=/usr/sbin/akmods --force
+ExecStart=/usr/sbin/modprobe nvidia
+RemainAfterExit=true
+TimeoutStartSec=300
+
+[Install]
+WantedBy=basic.target
