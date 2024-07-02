@@ -41,7 +41,7 @@
 
 FROM quay.io/centos-bootc/centos-bootc:stream9
 #! Use the below base image if you want to use GPU (you'll have to built it yourself FYI!)
-#! FROM ghcr.io/cdrage/bootc-nvidia-base-fedora
+#! FROM ghcr.io/cdrage/bootc-nvidia-base-centos
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.

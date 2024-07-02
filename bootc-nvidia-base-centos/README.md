@@ -6,6 +6,9 @@
 
  DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
  ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
+ 
+ This uses Centos Stream 9 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
+ for the nvidia drivers to keep up / work properly / update correctly.
 
  IMPORTANT NOTE:
  On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
@@ -21,6 +24,6 @@
  
 
  **Running:**
- 1. In your OTHER Containerfile, change `FROM quay.io/fedora/fedora-bootc:40` to `FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora` / this Containerfile.
+ 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
  2. The nvidia drivers will recompile + use akmod + modprobe on boot.
  3. Use nvidia-smi command within the booted container image to see if it works.
