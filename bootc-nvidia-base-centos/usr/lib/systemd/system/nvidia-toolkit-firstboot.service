@@ -12,6 +12,7 @@ Type=oneshot
 ExecStart=-/usr/bin/mkdir -p /etc/cdi
 ExecStart=/bin/bash -c '/usr/bin/nvidia-ctk cdi generate > /etc/cdi/nvidia.yaml'
 RemainAfterExit=yes
+TimeoutStartSec=300
 
 [Install]
 WantedBy=basic.target
