@@ -7,7 +7,7 @@
 # DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
 # ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
 # 
-# This uses Centos Stream 9 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
+# This Fedora 40 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
 # for the nvidia drivers to keep up / work properly / update correctly.
 #
 # IMPORTANT NOTE:
@@ -24,14 +24,13 @@
 # 
 #
 # **Running:**
-# 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
+# 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora` / this Containerfile.
 # 2. The nvidia drivers will recompile + use akmod + modprobe on boot.
 # 3. Use nvidia-smi command within the booted container image to see if it works.
-FROM quay.io/centos-bootc/centos-bootc:stream9
+FROM quay.io/fedora/fedora-bootc:40
 
-#! Install EPEL as well as free/non-free rpm fusion repo's for access to the nvidia drivers
-RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm && \
+#! Install rpmfusion free and nonfree repo's for access to the nvidia drivers
+RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm && \
     https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 #! Install the kernel devel and kernel header tools
