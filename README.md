@@ -28,12 +28,14 @@ All the Containerfiles I use.
 Below is a general overview (with instructions) on each Docker container I use. This is automatically generated from the comments that I have left in each `Containerfile`.## Table of Contents
 
 - [aviation-checklist](#aviation-checklist)
-- [bootc-centos-httpd](#bootc-centos-httpd)
-- [bootc-fedora-gui](#bootc-fedora-gui)
-- [bootc-fedora-httpd](#bootc-fedora-httpd)
+- [bootc-gui-fedora](#bootc-gui-fedora)
+- [bootc-httpd-centos](#bootc-httpd-centos)
+- [bootc-httpd-fedora](#bootc-httpd-fedora)
 - [bootc-k3s-master-amd64](#bootc-k3s-master-amd64)
 - [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
+- [bootc-microshift-centos](#bootc-microshift-centos)
 - [bootc-nvidia-base-centos](#bootc-nvidia-base-centos)
+- [bootc-nvidia-base-fedora](#bootc-nvidia-base-fedora)
 - [cat](#cat)
 - [gameserver](#gameserver)
 - [hello](#hello)
@@ -43,6 +45,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [jrl](#jrl)
 - [palworld](#palworld)
 - [rickroll](#rickroll)
+- [vulkan-mac-silicon-gpu-stress-test](#vulkan-mac-silicon-gpu-stress-test)
+- [vulkan-mac-silicon-gpu-vkcube](#vulkan-mac-silicon-gpu-vkcube)
 
 ## [aviation-checklist](/aviation-checklist/Containerfile)
 
@@ -60,18 +64,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
    ghcr.io/cdrage/aviation-checklist
  ```
 
-## [bootc-centos-httpd](/bootc-centos-httpd/Containerfile)
-
- **Description:**
- > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
-
- This Containerfile creates a simple httpd server on CentOS Stream 9. So you can run a web server on boot. This will be accessible on port 80.
-
- **Running:**
- 1. Boot OS
- 2. Visit <ip>:80
-
-## [bootc-fedora-gui](/bootc-fedora-gui/Containerfile)
+## [bootc-gui-fedora](/bootc-gui-fedora/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
@@ -86,7 +79,18 @@ Below is a general overview (with instructions) on each Docker container I use. 
  3. See that it is a GUI that was loaded (cinnamon desktop)
  4. Login with the user and password you passed in.
 
-## [bootc-fedora-httpd](/bootc-fedora-httpd/Containerfile)
+## [bootc-httpd-centos](/bootc-httpd-centos/Containerfile)
+
+ **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+
+ This Containerfile creates a simple httpd server on CentOS Stream 9. So you can run a web server on boot. This will be accessible on port 80.
+
+ **Running:**
+ 1. Boot OS
+ 2. Visit <ip>:80
+
+## [bootc-httpd-fedora](/bootc-httpd-fedora/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
@@ -120,7 +124,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * GPU drivers will be built + loaded on each boot.
  * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
  
-
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
  * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
@@ -178,6 +181,32 @@ Below is a general overview (with instructions) on each Docker container I use. 
  4. use kubectl get nodes and you should see your server.
  COPY auth.json /etc/ostree/auth.json
 
+## [bootc-microshift-centos](/bootc-microshift-centos/Containerfile)
+
+ **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+
+ This Containerfile creates a MicroShift server on CentOS Stream 9. So you can run a Kubernetes-derivative server (OpenShift) by Red Hat. MicroShift is intended as an "Edge" version of OpenShift.
+ 
+ **Pre-requisites:**
+ * You must have a valid OpenShift Hybrid Cloud pull secret from https://console.redhat.com/openshift/install/pull-secret in order to build and use MicroShift
+ * Podman Desktop installed
+ * BootC extension installed for Podman Desktop (https://github.com/containers/podman-desktop-extension-bootc)
+ * Public SSH key for easy access to the server
+
+ **Running:**
+ 1. Build the image with your SSH_PUBLIC_KEY and OPENSHIFT_PULL_SECRET arguments, either through the podman CLI or through Podman Desktop
+ 2. Use bootc podman desktop extension to create an OS
+ 3. Use your favourite VM tool to boot the raw file / qcow2 / etc.
+ 4. SSH into the OS
+ 5. Copy the kubeconfig file from `/var/lib/microshift/resources/kubeadmin/kubeconfig` to `~/.kube/config` on the remote machine.
+ 6. Run `kubectl get pods -A` or `oc get pods -A` to see all the pods running.
+
+ **Interacting with the server:**
+ 
+ After following the above "Running" steps, you can now interact with the OpenShift server using `kubectl` or `oc` commands. This can also be done from your local machine if you
+ copy the kubeconfig file from `/var/lib/microshift/resources/kubeadmin/kubeconfig` to `~/.kube/config` on your local machine. You may need to edit the file to change the remote server IP address.
+
 ## [bootc-nvidia-base-centos](/bootc-nvidia-base-centos/Containerfile)
 
  **Description:**
@@ -207,6 +236,38 @@ Below is a general overview (with instructions) on each Docker container I use. 
 
  **Running:**
  1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
+ 2. The nvidia drivers will recompile + use akmod + modprobe on boot.
+ 3. Use nvidia-smi command within the booted container image to see if it works.
+
+## [bootc-nvidia-base-fedora](/bootc-nvidia-base-fedora/Containerfile)
+
+ **Description:**
+ > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
+
+ This is a "base" container that installs the nvidia drivers and the nvidia container toolkit. 
+ This is meant to be used as a base for other containers that need GPU access.
+
+ DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
+ ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
+ 
+ This Fedora 40 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
+ for the nvidia drivers to keep up / work properly / update correctly.
+
+ IMPORTANT NOTE:
+ On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
+ Instead, the nvidia drivers will recompile + use akmod + modprobe on boot.. and may take a minute to load.
+ If you have any systemd services that require the nvidia drivers, you will need to add a `After=nvidia-drivers.service` to the service or have it LATE in the boot order (ex. multi-user.target)
+ to ensure that the nvidia drivers are loaded before the service starts.
+
+ For example, if you have a podman container with --restart=always, you will need to add a `After=nvidia-drivers.service` to the podman-restart.service and podman-restart.timer. file.
+ This has been done for you already within the nvidia-drivers.service and nvidia-toolkit-firstboot.service files.
+
+ Note about nvidia-toolkit-fristboot.service file: This is a one-time service on boot that will create the /etc/cdi/nvidia.yaml file. This is necessary for podman
+ to use gpu devices.
+ 
+
+ **Running:**
+ 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora` / this Containerfile.
  2. The nvidia drivers will recompile + use akmod + modprobe on boot.
  3. Use nvidia-smi command within the booted container image to see if it works.
 
@@ -389,4 +450,78 @@ Below is a general overview (with instructions) on each Docker container I use. 
    --name rickroll \
    ghcr.io/cdrage/rickroll
  ```
+
+## [vulkan-mac-silicon-gpu-stress-test](/vulkan-mac-silicon-gpu-stress-test/Containerfile)
+
+ **IMPORTANT NOTE:**
+ **Description:**
+
+ This is a "hello world" GPU container that showcases fractals by using a "minimal POC" vulkan compute example project.
+ Every X seconds, the fractal will be recalculated and displayed in the browser. This is all rendered on the virtualized GPU.
+ 
+ **Technical Description:**
+ You must use Podman Desktop with Podman 5.2.0 or above and run a
+ podman machine with libkrun support.
+ 
+ For a more technical TLDR it is:
+ * Creates a virtualized Vulkan GPU interface
+ * Virtualized GPU is passed to a vulkan-to-metal layer on the host MacOS
+ * Uses https://github.com/containers/libkrun for all of this to work.
+
+ Source code:
+ In order for this to work, a patched version of mesa / vulkan is used. The source for this is located here: https://download.copr.fedorainfracloud.org/results/slp/mesa-krunkit/fedora-39-aarch64/07045714-mesa/mesa-23.3.5-102.src.rpm
+ 
+ The following patch is applied from within the source code to get the patched mesa / vulkan to work correctly: `0001-virtio-vulkan-force-16k-alignment-for-allocations-HA.patch`
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+ -p 6080:6080 \
+ --device /dev/dri
+ vulkan-mac-silicon-gpu-fractals
+ ```
+
+ Then visit http://localhost:6080 in your browser.
+ Install necessary packages for Node.js, Vulkan tools, CMake, and the build environment
+ Download the vulkan stress test
+ Run the vulkan stress test
+
+## [vulkan-mac-silicon-gpu-vkcube](/vulkan-mac-silicon-gpu-vkcube/Containerfile)
+
+ **IMPORTANT NOTE:**
+ NOTE: This DOES NOT WORK FOR GPU until vulkan supports NON COMPUTE WORKLOADS.
+ this is just a "scratchpad" for testing vkcube, but unfortunately I did not realize it was NOT a compute-based workload
+ and more support is needed for display / GPU workloads. For now (see startup.sh) we are using the CPU for rendering. by supplying the 
+ VK_ICD_FILENAMES env var to the vulkan loader.
+ 
+ **Description:**
+
+ This is a "hello world" GPU container that showcases
+ how we can use the Mac Silicon GPU within a container via showing the standard vkcube demo.
+ 
+ **Technical Description:**
+ You must use Podman Desktop with Podman 5.2.0 or above and run a
+ podman machine with libkrun support.
+ 
+ For a more technical TLDR it is:
+ * Creates a virtualized Vulkan GPU interface
+ * Virtualized GPU is passed to a vulkan-to-metal layer on the host MacOS
+ * Uses https://github.com/containers/libkrun for all of this to work.
+
+ Source code:
+ In order for this to work, a patched version of mesa / vulkan is used. The source for this is located here: https://download.copr.fedorainfracloud.org/results/slp/mesa-krunkit/fedora-39-aarch64/07045714-mesa/mesa-23.3.5-102.src.rpm
+ 
+ The following patch is applied from within the source code to get the patched mesa / vulkan to work correctly: `0001-virtio-vulkan-force-16k-alignment-for-allocations-HA.patch`
+
+ **Running:**
+
+ ```sh
+ podman run -d \
+ -p 6080:6080 \
+ --device /dev/dri
+ vulkan-mac-silicon-gpu-vkcube
+ ```
+
+ Then visit http://localhost:6080 in your browser.
 

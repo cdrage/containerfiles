@@ -20,7 +20,6 @@
 # * GPU drivers will be built + loaded on each boot.
 # * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
 # 
-#
 # Notes:
 # * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
 # * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
@@ -39,9 +38,12 @@
 # 4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
 # 5. Then use `kubectl` to interact with the server
 
-FROM quay.io/centos-bootc/centos-bootc:stream9
 #! Use the below base image if you want to use GPU (you'll have to built it yourself FYI!)
 #! FROM ghcr.io/cdrage/bootc-nvidia-base-centos
+#! Or other base images such as rhel10
+#! FROM registry.stage.redhat.io/rhel10-beta/rhel-bootc:rhel-10.0-beta
+#! We use Fedora 40 as we find it the most stable for Kubernetes
+FROM quay.io/fedora/fedora-bootc:40
 
 #! ARGUMENTS
 #! Intentionally left blank so users know to pass them in... the build will fail if they don't.
