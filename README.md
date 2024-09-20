@@ -206,6 +206,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
  After following the above "Running" steps, you can now interact with the OpenShift server using `kubectl` or `oc` commands. This can also be done from your local machine if you
  copy the kubeconfig file from `/var/lib/microshift/resources/kubeadmin/kubeconfig` to `~/.kube/config` on your local machine. You may need to edit the file to change the remote server IP address.
+RUN echo -e ' OpenShift 4.17 release\n\
+ Dependencies\n\
 
 ## [bootc-nvidia-base-centos](/bootc-nvidia-base-centos/Containerfile)
 

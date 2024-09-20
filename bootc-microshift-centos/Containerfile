@@ -22,7 +22,8 @@
 # After following the above "Running" steps, you can now interact with the OpenShift server using `kubectl` or `oc` commands. This can also be done from your local machine if you
 # copy the kubeconfig file from `/var/lib/microshift/resources/kubeadmin/kubeconfig` to `~/.kube/config` on your local machine. You may need to edit the file to change the remote server IP address.
 
-FROM quay.io/centos-bootc/centos-bootc:stream9
+#! RHEL 9 is the only OS supported by microshift (for now)
+FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 
 #! Used for adding your SSH public key for easy access
 #! Add the SSH key from SSH_PUBLIC_KEY so we can actually get the kubeconfig file
@@ -32,12 +33,21 @@ RUN set -eu; mkdir -p /usr/ssh && \
   echo ${SSH_PUBLIC_KEY} > /usr/ssh/root.keys && chmod 0600 /usr/ssh/root.keys
 
 #! Add the MicroShift repos
-ADD etc etc
+RUN echo -e '# OpenShift 4.17 release\n\
+[ocp]\n\
+name=OpenShift 4.17\n\
+baseurl=https://mirror.openshift.com/pub/openshift-v4/$basearch/microshift/ocp/latest-4.17/el9/os/\n\
+enabled=1\n\
+gpgcheck=0\n\
+\n\
+# Dependencies\n\
+[ocp-deps]\n\
+name=OpenShift 4.17 dependencies\n\
+baseurl=https://mirror.openshift.com/pub/openshift-v4/$basearch/dependencies/rpms/4.17-el9-beta/\n\
+enabled=1\n\
+gpgcheck=0' > /etc/yum.repos.d/minishift.repo
 
-#! Temporary workaround for /opt/cni being a symlink
-#! xref https://github.com/CentOS/centos-bootc-dev/pull/27 which will make `/opt` not be a symlink anymore
-RUN rm -rf /opt && \
-    mkdir -p /opt/cni
+RUN cat /etc/yum.repos.d/minishift.repo
 
 #! Install microshift
 RUN dnf install -y microshift && systemctl enable microshift
@@ -47,3 +57,6 @@ RUN dnf install -y microshift && systemctl enable microshift
 ARG OPENSHIFT_PULL_SECRET
 RUN echo $OPENSHIFT_PULL_SECRET > /etc/crio/openshift-pull-secret
 RUN chmod 600 /etc/crio/openshift-pull-secret
+
+#! REMOVE AFTER
+#! RUN echo "root:root" | chpasswd

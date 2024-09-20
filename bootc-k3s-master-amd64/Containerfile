@@ -40,8 +40,8 @@
 
 #! Use the below base image if you want to use GPU (you'll have to built it yourself FYI!)
 #! FROM ghcr.io/cdrage/bootc-nvidia-base-centos
-#! Or other base images such as rhel10
-#! FROM registry.stage.redhat.io/rhel10-beta/rhel-bootc:rhel-10.0-beta
+#! Or other base images such as rhel9
+#! FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 #! We use Fedora 40 as we find it the most stable for Kubernetes
 FROM quay.io/fedora/fedora-bootc:40
 
