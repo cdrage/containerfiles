@@ -27,14 +27,17 @@
 # 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-fedora` / this Containerfile.
 # 2. The nvidia drivers will recompile + use akmod + modprobe on boot.
 # 3. Use nvidia-smi command within the booted container image to see if it works.
-FROM quay.io/fedora/fedora-bootc:40
+FROM quay.io/fedora/fedora-bootc:41
+
 
 #! Install rpmfusion free and nonfree repo's for access to the nvidia drivers
-RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm && \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+RUN dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 #! Install the kernel devel and kernel header tools
-RUN dnf install -y kernel-devel kernel-headers
+#! We get the kernel that is being used in THE BASE IMAGE by doing /usr/lib/modules && echo *, then we install the kernel-devel for that kernel
+RUN export KVER=$(cd /usr/lib/modules && echo *) && \
+    dnf install -y kernel-devel-$KVER
 
 #! Install the nvidia drivers
 RUN dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda
