@@ -42,6 +42,7 @@ jobs:
               cd $dir
               docker build --platform linux/amd64 \
                 -t ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${repo_name} \
+                --label "org.opencontainers.image.source=https://github.com/cdrage/containerfiles" \
                 -f Containerfile .
               docker push ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${repo_name}
               cd ..
