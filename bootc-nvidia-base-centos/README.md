@@ -6,9 +6,6 @@
 
  DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
  ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
- 
- This Fedora 40 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
- for the nvidia drivers to keep up / work properly / update correctly.
 
  IMPORTANT NOTE:
  On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
