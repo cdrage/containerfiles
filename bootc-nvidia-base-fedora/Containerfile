@@ -53,4 +53,4 @@ RUN echo "blacklist nouveau" > /etc/modprobe.d/blacklist_nouveau.conf
 COPY usr/ /usr/
 
 #! Enable necessary services to be started at boot
-RUN systemctl enable nvidia-toolkit-firstboot.service nvidia-drivers.service
+RUN systemctl enable nvidia-toolkit-firstboot.service nvidia-drivers.service nvidia-persist.service
