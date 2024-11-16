@@ -11,8 +11,6 @@
  for the nvidia drivers to keep up / work properly / update correctly.
 
  IMPORTANT NOTE:
- ANOTHER important note!!! Older cards such as the tesla p40 MAY not work because of the drivers being "too new" I had multiple issues with the p40 and the drivers. But no problems with rtx 3060 I have...
-
  On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
  Instead, the nvidia drivers will recompile + use akmod + modprobe on boot.. and may take a minute to load.
  If you have any systemd services that require the nvidia drivers, you will need to add a `After=nvidia-drivers.service` to the service or have it LATE in the boot order (ex. multi-user.target)

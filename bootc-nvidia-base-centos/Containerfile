@@ -11,8 +11,6 @@
 # for the nvidia drivers to keep up / work properly / update correctly.
 #
 # IMPORTANT NOTE:
-# ANOTHER important note!!! Older cards such as the tesla p40 MAY not work because of the drivers being "too new" I had multiple issues with the p40 and the drivers. But no problems with rtx 3060 I have...
-#
 # On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
 # Instead, the nvidia drivers will recompile + use akmod + modprobe on boot.. and may take a minute to load.
 # If you have any systemd services that require the nvidia drivers, you will need to add a `After=nvidia-drivers.service` to the service or have it LATE in the boot order (ex. multi-user.target)
@@ -29,17 +27,29 @@
 # 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
 # 2. The nvidia drivers will recompile + use akmod + modprobe on boot.
 # 3. Use nvidia-smi command within the booted container image to see if it works.
-FROM quay.io/fedora/fedora-bootc:40
+FROM quay.io/centos-bootc/centos-bootc:stream9
+
+#! Set kernel version as we MUST install the kernel-devel for the kernel that is being used in the base image too.. must match what stream9 has which is unpredicatable at times.
+#! This is due to the base image having a non-updated kernel, between the time of the "builds" and the time that the newest kernel is out..
+#! for example as of writing this the kernel is 5.14.0-526.el9.x86_64 in the base OS but if you do dnf install kernel-devel it will install 5.14.0-527.el9.x86_64, causing a conflict / mismatch,
+#! especially for NVIDIA drivers which are very picky about the kernel version.
+ARG KERNEL_VERSION='5.14.0-527.el9.x86_64'
 
 #! Install rpmfusion free and nonfree repo's for access to the nvidia drivers
-RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-RUN dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    dnf install --nogpgcheck -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm && \
+    dnf install --nogpgcheck -y https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
-#! Install the kernel devel and kernel header tools
-#! We get the kernel that is being used in THE BASE IMAGE by doing /usr/lib/modules && echo *, then we install the kernel-devel for that kernel
-#! SOMETIMES this messes up if the "base" image has an outdated kernel vs the one you get from dnf
-RUN export KVER=$(cd /usr/lib/modules && echo *) && \
-    dnf install -y kernel-devel-$KVER
+#! Install the kernel, devel and headers
+RUN dnf install -y kernel-$KERNEL_VERSION kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION
+
+#! Make sure the kernel installed is part of the initramfs
+#! this is a "forced" upgrade of the initramfs to ensure that the kernel is part of the initramfs / we use the updated kernel
+#! we are also required to delete all other kernels in /usr/lib/modules that are not $KERNEL_VERSION
+RUN set -x; dracut -vf /usr/lib/modules/$KERNEL_VERSION/initramfs.img $KERNEL_VERSION
+
+#! Delete everything in /usr/lib/modules that is not $KERNEL_VERSION
+RUN find /usr/lib/modules -mindepth 1 -maxdepth 1 -type d -not -name $KERNEL_VERSION -exec rm -rf {} \;
 
 #! Install the nvidia drivers
 RUN dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda
