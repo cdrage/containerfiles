@@ -220,6 +220,12 @@ RUN echo -e ' OpenShift 4.17 release\n\
  DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
  ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
 
+ CentOS vs Fedora NVIDIA base image...
+ * centos base image uses an older nvidia driver which may work better for you (as of right now, 550 and cuda: 12.4
+ * fedora base image uses a newer one (as of right now, 565 and cuda: 12.7)
+
+ If you find one works vs the other, please let me know. Right now, the Tesla P40 works only with fedora image, but the RTX 3060 works with both... very odd!
+
  IMPORTANT NOTE:
  On boot, this will **not** have the nvidia drivers loaded it they are compiled. This is because akmods are suppose to be built on boot, but this doesn't work with bootc.
  Instead, the nvidia drivers will recompile + use akmod + modprobe on boot.. and may take a minute to load.
@@ -249,7 +255,7 @@ RUN echo -e ' OpenShift 4.17 release\n\
  DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
  ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
  
- This Fedora 40 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
+ This Fedora 41 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
  for the nvidia drivers to keep up / work properly / update correctly.
 
  IMPORTANT NOTE:
