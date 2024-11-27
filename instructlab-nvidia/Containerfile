@@ -6,11 +6,12 @@ USER root
 
 ARG HUGGINGFACE_API
 
-RUN ilab model download --rp mistralai/Mistral-7B-Instruct-v0.2 --hf-token $HUGGINGFACE_API
+#RUN ilab model download --rp mistralai/Mistral-7B-Instruct-v0.2 --hf-token $HUGGINGFACE_API
+#RUN ilab model download --rp instructlab/granite-7b-lab --hf-token $HUGGINGFACE_API
 RUN dnf install go -y
 
 # Build golang
-COPY . ./
+COPY web/ .
 
 RUN go get
 RUN go build

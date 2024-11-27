@@ -91,16 +91,33 @@ func runScript(c *gin.Context) {
 		return
 	}
 
-	var requestBody struct {
-		GitHubURL string `json:"github_url"`
-	}
-	if err := c.BindJSON(&requestBody); err != nil {
-		c.String(http.StatusBadRequest, "Invalid request body.")
+	// Parse the form data
+	gitHubURL := c.PostForm("github_url")
+	if gitHubURL == "" {
+		c.String(http.StatusBadRequest, "GitHub URL is required.")
 		return
 	}
 
-	if requestBody.GitHubURL == "" {
-		c.String(http.StatusBadRequest, "GitHub URL is required.")
+	// Save uploaded files
+	knowledgeFile, err := c.FormFile("knowledge_file")
+	if err != nil {
+		c.String(http.StatusBadRequest, "Knowledge training file is required.")
+		return
+	}
+
+	skillsFile, err := c.FormFile("skills_file")
+	if err != nil {
+		c.String(http.StatusBadRequest, "Skills training file is required.")
+		return
+	}
+
+	// Save the files to /tmp
+	if err := c.SaveUploadedFile(knowledgeFile, "/tmp/knowledge_train.jsonl"); err != nil {
+		c.String(http.StatusInternalServerError, "Failed to save knowledge training file: %v", err)
+		return
+	}
+	if err := c.SaveUploadedFile(skillsFile, "/tmp/skills_train.jsonl"); err != nil {
+		c.String(http.StatusInternalServerError, "Failed to save skills training file: %v", err)
 		return
 	}
 
@@ -114,7 +131,7 @@ func runScript(c *gin.Context) {
 
 	trainingInProgress = true
 	currentCmd = exec.Command("bash", "./scripts/script.sh")
-	currentCmd.Env = append(os.Environ(), "GIT_REPO="+requestBody.GitHubURL)
+	currentCmd.Env = append(os.Environ(), "GIT_REPO="+gitHubURL)
 
 	stdout, err := currentCmd.StdoutPipe()
 	if err != nil {
@@ -132,7 +149,6 @@ func runScript(c *gin.Context) {
 	go streamLogs(stderr, logFilePath)
 
 	go func() {
-
 		// Run the command
 		if err := currentCmd.Start(); err != nil {
 			log.Printf("Failed to start script: %v\n", err)

@@ -24,9 +24,8 @@ document.getElementById("run").addEventListener("click", () => {
         alert("Please enter a GitHub URL.");
         return;
     }
-
     if (!knowledgeFile || !skillsFile) {
-        alert("Please upload both knowledge and skills files.");
+        alert("Please upload both the Knowledge and Skills training files.");
         return;
     }
 

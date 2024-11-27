@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Runner</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>InstructLab AI Training</h1>
+        <div class="form-group">
+            <input id="github-url" type="text" placeholder="Enter GitHub URL" class="input-text">
+        </div>
+        <div class="form-group file-input">
+            <label for="knowledge-file" class="file-label">Knowledge File (.jsonl):</label>
+            <input id="knowledge-file" type="file" accept=".jsonl" class="file-upload">
+        </div>
+        <div class="form-group file-input">
+            <label for="skills-file" class="file-label">Skills File (.jsonl):</label>
+            <input id="skills-file" type="file" accept=".jsonl" class="file-upload">
+        </div>
+        <div class="button-group">
+            <button id="run" class="btn">Run Training</button>
+            <button id="stop" class="btn btn-secondary" disabled>Stop Training</button>
+        </div>
+        <div id="logs" class="log-container"></div>
+        <h2>Output Files</h2>
+        <ul id="file-list" class="file-list"></ul>
+    </div>
+</body>
+</html>
