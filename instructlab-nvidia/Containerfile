@@ -1,22 +1,19 @@
 # **Description:**
-
+# TO FILL
 FROM quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0
 
-#! TODO: Completely remove /usr/local/cuda/compat from $LD_LIBRARY_PATH, export it then remove /usr/local/cuda/compat
+USER root
 
-#! Required arguments
 ARG HUGGINGFACE_API
 
-#! Initialize the "ilab" configuration so it does not complain
-RUN ilab config init --non-interactive
+RUN ilab model download --rp mistralai/Mistral-7B-Instruct-v0.2 --hf-token $HUGGINGFACE_API
+RUN dnf install go -y
 
-#! Download models to the default directory so we can bundle them in the image when training
-RUN ilab model download --hf-token $HUGGINGFACE_API
+# Build golang
+COPY . ./
 
-RUN ilab model download -rp instructlab/granite-7b-lab
-
-#! Add the script
-ADD main.sh /main.sh
+RUN go get
+RUN go build
 
 #! Entrypoint
-ENTRYPOINT ["/main.sh"]
+ENTRYPOINT ["./main"]
