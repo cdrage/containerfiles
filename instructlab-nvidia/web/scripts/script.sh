@@ -23,6 +23,10 @@ GIT_REPO_NAME=$(echo $GIT_REPO | awk -F/ '{print $NF}')
 OUTPUT_FOLDER_NAME=$GIT_REPO_NAME-$(date +%Y%m%d%H%M%S)
 mkdir output/$OUTPUT_FOLDER_NAME || true
 
+echo $CONFIG_FILE
+cat $CONFIG_FILE
+sleep 1000000
+
 # Copy the config file over / overriding the current one
 ilab config init --config $CONFIG_FILE --non-interactive
 
