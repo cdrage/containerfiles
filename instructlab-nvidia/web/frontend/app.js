@@ -1,115 +1,107 @@
 let trainingInProgress = false;
+let fileStatus = { config: false, knowledge: false, skills: false };
 
 document.addEventListener("DOMContentLoaded", () => {
     fetch("/state")
-        .then((res) => res.json())
-        .then((data) => {
-            trainingInProgress = data.in_progress;
-            updateUI();
-        })
-        .catch((err) => console.error(err));
+    .then((res) => res.json())
+    .then((data) => {
+        trainingInProgress = data.in_progress;
+        updateUI();
+    })
+    .catch((err) => console.error(err));
+
+    const fileDropArea = document.getElementById("file-drop-area");
+    const fileInput = document.getElementById("file-upload");
+
+    fileDropArea.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        fileDropArea.classList.add("drag-over");
+    });
+
+    fileDropArea.addEventListener("dragleave", () => {
+        fileDropArea.classList.remove("drag-over");
+    });
+
+    fileDropArea.addEventListener("drop", (event) => {
+        event.preventDefault();
+        fileDropArea.classList.remove("drag-over");
+        handleFiles(event.dataTransfer.files);
+    });
+
+    fileDropArea.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", (event) => handleFiles(event.target.files));
+
+    document.getElementById("run").addEventListener("click", startTraining);
+    document.getElementById("stop").addEventListener("click", stopTraining);
+
+    fetchLogs();
+    setInterval(fetchLogs, 2000);
 });
 
-document.getElementById("run").addEventListener("click", () => {
+function handleFiles(files) {
+    Array.from(files).forEach((file) => {
+        if (file.name.endsWith(".yaml") && !fileStatus.config) {
+            fileStatus.config = true;
+            updateStatus("config", true);
+        } else if (file.name.includes("knowledge") && file.name.endsWith(".jsonl") && !fileStatus.knowledge) {
+            fileStatus.knowledge = true;
+            updateStatus("knowledge", true);
+        } else if (file.name.includes("skills") && file.name.endsWith(".jsonl") && !fileStatus.skills) {
+            fileStatus.skills = true;
+            updateStatus("skills", true);
+        }
+    });
+}
+
+function updateStatus(type, status) {
+    const statusIndicator = document.getElementById(`${type}-status`);
+    statusIndicator.textContent = status ? "✅" : "❌";
+}
+
+function startTraining() {
     if (trainingInProgress) {
         alert("Training is already in progress.");
         return;
     }
 
-    const githubUrl = document.getElementById("github-url").value;
-    const knowledgeFile = document.getElementById("knowledge-file").files[0];
-    const skillsFile = document.getElementById("skills-file").files[0];
-
-    if (!githubUrl) {
-        alert("Please enter a GitHub URL.");
+    if (!fileStatus.config || !fileStatus.knowledge || !fileStatus.skills) {
+        alert("All required files must be uploaded.");
         return;
     }
-    if (!knowledgeFile || !skillsFile) {
-        alert("Please upload both the Knowledge and Skills training files.");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("github_url", githubUrl);
-    formData.append("knowledge_file", knowledgeFile);
-    formData.append("skills_file", skillsFile);
 
     trainingInProgress = true;
     updateUI();
 
-    fetch("/run", {
-        method: "POST",
-        body: formData,
-    })
-        .then((res) => res.text())
-        .then((msg) => console.log(msg))
-        .catch((err) => console.error(err));
-});
-
-document.getElementById("stop").addEventListener("click", () => {
-    fetch("/stop", { method: "POST" })
-        .then((res) => res.text())
-        .then((msg) => {
-            trainingInProgress = false;
-            updateUI();
-            console.log(msg);
-        })
-        .catch((err) => console.error(err));
-});
-
-function fetchLogs() {
-    const logDiv = document.getElementById("logs");
-
-    // Check if the user is at the bottom of the scroll
-    const isScrolledToBottom = logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
-
-    fetch("/logs")
-        .then((res) => res.json())
-        .then((logs) => {
-            // Update the logs
-            logDiv.innerHTML = logs.map((line) => `<p>${line}</p>`).join("");
-
-            // If the user was at the bottom, keep them there
-            if (isScrolledToBottom) {
-                logDiv.scrollTop = logDiv.scrollHeight;
-            }
-        })
-        .catch((err) => console.error(err));
+    // Start training simulation
+    console.log("Training started...");
 }
 
-// Poll logs every 2 seconds
-setInterval(fetchLogs, 2000);
+function stopTraining() {
+    trainingInProgress = false;
+    updateUI();
+    console.log("Training stopped.");
+}
 
 function updateUI() {
     document.getElementById("run").disabled = trainingInProgress;
     document.getElementById("stop").disabled = !trainingInProgress;
-    document.getElementById("github-url").disabled = trainingInProgress;
+
+    // Toggle visibility of form-group, file-drop-area, and file-status
+    const elementsToToggle = ["form-group", "file-drop-area", "file-status"];
+    elementsToToggle.forEach(id => {
+        const element = document.querySelector(`.${id}`); // Adjusted to match class names
+        if (element) {
+            element.style.display = trainingInProgress ? "none" : "block";
+        }
+    });
 }
 
-fetchLogs();
+function fetchLogs() {
+    const logDiv = document.getElementById("logs");
+    const isScrolledToBottom = logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
 
-function fetchFiles() {
-    fetch("/files")
-        .then((res) => res.json())
-        .then((data) => {
-            const fileList = document.getElementById("file-list");
-            fileList.innerHTML = "";
-
-            data.files.forEach((file) => {
-                const listItem = document.createElement("li");
-                const link = document.createElement("a");
-                link.href = file;
-                link.textContent = file.split("/").pop(); // Show only the file name
-                link.target = "_blank"; // Open in new tab
-                listItem.appendChild(link);
-                fileList.appendChild(listItem);
-            });
-        })
-        .catch((err) => console.error("Failed to fetch files:", err));
+    if (isScrolledToBottom) {
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
 }
-
-// Refresh file list every 10 seconds
-setInterval(fetchFiles, 10000);
-
-// Fetch files on page load
-document.addEventListener("DOMContentLoaded", fetchFiles);

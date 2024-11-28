@@ -4,10 +4,10 @@ FROM quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0
 
 USER root
 
-ARG HUGGINGFACE_API
+ARG VERSION=v4.2.0
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64.tar.gz -O - |\
+tar xz && mv yq_linux_amd64 /usr/local/bin/yq
 
-#RUN ilab model download --rp mistralai/Mistral-7B-Instruct-v0.2 --hf-token $HUGGINGFACE_API
-#RUN ilab model download --rp instructlab/granite-7b-lab --hf-token $HUGGINGFACE_API
 RUN dnf install go -y
 
 # Build golang

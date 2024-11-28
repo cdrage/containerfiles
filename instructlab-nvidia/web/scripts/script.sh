@@ -5,20 +5,31 @@ set -e
 # Prevent driver conflicts due to nvidia-container-toolkit
 export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed 's|/usr/local/cuda/compat:||g')
 
+# Expecting files to be uploaded via UI for training
+KNOWLEDGE_TRAIN_FILE="/tmp/knowledge_train.jsonl"
+SKILLS_TRAIN_FILE="/tmp/skills_train.jsonl"
+CONFIG_FILE="/tmp/config.yaml"
+
+# Within the /tmp/config.yaml there is train.model which is the model used for training
+# Get the last two parts, for example: model: /opt/app-root/src/.cache/instructlab/models/instructlab/granite-7b-lab
+# should show instructlab/granite-7b-lab
+MODEL_PATH=$(yq '.train.model' "$CONFIG_FILE" | awk -F/ '{print $(NF-1)"/"$NF}')
+
+# We use a "judge" model for MT-Bench evaluation too
+PHASED_MT_BENCH_JUDGE=$(yq '.train.phased_mt_bench_judge' "$CONFIG_FILE" | awk -F/ '{print $(NF-1)"/"$NF}')
+
 mkdir output final || true
 GIT_REPO_NAME=$(echo $GIT_REPO | awk -F/ '{print $NF}')
 OUTPUT_FOLDER_NAME=$GIT_REPO_NAME-$(date +%Y%m%d%H%M%S)
 mkdir output/$OUTPUT_FOLDER_NAME || true
 
-# Git clone from ARG in container to /workspace folder
-git clone $GIT_REPO $OUTPUT_FOLDER_NAME
-
 # Copy the config file over / overriding the current one
-ilab config init --config $OUTPUT_FOLDER_NAME/config.yaml --taxonomy-path $OUTPUT_FOLDER_NAME --non-interactive
+ilab config init --config $CONFIG_FILE --non-interactive
 
-# Expecting files to be uploaded via UI for training
-KNOWLEDGE_TRAIN_FILE="/tmp/knowledge_train.jsonl"
-SKILLS_TRAIN_FILE="/tmp/skills_train.jsonl"
+# Make sure that we download these models before training, these are the only important ones needed
+# when this script is ran, we make sure that HUGGINGFACE_TOKEN (was) set
+ilab model download -rp $MODEL_PATH
+ilab model download -rp $PHASED_MT_BENCH_JUDGE
 
 # Check if the required training files exist
 if [[ ! -f "$KNOWLEDGE_TRAIN_FILE" ]] || [[ ! -f "$SKILLS_TRAIN_FILE" ]]; then

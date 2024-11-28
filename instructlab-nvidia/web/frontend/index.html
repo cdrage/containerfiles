@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Runner</title>
+    <title>InstructLab AI Training</title>
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
 </head>
@@ -11,15 +11,18 @@
     <div class="container">
         <h1>InstructLab AI Training</h1>
         <div class="form-group">
-            <input id="github-url" type="text" placeholder="Enter GitHub URL" class="input-text">
+            <input id="huggingface-api" type="text" 
+                   placeholder="Hugging Face READ ONLY API Key (OPTIONAL)" 
+                   class="input-text">
         </div>
-        <div class="form-group file-input">
-            <label for="knowledge-file" class="file-label">Knowledge File (.jsonl):</label>
-            <input id="knowledge-file" type="file" accept=".jsonl" class="file-upload">
+        <div id="file-drop-area" class="file-drop-area">
+            <p>Drag & drop files here or click to upload.</p>
+            <input id="file-upload" type="file" multiple class="hidden-file-input">
         </div>
-        <div class="form-group file-input">
-            <label for="skills-file" class="file-label">Skills File (.jsonl):</label>
-            <input id="skills-file" type="file" accept=".jsonl" class="file-upload">
+        <div class="file-status">
+            <p><span id="config-status" class="status-indicator">❌</span> Config File</p>
+            <p><span id="knowledge-status" class="status-indicator">❌</span> Knowledge File</p>
+            <p><span id="skills-status" class="status-indicator">❌</span> Skills File</p>
         </div>
         <div class="button-group">
             <button id="run" class="btn">Run Training</button>

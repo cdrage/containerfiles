@@ -1,12 +1,12 @@
 body {
-    font-family: Monospace;
+    font-family: "Courier New", Courier, monospace;
     background-color: #f8f9fa;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full height of the viewport */
+    height: 100vh;
     color: #333;
 }
 
@@ -17,14 +17,12 @@ body {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    text-align: center; /* Center the text alignment */
+    text-align: center;
 }
-
 
 h1 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    text-align: center;
 }
 
 .form-group {
@@ -37,38 +35,36 @@ h1 {
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-family: "Courier New", Courier, monospace;
 }
 
-.file-input {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.file-drop-area {
+    padding: 20px;
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-family: "Courier New", Courier, monospace;
 }
 
-.file-label {
+.file-drop-area.drag-over {
+    background-color: #e0f7ff;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.file-status {
+    margin-top: 15px;
+    text-align: left;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.status-indicator {
     font-weight: bold;
-    color: #555;
-}
-
-.file-upload {
-    padding: 10px;
-    font-size: 0.9rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.file-upload::file-selector-button {
-    padding: 8px 15px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.file-upload::file-selector-button:hover {
-    background-color: #0056b3;
+    margin-right: 10px;
 }
 
 .button-group {
@@ -86,6 +82,7 @@ h1 {
     background-color: #007bff;
     color: white;
     transition: background-color 0.3s;
+    font-family: "Courier New", Courier, monospace;
 }
 
 .btn:hover {
@@ -108,11 +105,14 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f8f9fa;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.9rem;
 }
 
 .file-list {
     list-style-type: none;
     padding: 0;
+    font-family: "Courier New", Courier, monospace;
 }
 
 .file-list li {

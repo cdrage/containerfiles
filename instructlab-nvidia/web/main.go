@@ -92,9 +92,12 @@ func runScript(c *gin.Context) {
 	}
 
 	// Parse the form data
-	gitHubURL := c.PostForm("github_url")
-	if gitHubURL == "" {
-		c.String(http.StatusBadRequest, "GitHub URL is required.")
+	huggingfaceApiKey := c.PostForm("huggingface_api")
+
+	// Config file
+	configFile, err := c.FormFile("config_file")
+	if err != nil {
+		c.String(http.StatusBadRequest, "Config file is required.")
 		return
 	}
 
@@ -120,6 +123,10 @@ func runScript(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Failed to save skills training file: %v", err)
 		return
 	}
+	if err := c.SaveUploadedFile(configFile, "/tmp/config.yaml"); err != nil {
+		c.String(http.StatusInternalServerError, "Failed to save config file: %v", err)
+		return
+	}
 
 	// Open the log file for writing
 	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
@@ -131,7 +138,7 @@ func runScript(c *gin.Context) {
 
 	trainingInProgress = true
 	currentCmd = exec.Command("bash", "./scripts/script.sh")
-	currentCmd.Env = append(os.Environ(), "GIT_REPO="+gitHubURL)
+	currentCmd.Env = append(os.Environ(), "HF_TOKEN="+huggingfaceApiKey)
 
 	stdout, err := currentCmd.StdoutPipe()
 	if err != nil {
