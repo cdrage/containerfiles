@@ -28,7 +28,15 @@ func main() {
 
 	// Setup router
 	r := gin.Default()
-	r.Static("/static", "./frontend")
+
+	// Serve the "index.html" file for the root route
+	r.GET("/", func(c *gin.Context) {
+		c.File("./frontend/index.html")
+	})
+
+	// Serve other static files in the "frontend" directory
+	r.Static("/assets/", "./frontend")
+
 	r.GET("/logs", getLogs)
 	r.GET("/state", getTrainingState)
 	r.POST("/run", runScript)
