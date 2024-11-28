@@ -19,7 +19,7 @@ body {
     text-align: center;
     box-shadow: none;
     margin: 10px;
-    margin-top:30px
+    margin-top:20px
 }
 
 h1 {
@@ -67,7 +67,8 @@ h1 {
 }
 
 .file-status {
-    margin-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     font-size: 0.8em;
     text-align: left;
     font-family: "Press Start 2P", monospace;
@@ -97,6 +98,13 @@ h1 {
     text-transform: uppercase;
 }
 
+.btn:disabled {
+    background-color: #292126;
+    color: gray;
+    border: 2px solid gray;
+    cursor: not-allowed;
+}
+
 .btn:hover {
     background-color: #292126;
     color: black;
@@ -123,7 +131,7 @@ h1 {
     background-color: #292126;
     color: white;
     font-family: "Press Start 2P", monospace;
-    font-size: 12px;
+    font-size: 8px;
 }
 
 .file-list {
@@ -176,7 +184,73 @@ h1 {
 
 .logo {
     display: block;
-    margin: 0 auto;
     width: 200px;
     height: 200px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Add space between "woof!" and the logo */
+}
+
+.woof-text {
+    font-family: "Press Start 2P", monospace;
+    font-size:0.8rem;
+    color: white;
+    padding-bottom: 50px;
+    display: none; /* Initially hidden */
+}
+
+.woof-text.visible {
+    display: inline; /* Show when training */
+    animation: blink-animation 2s steps(5, start) infinite;
+    -webkit-animation: blink-animation 2s steps(5, start) infinite;
+  }
+  @keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+  @-webkit-keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  /* Perfectly Blocky Scrollbar */
+::-webkit-scrollbar {
+    width: 16px; /* Thicker width for a blocky feel */
+    height: 16px; /* Thicker height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #292126; /* Track color */
+    border: 4px solid white; /* Thick border for a blocky outline */
+    box-shadow: none; /* Ensure no smooth effects */
+    border-radius: 0; /* Ensure hard, square edges */
+}
+
+::-webkit-scrollbar-thumb {
+    background: white; /* Thumb color */
+    border: 4px solid #292126; /* Matches track background */
+    box-shadow: none; /* Hard block appearance */
+    border-radius: 0; /* Remove rounding for sharp corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f4f4f4; /* Slightly lighter on hover */
+    border-color: #292126; /* Maintain blocky hover effect */
+}
+
+::-webkit-scrollbar-corner {
+    background: #292126; /* Matches background */
+    border-radius: 0; /* Square corners */
+}
+
+/* Fallback for non-webkit browsers */
+.scroll-container {
+    scrollbar-width: auto; /* Standard width */
+    scrollbar-color: white #292126; /* Thumb and track colors */
 }

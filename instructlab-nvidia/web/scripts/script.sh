@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+echo "hihihihi!!"
+# Endlessly echo the date
+while true; do
+    echo "Current date: $(date)"
+    sleep 1
+done
+echo "nope!!"
+# delete all above
 
 # get HF_TOKEN from host
 HF_TOKEN=$HF_TOKEN

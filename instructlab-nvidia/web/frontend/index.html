@@ -15,7 +15,10 @@
 </head>
 <body>
     <div class="container">
-        <img src="/assets/logo.png" alt="InstructLab Logo" class="logo">
+        <div class="logo-container">
+            <span id="woof" class="woof-text">woof!</span>
+            <img src="/assets/logo.png" alt="InstructLab Logo" class="logo">
+        </div>
         <h1 style="line-height:1.3">InstructLab LLM Training</h1>
         <div class="form-group">
             <input id="huggingface-api" type="text" 
@@ -35,7 +38,7 @@
             <button id="run" class="btn">Start</button>
             <button id="stop" class="btn btn-secondary" disabled>Stop</button>
         </div>
-        <div id="logs" class="log-container"></div>
+        <div id="logs" class="log-container scroll-container"></div>
         <ul id="file-list" class="file-list"></ul>
     </div>
 </body>

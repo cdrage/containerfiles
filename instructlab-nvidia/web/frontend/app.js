@@ -40,7 +40,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetchLogs();
   setInterval(fetchLogs, 2000);
+
+  fetchFiles();
+  setInterval(fetchFiles, 2000);
 });
+
+function fetchFiles() {
+  fetch("/files")
+      .then((res) => res.json())
+      .then((data) => {
+          const fileList = document.getElementById("file-list");
+          fileList.innerHTML = "";
+
+          data.files.forEach((file) => {
+              const listItem = document.createElement("li");
+              const link = document.createElement("a");
+              link.href = file;
+              link.textContent = file.split("/").pop(); // Show only the file name
+              link.target = "_blank"; // Open in new tab
+              listItem.appendChild(link);
+              fileList.appendChild(listItem);
+          });
+      })
+      .catch((err) => console.error("Failed to fetch files:", err));
+}
 
 function handleFiles(files) {
   Array.from(files).forEach((file) => {
@@ -143,6 +166,15 @@ function stopTraining() {
   console.log("Training stopped.");
 }
 
+function toggleWoof(isVisible) {
+  const woofElement = document.getElementById("woof");
+  if (isVisible) {
+      woofElement.classList.add("visible");
+  } else {
+      woofElement.classList.remove("visible");
+  }
+}
+
 function updateUI() {
   document.getElementById("run").disabled = trainingInProgress;
   document.getElementById("stop").disabled = !trainingInProgress;
@@ -154,6 +186,9 @@ function updateUI() {
       element.style.display = trainingInProgress ? "none" : "block";
     }
   });
+
+  // Toggle "woof!" text based on training state
+  toggleWoof(trainingInProgress);
 }
 
 function fetchLogs() {
