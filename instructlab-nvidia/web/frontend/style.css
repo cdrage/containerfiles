@@ -19,7 +19,8 @@ body {
     text-align: center;
     box-shadow: none;
     margin: 10px;
-    margin-top:20px
+    margin-top:20px;
+    line-height: 1.5;
 }
 
 h1 {
@@ -131,7 +132,7 @@ h1 {
     background-color: #292126;
     color: white;
     font-family: "Press Start 2P", monospace;
-    font-size: 8px;
+    font-size: 10px;
 }
 
 .file-list {
@@ -184,8 +185,7 @@ h1 {
 
 .logo {
     display: block;
-    width: 200px;
-    height: 200px;
+    width: 140px;
 }
 
 .logo-container {
@@ -253,4 +253,8 @@ h1 {
 .scroll-container {
     scrollbar-width: auto; /* Standard width */
     scrollbar-color: white #292126; /* Thumb and track colors */
+}
+
+::placeholder {
+    color: #777;
 }

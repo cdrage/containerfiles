@@ -3,13 +3,8 @@ let fileStatus = { config: false, knowledge: false, skills: false };
 let uploadedFiles = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("/state")
-    .then((res) => res.json())
-    .then((data) => {
-      trainingInProgress = data.in_progress;
-      updateUI();
-    })
-    .catch((err) => console.error(err));
+  fetchState(); // Initial state fetch
+  setInterval(fetchState, 2000); // Poll state every 2 seconds
 
   const fileDropArea = document.getElementById("file-drop-area");
   const fileInput = document.getElementById("file-upload");
@@ -45,6 +40,19 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(fetchFiles, 2000);
 });
 
+function fetchState() {
+  fetch("/state")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.in_progress !== trainingInProgress) {
+        trainingInProgress = data.in_progress;
+        updateUI(); // Update the UI only if the state changes
+      }
+    })
+    .catch((err) => console.error("Failed to fetch state:", err));
+}
+
+
 function fetchFiles() {
   fetch("/files")
       .then((res) => res.json())
@@ -56,7 +64,8 @@ function fetchFiles() {
               const listItem = document.createElement("li");
               const link = document.createElement("a");
               link.href = file;
-              link.textContent = file.split("/").pop(); // Show only the file name
+              // Remove "/first/ example" base URL
+              link.textContent = file.replace("/final-files/", "");
               link.target = "_blank"; // Open in new tab
               listItem.appendChild(link);
               fileList.appendChild(listItem);

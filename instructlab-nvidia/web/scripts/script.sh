@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e
 
-echo "hihihihi!!"
-# Endlessly echo the date
-while true; do
-    echo "Current date: $(date)"
+echo "Starting the training!"
+
+# Echo date 5 times over 5 seconds then exit
+for i in {1..5}; do
+    echo "Date: $(date)"
     sleep 1
 done
-echo "nope!!"
-# delete all above
+exit
+
 
 # get HF_TOKEN from host
 HF_TOKEN=$HF_TOKEN
@@ -52,14 +53,14 @@ echo "Knowledge Train File: $KNOWLEDGE_TRAIN_FILE"
 echo "Skills Train File: $SKILLS_TRAIN_FILE"
 
 # Train using provided files
-ilab train --data-output-dir output/$OUTPUT_FOLDER_NAME --strategy lab-multiphase \
+mkdir -p final/$OUTPUT_FOLDER_NAME/result || true
+mkdir -p final/$OUTPUT_FOLDER_NAME/checkpoints || true
+
+ilab train --data-output-dir final/$OUTPUT_FOLDER_NAME/result --ckpt-output-dir final/$OUTPUT_FOLDER_NAME/checkpoints \
+    --strategy lab-multiphase \
     --phased-phase1-data $KNOWLEDGE_TRAIN_FILE --phased-phase2-data $SKILLS_TRAIN_FILE \
     --model-path .cache/instructlab/models/instructlab/granite-7b-lab \
     --device cuda --pipeline accelerated -y
 
-mkdir output/$OUTPUT_FOLDER_NAME/models || true
-cp /tmp/knowledge_train.jsonl output/$OUTPUT_FOLDER_NAME/models/knowledge_train.jsonl
-cp /tmp/skills_train.jsonl output/$OUTPUT_FOLDER_NAME/models/skills_train.jsonl
-
 # Package the final model
-tar -czvf final/$GIT_REPO_NAME-trained-model-$(date +%Y%m%d%H%M%S).tar.gz output/$OUTPUT_FOLDER_NAME
+tar -czvf final/$GIT_REPO_NAME-trained-model-$(date +%Y%m%d%H%M%S).tar.gz output/$OUTPUT_FOLDER_NAME/result

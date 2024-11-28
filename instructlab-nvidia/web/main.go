@@ -215,8 +215,6 @@ func streamLogs(pipe io.ReadCloser, logFilePath string) {
 }
 
 func getTrainingState(c *gin.Context) {
-	trainingMutex.Lock()
-	defer trainingMutex.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{
 		"in_progress": trainingInProgress,
@@ -232,13 +230,27 @@ func listFiles(c *gin.Context) {
 	}
 
 	var fileLinks []string
+	var folderLinks []string
 	for _, file := range files {
-		if !file.IsDir() && file.Name() != "" {
-			fileLinks = append(fileLinks, "/final-files/"+file.Name()) // Updated route
+		if file.IsDir() {
+			folderLinks = append(folderLinks, "/final-files/"+file.Name()+"/")
+			subFiles, err := os.ReadDir(finalDir + "/" + file.Name())
+			if err != nil {
+				c.String(http.StatusInternalServerError, "Failed to read subdirectory: %v", err)
+				return
+			}
+			for _, subFile := range subFiles {
+				if !subFile.IsDir() && subFile.Name() != "" {
+					fileLinks = append(fileLinks, "/final-files/"+file.Name()+"/"+subFile.Name())
+				}
+			}
+		} else if file.Name() != "" {
+			fileLinks = append(fileLinks, "/final-files/"+file.Name())
 		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"files": fileLinks,
+		"files":   fileLinks,
+		"folders": folderLinks,
 	})
 }
