@@ -1,28 +1,32 @@
 body {
-    font-family: "Courier New", Courier, monospace;
-    background-color: #f8f9fa;
+    font-family: "Press Start 2P", monospace; /* 8-bit retro font */
+    background-color: #292126;
+    color: white;
     margin: 0;
     padding: 0;
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    color: #333;
 }
 
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 600px;
     padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background-color: #292126;
+    border: 4px solid white;
+    border-radius: 0;
     text-align: center;
+    box-shadow: none;
+    margin: 0;
 }
 
 h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     margin-bottom: 20px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px white;
+    color: white;
 }
 
 .form-group {
@@ -30,26 +34,31 @@ h1 {
 }
 
 .input-text {
+    text-align: center;
     width: 95%;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Courier New", Courier, monospace;
+    border: 2px solid white;
+    border-radius: 0;
+    background-color: #292126;
+    color: white;
+    font-family: "Press Start 2P", monospace;
 }
 
 .file-drop-area {
-    padding: 20px;
-    border: 2px dashed #007bff;
-    border-radius: 5px;
-    background-color: #f8f9fa;
+    padding: 50px;
+    border: 2px dashed white;
+    border-radius: 0;
+    background-color: #292126;
+    color: white;
     cursor: pointer;
     margin-bottom: 15px;
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Press Start 2P", monospace;
 }
 
 .file-drop-area.drag-over {
-    background-color: #e0f7ff;
+    background-color: #292126;
+    color: black;
 }
 
 .hidden-file-input {
@@ -58,13 +67,15 @@ h1 {
 
 .file-status {
     margin-top: 15px;
+    font-size: 0.8em;
     text-align: left;
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Press Start 2P", monospace;
 }
 
 .status-indicator {
     font-weight: bold;
     margin-right: 10px;
+    color: white;
 }
 
 .button-group {
@@ -75,46 +86,50 @@ h1 {
 
 .btn {
     padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
+    font-size: 1.5rem;
+    border: 2px solid white;
+    border-radius: 0;
     cursor: pointer;
-    background-color: #007bff;
+    background-color: #292126;
     color: white;
-    transition: background-color 0.3s;
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Press Start 2P", monospace;
+    text-transform: uppercase;
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: #292126;
+    color: black;
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #292126;
+    color: white;
+    border: 2px solid white;
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: #292126;
+    color: black;
 }
 
 .log-container {
     margin-top: 20px;
     padding: 10px;
-    height: 150px;
-    text-align:left;
-    line-height:0;
+    height: 300px;
+    text-align: left;
     overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    font-family: "Courier New", Courier, monospace;
+    border: 2px solid white;
+    background-color: #292126;
+    color: white;
+    font-family: "Press Start 2P", monospace;
     font-size: 12px;
 }
 
 .file-list {
     list-style-type: none;
     padding: 0;
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Press Start 2P", monospace;
+    color: white;
 }
 
 .file-list li {
@@ -123,9 +138,44 @@ h1 {
 
 .file-list a {
     text-decoration: none;
-    color: #007bff;
+    color: white;
 }
 
 .file-list a:hover {
     text-decoration: underline;
+    color: black;
+    background-color: #292126;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 16px; /* Ensure uniform size */
+    text-align: center;
+    font-family: "Press Start 2P", monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+    background-color: #292126;
+    border: 2px solid red;
+    margin-right: 10px;
+    line-height: 16px; /* Center text vertically */
+}
+
+.status-indicator.ready {
+    color: black;
+    background-color: #292126;
+    content: "✓"; /* Represent checkmark */
+}
+
+.status-indicator.not-ready {
+    color: white;
+    background-color: #292126;
+    content: "X"; /* Represent X */
+}
+
+.logo {
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
 }

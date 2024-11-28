@@ -70,7 +70,9 @@ function handleFiles(files) {
 
 function updateStatus(type, status) {
   const statusIndicator = document.getElementById(`${type}-status`);
-  statusIndicator.textContent = status ? "✅" : "❌";
+  statusIndicator.textContent = status ? "O" : "X";
+  statusIndicator.style.color = status ? "green" : "red";
+  statusIndicator.style.border = status ? "2px solid green" : "2px solid red";  
 }
 
 function startTraining() {
@@ -122,6 +124,12 @@ function startTraining() {
 }
 
 function stopTraining() {
+  const userConfirmed = confirm("Are you sure you want to stop the training?");
+  
+  if (!userConfirmed) {
+    return; // Exit if the user cancels
+  }
+
     fetch("/stop", { method: "POST" })
         .then((res) => res.text())
         .then((msg) => {

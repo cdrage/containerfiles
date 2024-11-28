@@ -138,7 +138,12 @@ func runScript(c *gin.Context) {
 
 	trainingInProgress = true
 	currentCmd = exec.Command("bash", "./scripts/script.sh")
-	currentCmd.Env = append(os.Environ(), "HF_TOKEN="+huggingfaceApiKey)
+	// Check host running this binary if $HF_TOKEN is available. if huggingfaceApiKey is empty, use the one from the host
+	if huggingfaceApiKey != "" {
+		currentCmd.Env = append(os.Environ(), "HF_TOKEN="+huggingfaceApiKey)
+	} else {
+		currentCmd.Env = os.Environ()
+	}
 
 	stdout, err := currentCmd.StdoutPipe()
 	if err != nil {

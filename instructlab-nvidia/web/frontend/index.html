@@ -4,32 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InstructLab AI Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>InstructLab AI Training</h1>
+        <img src="logo.png" alt="InstructLab Logo" class="logo">
+        <h1 style="line-height:1.3">InstructLab LLM Training</h1>
         <div class="form-group">
             <input id="huggingface-api" type="text" 
-                   placeholder="Hugging Face READ ONLY API Key (OPTIONAL)" 
+                   placeholder="Hugging Face API Key (OPTIONAL)" 
                    class="input-text">
         </div>
         <div id="file-drop-area" class="file-drop-area">
-            <p>Drag & drop files here or click to upload.</p>
+            <p>Drag & drop your config, knowledge and skills files or click to upload.</p>
             <input id="file-upload" type="file" multiple class="hidden-file-input">
         </div>
         <div class="file-status">
-            <p><span id="config-status" class="status-indicator">❌</span> Config File</p>
-            <p><span id="knowledge-status" class="status-indicator">❌</span> Knowledge File</p>
-            <p><span id="skills-status" class="status-indicator">❌</span> Skills File</p>
+            <p><span id="config-status" class="status-indicator">X</span> Config file (config.yaml)</p>
+            <p><span id="knowledge-status" class="status-indicator">X</span> Knowledge file (knowledge_train_*.jsonl)</p>
+            <p><span id="skills-status" class="status-indicator">X</span> Skills file (skills_train_*.jsonl)</p>
         </div>
         <div class="button-group">
-            <button id="run" class="btn">Run Training</button>
-            <button id="stop" class="btn btn-secondary" disabled>Stop Training</button>
+            <button id="run" class="btn">Start</button>
+            <button id="stop" class="btn btn-secondary" disabled>Stop</button>
         </div>
         <div id="logs" class="log-container"></div>
-        <h2>Output Files</h2>
         <ul id="file-list" class="file-list"></ul>
     </div>
 </body>
