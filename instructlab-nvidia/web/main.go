@@ -110,26 +110,32 @@ func runScript(c *gin.Context) {
 	}
 
 	// Save uploaded files
-	knowledgeFile, err := c.FormFile("knowledge_file")
-	if err != nil {
-		c.String(http.StatusBadRequest, "Knowledge training file is required.")
+	knowledgeFile, knowledgeErr := c.FormFile("knowledge_file")
+	skillsFile, skillsErr := c.FormFile("skills_file")
+
+	if knowledgeErr != nil && skillsErr != nil {
+		c.String(http.StatusBadRequest, "Either knowledge training file or skills training file is required.")
 		return
 	}
 
-	skillsFile, err := c.FormFile("skills_file")
-	if err != nil {
-		c.String(http.StatusBadRequest, "Skills training file is required.")
-		return
-	}
+	// Delete previous /tmp/config.yaml, /tmp/knowledge_train.jsonl, /tmp/skills_train.jsonl files so we make sure
+	// we have a COMPLETELY clean slate.
+	os.Remove("/tmp/config.yaml")
+	os.Remove("/tmp/knowledge_train.jsonl")
+	os.Remove("/tmp/skills_train.jsonl")
 
 	// Save the files to /tmp
-	if err := c.SaveUploadedFile(knowledgeFile, "/tmp/knowledge_train.jsonl"); err != nil {
-		c.String(http.StatusInternalServerError, "Failed to save knowledge training file: %v", err)
-		return
+	if knowledgeErr == nil {
+		if err := c.SaveUploadedFile(knowledgeFile, "/tmp/knowledge_train.jsonl"); err != nil {
+			c.String(http.StatusInternalServerError, "Failed to save knowledge training file: %v", err)
+			return
+		}
 	}
-	if err := c.SaveUploadedFile(skillsFile, "/tmp/skills_train.jsonl"); err != nil {
-		c.String(http.StatusInternalServerError, "Failed to save skills training file: %v", err)
-		return
+	if skillsErr == nil {
+		if err := c.SaveUploadedFile(skillsFile, "/tmp/skills_train.jsonl"); err != nil {
+			c.String(http.StatusInternalServerError, "Failed to save skills training file: %v", err)
+			return
+		}
 	}
 	if err := c.SaveUploadedFile(configFile, "/tmp/config.yaml"); err != nil {
 		c.String(http.StatusInternalServerError, "Failed to save config file: %v", err)
@@ -169,6 +175,15 @@ func runScript(c *gin.Context) {
 	go streamLogs(stderr, logFilePath)
 
 	go func() {
+
+		// Always defer trainingInProgress is set to false after training is done.
+		// to ENSURE that it is set to false even if the script fails.
+		defer func() {
+			trainingMutex.Lock()
+			trainingInProgress = false
+			trainingMutex.Unlock()
+		}()
+
 		// Run the command
 		if err := currentCmd.Start(); err != nil {
 			log.Printf("Failed to start script: %v\n", err)
@@ -176,11 +191,6 @@ func runScript(c *gin.Context) {
 		if err := currentCmd.Wait(); err != nil {
 			log.Printf("Script execution error: %v\n", err)
 		}
-
-		// Mark training as finished
-		trainingMutex.Lock()
-		trainingInProgress = false
-		trainingMutex.Unlock()
 
 		log.Printf("Script execution finished.")
 	}()

@@ -59,8 +59,8 @@ h1 {
 }
 
 .file-drop-area.drag-over {
-    background-color: #292126;
-    color: black;
+    background-color: #00ff00; /* Neon green */
+    color: #ff0000; /* Bright red */
 }
 
 .hidden-file-input {
@@ -107,8 +107,8 @@ h1 {
 }
 
 .btn:hover {
-    background-color: #292126;
-    color: black;
+    background-color: #00ff00; /* Neon green */
+    color: #ff0000; /* Bright red */
 }
 
 .btn-secondary {
@@ -118,8 +118,8 @@ h1 {
 }
 
 .btn-secondary:hover {
-    background-color: #292126;
-    color: black;
+    background-color: #00ff00; /* Neon green */
+    color: #ff0000; /* Bright red */
 }
 
 .log-container {
@@ -132,7 +132,7 @@ h1 {
     background-color: #292126;
     color: white;
     font-family: "Press Start 2P", monospace;
-    font-size: 10px;
+    font-size: 8px;
 }
 
 .file-list {
@@ -200,7 +200,6 @@ h1 {
     font-size:0.8rem;
     color: white;
     padding-bottom: 50px;
-    display: none; /* Initially hidden */
 }
 
 .woof-text.visible {

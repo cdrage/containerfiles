@@ -4,7 +4,7 @@ let uploadedFiles = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchState(); // Initial state fetch
-  setInterval(fetchState, 2000); // Poll state every 2 seconds
+  setInterval(fetchState, 1000); // Poll state every second, we want this shown as quick as possible
 
   const fileDropArea = document.getElementById("file-drop-area");
   const fileInput = document.getElementById("file-upload");
@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetchFiles();
   setInterval(fetchFiles, 2000);
+
+  // Initial woof text
+  document.getElementById("woof").textContent = "Woof! Get started by uploading your files.";
 });
 
 function fetchState() {
@@ -52,29 +55,30 @@ function fetchState() {
     .catch((err) => console.error("Failed to fetch state:", err));
 }
 
-
 function fetchFiles() {
   fetch("/files")
-      .then((res) => res.json())
-      .then((data) => {
-          const fileList = document.getElementById("file-list");
-          fileList.innerHTML = "";
+    .then((res) => res.json())
+    .then((data) => {
+      const fileList = document.getElementById("file-list");
+      fileList.innerHTML = "";
 
-          data.files.forEach((file) => {
-              const listItem = document.createElement("li");
-              const link = document.createElement("a");
-              link.href = file;
-              // Remove "/first/ example" base URL
-              link.textContent = file.replace("/final-files/", "");
-              link.target = "_blank"; // Open in new tab
-              listItem.appendChild(link);
-              fileList.appendChild(listItem);
-          });
-      })
-      .catch((err) => console.error("Failed to fetch files:", err));
+      data.files.forEach((file) => {
+        const listItem = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = file;
+        link.textContent = file.replace("/final-files/", "");
+        link.target = "_blank";
+        listItem.appendChild(link);
+        fileList.appendChild(listItem);
+      });
+    })
+    .catch((err) => console.error("Failed to fetch files:", err));
 }
 
 function handleFiles(files) {
+  let knowledgeUploaded = false;
+  let skillsUploaded = false;
+
   Array.from(files).forEach((file) => {
     if (file.name.endsWith(".yaml") && !uploadedFiles.has("config")) {
       uploadedFiles.set("config", file);
@@ -88,6 +92,7 @@ function handleFiles(files) {
       uploadedFiles.set("knowledge", file);
       fileStatus.knowledge = true;
       updateStatus("knowledge", true);
+      knowledgeUploaded = true;
     } else if (
       file.name.includes("skills") &&
       file.name.endsWith(".jsonl") &&
@@ -96,15 +101,30 @@ function handleFiles(files) {
       uploadedFiles.set("skills", file);
       fileStatus.skills = true;
       updateStatus("skills", true);
+      skillsUploaded = true;
     }
   });
+
+  updateWoofText(knowledgeUploaded, skillsUploaded);
+}
+
+function updateWoofText(knowledge, skills) {
+  const woofElement = document.getElementById("woof");
+
+  if (fileStatus.knowledge && fileStatus.skills) {
+    woofElement.textContent = "Multi-phase training detected. I need at least 130GB of VRAM, hope you have a beefy GPU!";
+  } else if (fileStatus.knowledge || fileStatus.skills) {
+    woofElement.textContent = "Single-phase training detected. I need at least 48GB of VRAM, have 2x 4090's?";
+  } else if (fileStatus.config) {
+    woofElement.textContent = "Great! Got your config.yaml, now upload knowledge.jsonl or skills.jsonl.";
+  }
 }
 
 function updateStatus(type, status) {
   const statusIndicator = document.getElementById(`${type}-status`);
   statusIndicator.textContent = status ? "O" : "X";
   statusIndicator.style.color = status ? "green" : "red";
-  statusIndicator.style.border = status ? "2px solid green" : "2px solid red";  
+  statusIndicator.style.border = status ? "2px solid green" : "2px solid red";
 }
 
 function startTraining() {
@@ -113,10 +133,12 @@ function startTraining() {
     return;
   }
 
-  if (!fileStatus.config || !fileStatus.knowledge || !fileStatus.skills) {
-    alert("All required files must be uploaded.");
+  if (!fileStatus.config || (!fileStatus.knowledge && !fileStatus.skills)) {
+    alert("Config file and at least one of knowledge or skills files must be uploaded.");
     return;
   }
+  trainingInProgress = true;
+  updateUI();
 
   const huggingfaceApi = document.getElementById("huggingface-api").value;
 
@@ -129,7 +151,6 @@ function startTraining() {
     formData.append(fieldName, file);
   });
 
-  trainingInProgress = true;
   updateUI();
 
   fetch("/run", {
@@ -157,31 +178,20 @@ function startTraining() {
 
 function stopTraining() {
   const userConfirmed = confirm("Are you sure you want to stop the training?");
-  
+
   if (!userConfirmed) {
     return; // Exit if the user cancels
   }
 
-    fetch("/stop", { method: "POST" })
-        .then((res) => res.text())
-        .then((msg) => {
-            trainingInProgress = false;
-            updateUI();
-            console.log(msg);
-        })
-        .catch((err) => console.error(err));
-  trainingInProgress = false;
-  updateUI();
-  console.log("Training stopped.");
-}
-
-function toggleWoof(isVisible) {
-  const woofElement = document.getElementById("woof");
-  if (isVisible) {
-      woofElement.classList.add("visible");
-  } else {
-      woofElement.classList.remove("visible");
-  }
+  fetch("/stop", { method: "POST" })
+    .then((res) => res.text())
+    .then((msg) => {
+      trainingInProgress = false;
+      updateUI();
+      document.getElementById("woof").textContent = "Training was manually stopped! Try again?"; // Reset woof text
+      console.log(msg);
+    })
+    .catch((err) => console.error(err));
 }
 
 function updateUI() {
@@ -196,26 +206,28 @@ function updateUI() {
     }
   });
 
-  // Toggle "woof!" text based on training state
-  toggleWoof(trainingInProgress);
+  const woofElement = document.getElementById("woof");
+  if (trainingInProgress) {
+    woofElement.textContent = "Arf! Training in progress... Get that coffee!";
+  } else {
+    woofElement.textContent = "Training stopped! Your logs and files are located at the bottom of the page.";
+  }
+
 }
 
 function fetchLogs() {
-    const logDiv = document.getElementById("logs");
+  const logDiv = document.getElementById("logs");
 
-    // Check if the user is at the bottom of the scroll
-    const isScrolledToBottom = logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
+  const isScrolledToBottom = logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
 
-    fetch("/logs")
-        .then((res) => res.json())
-        .then((logs) => {
-            // Update the logs
-            logDiv.innerHTML = logs.map((line) => `<p>${line}</p>`).join("");
+  fetch("/logs")
+    .then((res) => res.json())
+    .then((logs) => {
+      logDiv.innerHTML = logs.map((line) => `<p>${line}</p>`).join("");
 
-            // If the user was at the bottom, keep them there
-            if (isScrolledToBottom) {
-                logDiv.scrollTop = logDiv.scrollHeight;
-            }
-        })
-        .catch((err) => console.error(err));
+      if (isScrolledToBottom) {
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    })
+    .catch((err) => console.error(err));
 }
