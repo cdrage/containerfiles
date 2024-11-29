@@ -1,4 +1,5 @@
 let trainingInProgress = false;
+let loadingTraining = false;
 let fileStatus = { config: false, knowledge: false, skills: false };
 let uploadedFiles = new Map();
 
@@ -42,10 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(fetchFiles, 2000);
 
   // Initial woof text
-  document.getElementById("woof").textContent = "Woof! Get started by uploading your files.";
+  document.getElementById("woof").textContent =
+    "Woof! Get started by uploading your files.";
 });
 
 function fetchState() {
+  if (loadingTraining) {
+    return;
+  }
   fetch("/state")
     .then((res) => res.json())
     .then((data) => {
@@ -114,11 +119,14 @@ function updateWoofText(knowledge, skills) {
   const woofElement = document.getElementById("woof");
 
   if (fileStatus.knowledge && fileStatus.skills) {
-    woofElement.textContent = "Multi-phase training detected. I need at least 130GB of VRAM, hope you have some beefy GPU!";
+    woofElement.textContent =
+      "Multi-phase training detected. I need at least 130GB of VRAM, hope you have some beefy GPU!";
   } else if (fileStatus.knowledge || fileStatus.skills) {
-    woofElement.textContent = "Single-phase training detected. I need at least 48GB of VRAM, hope you have that!";
+    woofElement.textContent =
+      "Single-phase training detected. I need at least 48GB of VRAM, hope you have that!";
   } else if (fileStatus.config) {
-    woofElement.textContent = "Great! Got your config.yaml, now upload knowledge.jsonl or skills.jsonl.";
+    woofElement.textContent =
+      "Great! Got your config.yaml, now upload knowledge.jsonl or skills.jsonl.";
   }
 }
 
@@ -136,7 +144,9 @@ function startTraining() {
   }
 
   if (!fileStatus.config || (!fileStatus.knowledge && !fileStatus.skills)) {
-    alert("Config file and at least one of knowledge or skills files must be uploaded.");
+    alert(
+      "Config file and at least one of knowledge or skills files must be uploaded."
+    );
     return;
   }
   trainingInProgress = true;
@@ -155,11 +165,14 @@ function startTraining() {
 
   updateUI();
 
+  // Set loadingTraining to true to prevent the UI from updating the training status
+  loadingTraining = true;
   fetch("/run", {
     method: "POST",
     body: formData,
   })
     .then((res) => {
+      loadingTraining = false;
       if (!res.ok) {
         throw new Error("Failed to start training.");
       }
@@ -174,6 +187,7 @@ function startTraining() {
         "An error occurred while starting the training. Please check the logs."
       );
       trainingInProgress = false;
+      loadingTraining = false;
       updateUI();
     });
 }
@@ -190,7 +204,8 @@ function stopTraining() {
     .then((msg) => {
       trainingInProgress = false;
       updateUI();
-      document.getElementById("woof").textContent = "Training was manually stopped! Try again?"; // Reset woof text
+      document.getElementById("woof").textContent =
+        "Training was manually stopped! Try again?"; // Reset woof text
       console.log(msg);
     })
     .catch((err) => console.error(err));
@@ -212,15 +227,16 @@ function updateUI() {
   if (trainingInProgress) {
     woofElement.textContent = "Arf! Training in progress... Get that coffee!";
   } else {
-    woofElement.textContent = "Training stopped! Your logs and files are located at the bottom of the page.";
+    woofElement.textContent =
+      "Training stopped! Your logs and files are located at the bottom of the page.";
   }
-
 }
 
 function fetchLogs() {
   const logDiv = document.getElementById("logs");
 
-  const isScrolledToBottom = logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
+  const isScrolledToBottom =
+    logDiv.scrollHeight - logDiv.clientHeight <= logDiv.scrollTop + 1;
 
   fetch("/logs")
     .then((res) => res.json())
@@ -244,12 +260,16 @@ function fetchSystemInfo() {
       `;
       // If GPU is not "undetectable", change woof to say. "I can see your GPU! Nice ${data.gpu}!"
       if (data.gpu !== "undetectable") {
-        document.getElementById("woof").textContent = `I can see your GPU! Nice ${data.gpu} with ${data.vram}GB of VRAM!`;
+        document.getElementById(
+          "woof"
+        ).textContent = `I can see your GPU! Nice ${data.gpu} with ${data.vram}GB of VRAM!`;
       }
 
       // If less than 48GB total VRAM, change woof to say. "I see you have ${data.gpu}, with a total of ${data.vram} VRAM. I need at least 48GB of VRAM to train well!"
       if (data.vram < 48 && data.gpu !== "undetectable") {
-        document.getElementById("woof").textContent = `I see you have ${data.gpu}, with a total of ${data.vram}GB VRAM. I need at least 48GB of VRAM to train well!`;
+        document.getElementById(
+          "woof"
+        ).textContent = `I see you have ${data.gpu}, with a total of ${data.vram}GB VRAM. I need at least 48GB of VRAM to train well!`;
       }
     })
     .catch((err) => {
