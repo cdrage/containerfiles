@@ -114,9 +114,9 @@ function updateWoofText(knowledge, skills) {
   const woofElement = document.getElementById("woof");
 
   if (fileStatus.knowledge && fileStatus.skills) {
-    woofElement.textContent = "Multi-phase training detected. I need at least 130GB of VRAM, hope you have a beefy GPU!";
+    woofElement.textContent = "Multi-phase training detected. I need at least 130GB of VRAM, hope you have some beefy GPU!";
   } else if (fileStatus.knowledge || fileStatus.skills) {
-    woofElement.textContent = "Single-phase training detected. I need at least 48GB of VRAM, have 2x 4090's?";
+    woofElement.textContent = "Single-phase training detected. I need at least 48GB of VRAM, hope you have that!";
   } else if (fileStatus.config) {
     woofElement.textContent = "Great! Got your config.yaml, now upload knowledge.jsonl or skills.jsonl.";
   }
