@@ -3,8 +3,7 @@ let fileStatus = { config: false, knowledge: false, skills: false };
 let uploadedFiles = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetchState(); // Initial state fetch
-  setInterval(fetchState, 1000); // Poll state every second, we want this shown as quick as possible
+  fetchSystemInfo();
 
   const fileDropArea = document.getElementById("file-drop-area");
   const fileInput = document.getElementById("file-upload");
@@ -32,6 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("run").addEventListener("click", startTraining);
   document.getElementById("stop").addEventListener("click", stopTraining);
+
+  fetchState(); // Initial state fetch
+  setInterval(fetchState, 1000); // Poll state every second, we want this shown as quick as possible
 
   fetchLogs();
   setInterval(fetchLogs, 2000);
@@ -230,4 +232,29 @@ function fetchLogs() {
       }
     })
     .catch((err) => console.error(err));
+}
+
+function fetchSystemInfo() {
+  fetch("/system-info")
+    .then((res) => res.json())
+    .then((data) => {
+      const systemInfoDiv = document.getElementById("system-info");
+      systemInfoDiv.innerHTML = `
+        <p>GPU(s): ${data.gpu} <br>VRAM: ${data.vram} GB <br>CPU: ${data.cpu} <br>RAM: ${data.ram} GB</p>
+      `;
+      // If GPU is not "undetectable", change woof to say. "I can see your GPU! Nice ${data.gpu}!"
+      if (data.gpu !== "undetectable") {
+        document.getElementById("woof").textContent = `I can see your GPU! Nice ${data.gpu} with ${data.vram}GB of VRAM!`;
+      }
+
+      // If less than 48GB total VRAM, change woof to say. "I see you have ${data.gpu}, with a total of ${data.vram} VRAM. I need at least 48GB of VRAM to train well!"
+      if (data.vram < 48 && data.gpu !== "undetectable") {
+        document.getElementById("woof").textContent = `I see you have ${data.gpu}, with a total of ${data.vram}GB VRAM. I need at least 48GB of VRAM to train well!`;
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch system info:", err);
+      document.getElementById("system-info").innerHTML =
+        "<p>Unable to fetch system information.</p>";
+    });
 }

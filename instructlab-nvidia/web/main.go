@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -18,9 +20,12 @@ var (
 	currentCmd         *exec.Cmd
 	trainingInProgress bool
 	trainingMutex      sync.Mutex
+	systemInfo         map[string]string
 )
 
 func main() {
+	systemInfo = gatherSystemInfo()
+
 	// Ensure logs directory exists
 	if err := os.MkdirAll("logs", 0755); err != nil {
 		log.Fatalf("Failed to create logs directory: %v", err)
@@ -43,6 +48,7 @@ func main() {
 	r.POST("/stop", stopScript)
 	r.Static("/final-files", "./final")
 	r.GET("/files", listFiles)
+	r.GET("/system-info", getSystemInfo)
 
 	log.Println("Server running on http://localhost:8080")
 	if err := r.Run(":8080"); err != nil {
@@ -263,4 +269,92 @@ func listFiles(c *gin.Context) {
 		"files":   fileLinks,
 		"folders": folderLinks,
 	})
+}
+
+func gatherSystemInfo() map[string]string {
+	info := map[string]string{
+		"gpu":  "undetectable",
+		"vram": "undetectable",
+		"cpu":  "undetectable",
+		"ram":  "undetectable",
+	}
+
+	// Detect GPU and VRAM using `nvidia-smi`
+	nvidiaCmd := exec.Command("nvidia-smi", "--query-gpu=gpu_name", "--format=csv,noheader,nounits")
+	output, err := nvidiaCmd.Output()
+	if err == nil {
+		lines := strings.Split(strings.TrimSpace(string(output)), "\n")
+		if len(lines) > 0 {
+			gpuCount := make(map[string]int)
+			for _, line := range lines {
+				gpuCount[line]++
+			}
+			var gpuNames []string
+			for name, count := range gpuCount {
+				if count > 1 {
+					gpuNames = append(gpuNames, fmt.Sprintf("%dx %s", count, name))
+				} else {
+					gpuNames = append(gpuNames, name)
+				}
+			}
+			info["gpu"] = strings.Join(gpuNames, ", ")
+		}
+	}
+
+	vramCmd := exec.Command("nvidia-smi", "--query-gpu=memory.total", "--format=csv,noheader,nounits")
+	vramOutput, err := vramCmd.Output()
+	if err == nil {
+		lines := strings.Split(strings.TrimSpace(string(vramOutput)), "\n")
+		if len(lines) > 0 {
+			totalVRAM := calculateTotalVRAM(lines)
+			info["vram"] = strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.2f", float64(totalVRAM)/1024), "0"), ".")
+		}
+	}
+
+	// Detect CPU using `lscpu`
+	cpuCmd := exec.Command("lscpu")
+	cpuOutput, err := cpuCmd.Output()
+	if err == nil {
+		scanner := bufio.NewScanner(strings.NewReader(string(cpuOutput)))
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, "Model name:") {
+				info["cpu"] = strings.TrimSpace(strings.Split(line, ":")[1])
+				break
+			}
+		}
+	}
+
+	// Detect RAM using `free`
+	freeCmd := exec.Command("free", "-g")
+	freeOutput, err := freeCmd.Output()
+	if err == nil {
+		scanner := bufio.NewScanner(strings.NewReader(string(freeOutput)))
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.Contains(line, "Mem:") {
+				parts := strings.Fields(line)
+				if len(parts) > 1 {
+					info["ram"] = parts[1] // Total memory
+				}
+				break
+			}
+		}
+	}
+
+	return info
+}
+
+func calculateTotalVRAM(lines []string) int {
+	totalVRAM := 0
+	for _, line := range lines {
+		var vram int
+		fmt.Sscanf(line, "%d", &vram)
+		totalVRAM += vram
+	}
+	return totalVRAM
+}
+
+func getSystemInfo(c *gin.Context) {
+	c.JSON(http.StatusOK, systemInfo)
 }

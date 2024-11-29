@@ -257,3 +257,7 @@ h1 {
 ::placeholder {
     color: #777;
 }
+
+.system-info {
+    font-size:8px;
+}
