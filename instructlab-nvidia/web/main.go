@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,14 @@ var (
 	trainingInProgress bool
 	trainingMutex      sync.Mutex
 	systemInfo         map[string]string
+	gpuUsageData       map[string]map[string]string
+	dataMutex          sync.Mutex
 )
+
+func init() {
+	gpuUsageData = make(map[string]map[string]string)
+	go updateGPUUsageDataPeriodically()
+}
 
 func main() {
 	systemInfo = gatherSystemInfo()
@@ -46,9 +54,10 @@ func main() {
 	r.GET("/state", getTrainingState)
 	r.POST("/run", runScript)
 	r.POST("/stop", stopScript)
-	r.Static("/final-files", "./final")
+	r.Static("/final", "./final")
 	r.GET("/files", listFiles)
 	r.GET("/system-info", getSystemInfo)
+	r.GET("/gpu-usage", getGPUUsage)
 
 	log.Println("Server running on http://localhost:8080")
 	if err := r.Run(":8080"); err != nil {
@@ -239,36 +248,40 @@ func getTrainingState(c *gin.Context) {
 
 func listFiles(c *gin.Context) {
 	finalDir := "./final"
-	files, err := os.ReadDir(finalDir)
+	fileLinks, err := getFileLinks(finalDir, "/final")
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Failed to read final directory: %v", err)
+		c.String(http.StatusInternalServerError, "Error listing files: %v", err)
 		return
 	}
 
+	c.JSON(http.StatusOK, gin.H{
+		"files": fileLinks,
+	})
+}
+
+func getFileLinks(baseDir string, basePath string) ([]string, error) {
 	var fileLinks []string
-	var folderLinks []string
+
+	files, err := os.ReadDir(baseDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %v", baseDir, err)
+	}
+
 	for _, file := range files {
 		if file.IsDir() {
-			folderLinks = append(folderLinks, "/final-files/"+file.Name()+"/")
-			subFiles, err := os.ReadDir(finalDir + "/" + file.Name())
+			subDir := baseDir + "/" + file.Name()
+			subPath := basePath + "/" + file.Name()
+			subFileLinks, err := getFileLinks(subDir, subPath)
 			if err != nil {
-				c.String(http.StatusInternalServerError, "Failed to read subdirectory: %v", err)
-				return
+				return nil, fmt.Errorf("failed to read subdirectory %s: %v", subDir, err)
 			}
-			for _, subFile := range subFiles {
-				if !subFile.IsDir() && subFile.Name() != "" {
-					fileLinks = append(fileLinks, "/final-files/"+file.Name()+"/"+subFile.Name())
-				}
-			}
+			fileLinks = append(fileLinks, subFileLinks...)
 		} else if file.Name() != "" {
-			fileLinks = append(fileLinks, "/final-files/"+file.Name())
+			fileLinks = append(fileLinks, basePath+"/"+file.Name())
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"files":   fileLinks,
-		"folders": folderLinks,
-	})
+	return fileLinks, nil
 }
 
 func gatherSystemInfo() map[string]string {
@@ -357,4 +370,82 @@ func calculateTotalVRAM(lines []string) int {
 
 func getSystemInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, systemInfo)
+}
+
+func updateGPUUsageDataPeriodically() {
+	for {
+		updateGPUUsageData()
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func updateGPUUsageData() {
+	data := make(map[string]map[string]string)
+
+	// Run nvidia-smi command to get GPU names
+	nameCmd := exec.Command("nvidia-smi", "--query-gpu=index,gpu_name", "--format=csv,noheader,nounits")
+	nameOutput, err := nameCmd.Output()
+	if err == nil {
+		lines := strings.Split(strings.TrimSpace(string(nameOutput)), "\n")
+		for _, line := range lines {
+			parts := strings.Split(line, ", ")
+			if len(parts) == 2 {
+				index := parts[0]
+				name := parts[1]
+				if data[index] == nil {
+					data[index] = make(map[string]string)
+				}
+				data[index]["name"] = name
+			}
+		}
+	}
+
+	// Run nvidia-smi command for memory usage
+	memoryCmd := exec.Command("nvidia-smi", "--query-gpu=index,memory.used,memory.total", "--format=csv,noheader,nounits")
+	memoryOutput, err := memoryCmd.Output()
+	if err == nil {
+		lines := strings.Split(strings.TrimSpace(string(memoryOutput)), "\n")
+		for _, line := range lines {
+			parts := strings.Split(line, ", ")
+			if len(parts) == 3 {
+				index := parts[0]
+				used := parts[1]
+				total := parts[2]
+				if data[index] == nil {
+					data[index] = make(map[string]string)
+				}
+				data[index]["memory_used"] = used
+				data[index]["memory_total"] = total
+			}
+		}
+	}
+
+	// Run nvidia-smi command for GPU utilization
+	utilCmd := exec.Command("nvidia-smi", "--query-gpu=index,utilization.gpu", "--format=csv,noheader,nounits")
+	utilOutput, err := utilCmd.Output()
+	if err == nil {
+		lines := strings.Split(strings.TrimSpace(string(utilOutput)), "\n")
+		for _, line := range lines {
+			parts := strings.Split(line, ", ")
+			if len(parts) == 2 {
+				index := parts[0]
+				utilization := parts[1]
+				if data[index] == nil {
+					data[index] = make(map[string]string)
+				}
+				data[index]["utilization"] = utilization
+			}
+		}
+	}
+
+	dataMutex.Lock()
+	gpuUsageData = data
+	dataMutex.Unlock()
+}
+
+func getGPUUsage(c *gin.Context) {
+	dataMutex.Lock()
+	defer dataMutex.Unlock()
+
+	c.JSON(http.StatusOK, gpuUsageData)
 }

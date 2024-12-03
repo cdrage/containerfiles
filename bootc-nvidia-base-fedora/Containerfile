@@ -51,8 +51,13 @@ RUN curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-co
 #! Blacklist the nouveau driver to ensure NVIDIA drivers function properly
 RUN echo "blacklist nouveau" > /etc/modprobe.d/blacklist_nouveau.conf
 
+#! This is IMPORTANT. We need to disable GSP-RM due to multiple issues with Kubernetes (NVIDIA Container Toolkit) with it enabled.
+#! see issue: https://github.com/NVIDIA/open-gpu-kernel-modules/issues/446
+RUN su -c 'echo options nvidia NVreg_EnableGpuFirmware=0 > /etc/modprobe.d/nvidia-gsp.conf'
+RUN su -c 'echo options nvidia NVreg_NvLinkDisable=1 > /etc/modprobe.d/nvidia-nvlink.conf'
+
 #! Copy necessary usr files
 COPY usr/ /usr/
 
 #! Enable necessary services to be started at boot
-RUN systemctl enable nvidia-toolkit-firstboot.service nvidia-drivers.service nvidia-persist.service
+RUN systemctl enable nvidia-toolkit-firstboot.service nvidia-drivers.service

@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchFiles();
   setInterval(fetchFiles, 2000);
 
+  fetchGPUInfo();
+  setInterval(fetchGPUInfo, 3000);
+
   // Initial woof text
   document.getElementById("woof").textContent =
     "Woof! Get started by uploading your files.";
@@ -72,9 +75,10 @@ function fetchFiles() {
       data.files.forEach((file) => {
         const listItem = document.createElement("li");
         const link = document.createElement("a");
+        const fileName = file.split("/").pop(); // Extract the file name
         link.href = file;
-        link.textContent = file.replace("/final-files/", "");
-        link.target = "_blank";
+        link.textContent = fileName;
+        link.download = fileName; // Set the download attribute
         listItem.appendChild(link);
         fileList.appendChild(listItem);
       });
@@ -120,10 +124,10 @@ function updateWoofText(knowledge, skills) {
 
   if (fileStatus.knowledge && fileStatus.skills) {
     woofElement.textContent =
-      "Multi-phase training detected. I need at least 130GB of VRAM, hope you have some beefy GPU!";
+      "Multi-phase training detected. I need at least 130GB of VRAM";
   } else if (fileStatus.knowledge || fileStatus.skills) {
     woofElement.textContent =
-      "Single-phase training detected. I need at least 48GB of VRAM, hope you have that!";
+      "Single-phase training detected. I need at least 96GB of VRAM";
   } else if (fileStatus.config) {
     woofElement.textContent =
       "Great! Got your config.yaml, now upload knowledge.jsonl or skills.jsonl.";
@@ -256,7 +260,7 @@ function fetchSystemInfo() {
     .then((data) => {
       const systemInfoDiv = document.getElementById("system-info");
       systemInfoDiv.innerHTML = `
-        <p>GPU(s): ${data.gpu} <br>VRAM: ${data.vram} GB <br>CPU: ${data.cpu} <br>RAM: ${data.ram} GB</p>
+        <p>GPU(s): ${data.gpu} <br>TOTAL VRAM: ${data.vram} GB <br>CPU: ${data.cpu} <br>RAM: ${data.ram} GB</p>
       `;
       // If GPU is not "undetectable", change woof to say. "I can see your GPU! Nice ${data.gpu}!"
       if (data.gpu !== "undetectable") {
@@ -265,16 +269,75 @@ function fetchSystemInfo() {
         ).textContent = `I can see your GPU! Nice ${data.gpu} with ${data.vram}GB of VRAM!`;
       }
 
-      // If less than 48GB total VRAM, change woof to say. "I see you have ${data.gpu}, with a total of ${data.vram} VRAM. I need at least 48GB of VRAM to train well!"
-      if (data.vram < 48 && data.gpu !== "undetectable") {
+      // Nothing will work well on accelerators with less than 96GB of VRAM
+      // unfortunate, but necessary
+      if (data.vram < 96 && data.gpu !== "undetectable") {
         document.getElementById(
           "woof"
-        ).textContent = `I see you have ${data.gpu}, with a total of ${data.vram}GB VRAM. I need at least 48GB of VRAM to train well!`;
+        ).textContent = `I see you have ${data.gpu}, with a total of ${data.vram}GB VRAM. I need at least 96GB of VRAM to train well for single-phase training!`;
       }
     })
     .catch((err) => {
       console.error("Failed to fetch system info:", err);
       document.getElementById("system-info").innerHTML =
         "<p>Unable to fetch system information.</p>";
+    });
+}
+
+function fetchGPUInfo() {
+
+  // Fetch GPU usage info and update bars
+  fetch("/gpu-usage")
+    .then((res) => res.json())
+    .then((data) => {
+      const systemInfoDiv = document.getElementById("gpu-info");
+      const gpuInfoDiv = document.createElement("div");
+
+      Object.entries(data).forEach(([gpuIndex, gpuInfo]) => {
+        const memoryUsed = parseInt(gpuInfo.memory_used, 10);
+        const memoryTotal = parseInt(gpuInfo.memory_total, 10);
+        const utilization = parseInt(gpuInfo.utilization, 10);
+
+        const memoryPercentage = ((memoryUsed / memoryTotal) * 100).toFixed(2);
+
+        // Create GPU info container
+        const gpuContainer = document.createElement("div");
+        gpuContainer.classList.add("gpu-container");
+
+        // GPU name
+        const gpuName = document.createElement("p");
+        gpuName.textContent = `GPU ${gpuIndex}: ${gpuInfo.name}`;
+        gpuContainer.appendChild(gpuName);
+
+        // Memory bar
+        const memoryBarContainer = document.createElement("div");
+        memoryBarContainer.classList.add("bar-container");
+        const memoryBar = document.createElement("div");
+        memoryBar.classList.add("bar");
+        memoryBar.style.width = `${memoryPercentage}%`;
+        memoryBar.textContent = `${memoryUsed} MB / ${memoryTotal} MB (${memoryPercentage}%)`;
+        memoryBarContainer.appendChild(memoryBar);
+        gpuContainer.appendChild(memoryBarContainer);
+
+        // Utilization bar
+        const utilizationBarContainer = document.createElement("div");
+        utilizationBarContainer.classList.add("bar-container");
+        const utilizationBar = document.createElement("div");
+        utilizationBar.classList.add("bar");
+        utilizationBar.style.width = `${utilization}%`;
+        utilizationBar.textContent = `${utilization}%`;
+        utilizationBarContainer.appendChild(utilizationBar);
+        gpuContainer.appendChild(utilizationBarContainer);
+
+        gpuInfoDiv.appendChild(gpuContainer);
+      });
+
+      // Update the system info div with GPU info
+      systemInfoDiv.innerHTML = gpuInfoDiv.innerHTML;
+    })
+    .catch((err) => {
+      console.error("Failed to fetch GPU usage info:", err);
+      document.getElementById("system-info").innerHTML =
+        "<p>Unable to fetch GPU usage information.</p>";
     });
 }

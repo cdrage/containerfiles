@@ -47,8 +47,8 @@ else
 fi
 
 # Create some folders for the output
-GIT_REPO_NAME=$(echo $GIT_REPO | awk -F/ '{print $NF}')
-OUTPUT_FOLDER_NAME=$GIT_REPO_NAME-$(date +%Y%m%d%H%M%S)
+MODEL_TRAINING_NAME=$(echo $MODEL_PATH | awk -F/ '{print $NF}')
+OUTPUT_FOLDER_NAME=$MODEL_TRAINING_NAME-$(date +%Y%m%d%H%M%S)
 
 mkdir output final || true
 mkdir output/$OUTPUT_FOLDER_NAME || true
@@ -97,7 +97,7 @@ else
         --device cuda --pipeline accelerated -y 
 fi
 
-# Package the final model that includes checkpoints and the result for easier downloaded
-tar -czvf final/$GIT_REPO_NAME-trained-model-with-checkpoints-$(date +%Y%m%d%H%M%S).tar.gz output/$OUTPUT_FOLDER_NAME
+# Package the final model (/result) folder
+#tar -czvf final/$MODEL_TRAINING_NAME-trained-model-$(date +%Y%m%d%H%M%S).tar.gz final/$OUTPUT_FOLDER_NAME/result
 
-echo "Done the training!"
+echo "Done the training! See the below files on how to download as well as the above log to see which checkpoint is the best to use!"
