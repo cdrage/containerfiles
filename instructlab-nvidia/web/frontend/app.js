@@ -77,8 +77,8 @@ function fetchFiles() {
         const link = document.createElement("a");
         const fileName = file.split("/").pop(); // Extract the file name
         link.href = file;
-        link.textContent = fileName;
-        link.download = fileName; // Set the download attribute
+        link.textContent = file.replace("/final/", ""); // Show the path without "/final/"
+        link.download = fileName; // Set the download attribute to just the file name
         listItem.appendChild(link);
         fileList.appendChild(listItem);
       });
