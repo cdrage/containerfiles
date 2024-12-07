@@ -4,6 +4,24 @@ let fileStatus = { config: false, knowledge: false, skills: false };
 let uploadedFiles = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
+  const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+
+            // Hide all tab contents
+            tabContents.forEach(content => content.classList.add('hidden'));
+            // Show the selected tab content
+            const tabId = button.getAttribute('data-tab') + '-tab';
+            document.getElementById(tabId).classList.remove('hidden');
+        });
+    });
+
   fetchSystemInfo();
 
   const fileDropArea = document.getElementById("file-drop-area");
@@ -47,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial woof text
   document.getElementById("woof").textContent =
-    "Woof! Get started by uploading your files.";
+    "Arf! Let's start fine tuning!";
 });
 
 function fetchState() {
@@ -124,7 +142,7 @@ function updateWoofText(knowledge, skills) {
 
   if (fileStatus.knowledge && fileStatus.skills) {
     woofElement.textContent =
-      "Multi-phase training detected. I need at least 130GB of VRAM";
+      "Multi-phase training detected. I need at least 120GB of VRAM";
   } else if (fileStatus.knowledge || fileStatus.skills) {
     woofElement.textContent =
       "Single-phase training detected. I need at least 96GB of VRAM";
