@@ -27,6 +27,6 @@
  
 
  **Running:**
- 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
+ 1. In your OTHER Containerfile, change to `FROM foo.bar/yourusername/bootc-nvidia-base-centos` / this Containerfile.
  2. The nvidia drivers will recompile + use akmod + modprobe on boot.
  3. Use nvidia-smi command within the booted container image to see if it works.

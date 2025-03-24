@@ -15,7 +15,7 @@
 # * This is good for situations like cloud providers, usb sticks, etc.
 #
 # **GPU:**
-# * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
+# * Want GPU? Change the FROM to `foo.bar/yourusername/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
 # * GPU drivers will be built + loaded on each boot.
 # * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
 #

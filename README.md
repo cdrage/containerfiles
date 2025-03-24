@@ -119,7 +119,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * This is good for situations like cloud providers, usb sticks, etc.
  
  **GPU:**
- * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
+ * Want GPU? Change the FROM to `foo.bar/yourusername/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
  * GPU drivers will be built + loaded on each boot.
  * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
  
@@ -158,7 +158,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * This is good for situations like cloud providers, usb sticks, etc.
 
  **GPU:**
- * Want GPU? Change the FROM to `git.k8s.land/cdrage/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
+ * Want GPU? Change the FROM to `foo.bar/yourusername/bootc-nvidia-base-centos` / see `bootc-nvidia-base-centos` folder for more details.
  * GPU drivers will be built + loaded on each boot.
  * This README is outside of the scope of **how** to use GPU with k3s, but view the k3s advanced docs for more information: https://docs.k3s.io/advanced#nvidia-container-runtime-support read it thoroughly as you WILL need nvidia-device-plugin installed and modified to ensure it has runtimeClassName set.
 
@@ -211,7 +211,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
 
  **Running:**
- 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
+ 1. In your OTHER Containerfile, change to `FROM foo.bar/yourusername/bootc-nvidia-base-centos` / this Containerfile.
  2. The nvidia drivers will recompile + use akmod + modprobe on boot.
  3. Use nvidia-smi command within the booted container image to see if it works.
 
@@ -226,7 +226,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
  ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
  
- This Fedora 41 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
+ This Fedora 43 as the base image to (hopefully) be as stable as possible. Tried with Fedora 40 but found that the kernel was moving too fast
  for the nvidia drivers to keep up / work properly / update correctly.
 
  IMPORTANT NOTE:
@@ -245,7 +245,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
 
  **Running:**
- 1. In your OTHER Containerfile, change to `FROM git.k8s.land/cdrage/bootc-nvidia-base-centos` / this Containerfile.
+ 1. In your OTHER Containerfile, change to `FROM foo.bar/yourusername/bootc-nvidia-base-centos` / this Containerfile.
  2. The nvidia drivers will recompile + use akmod + modprobe on boot.
  3. Use nvidia-smi command within the booted container image to see if it works.
 
