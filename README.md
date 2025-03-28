@@ -132,6 +132,10 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * K3S_TOKEN=MySuperSecretK3sToken
  * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
  * K8S_VERSION=1.29.4
+
+ **Running etcd / HA etc:**
+ You will have to modify the cluster to use `--cluster-init` to initially start. Modify the lib/systemd/system/k3s.service file to include the `--cluster-init` flag.
+ Follow the instructions here for adding additional servers (you'll be required to also pass in `-server`): https://docs.k3s.io/datastore/ha-embedded
  **Running:**
  1. Create disk image using the above extension
  2. Boot OS
