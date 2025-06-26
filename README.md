@@ -104,7 +104,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- This Containerfile creates a k3s master on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+ This Containerfile creates a k3s master on AMD64 bootc fedora 42 image. So you can run a k8s server on boot.
 
  In my setup, I have networking done on the ROUTER side where it will automatically assign an IP address based on the MAC.
  It is ideal to take note of this IP address as it will be needed for the nodes to join the cluster.
@@ -133,23 +133,29 @@ Below is a general overview (with instructions) on each Docker container I use. 
  * SSH_PUBLIC_KEY=MySSHPublicKeyNOTThePrivateKey
  * K8S_VERSION=1.29.4
 
- **Running etcd / HA etc:**
+ Important note, IGNORE the errors about K3S_URL when building unless you want to do a HA setup. This is not needed for a single node setup.. If you want to do HA read below.
+
+ **Running etcd:**
  You will have to modify the cluster to use `--cluster-init` to initially start. Modify the lib/systemd/system/k3s.service file to include the `--cluster-init` flag.
- Follow the instructions here for adding additional servers (you'll be required to also pass in `-server`): https://docs.k3s.io/datastore/ha-embedded
+
+ **HA:**
+ 1. Read the instructions here for adding additional servers (you'll be required to also pass in `-server`): https://docs.k3s.io/datastore/ha-embedded
+ 2. When building, supply `K3S_URL`, this will be the URL of the master node. This is required for the other nodes to join the cluster. This will automatically let you start joining the cluster.
+
  **Running:**
  1. Create disk image using the above extension
  2. Boot OS
  3. See that it creates the k3s server on boot
  4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
  5. Then use `kubectl` to interact with the server
- COPY auth.json /etc/ostree/auth.json
+ Not needed if only using 1 master / no HA.
 
 ## [bootc-k3s-node-amd64](/bootc-k3s-node-amd64/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- This Containerfile creates a k3s NODE on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+ This Containerfile creates a k3s NODE on AMD64 using Fedora 42. So you can run a k8s server on boot.
 
  You must know the IP address of the master in order for these nodes to connect.
  **PRIVATE REGISTRY:** 

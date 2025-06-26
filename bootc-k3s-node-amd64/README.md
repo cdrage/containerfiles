@@ -1,7 +1,7 @@
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
- This Containerfile creates a k3s NODE on AMD64 using CentOS Stream 9. So you can run a k8s server on boot.
+ This Containerfile creates a k3s NODE on AMD64 using Fedora 42. So you can run a k8s server on boot.
 
  You must know the IP address of the master in order for these nodes to connect.
  **PRIVATE REGISTRY:** 
