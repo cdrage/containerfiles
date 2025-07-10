@@ -6,7 +6,7 @@
 # **Running:**
 # 1. Boot OS
 # 2. Visit <ip>:80
-FROM quay.io/fedora/fedora-bootc:40
+FROM quay.io/fedora/fedora-bootc:42
 
 #! Install HTTP
 RUN dnf -y install httpd && \
