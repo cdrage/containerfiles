@@ -30,8 +30,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [aviation-checklist](#aviation-checklist)
 - [bootc-httpd-centos](#bootc-httpd-centos)
 - [bootc-httpd-fedora](#bootc-httpd-fedora)
-- [bootc-k3s-master-amd64](#bootc-k3s-master-amd64)
-- [bootc-k3s-node-amd64](#bootc-k3s-node-amd64)
+- [bootc-k3s-master](#bootc-k3s-master)
+- [bootc-k3s-node](#bootc-k3s-node)
 - [bootc-nvidia-base-fedora](#bootc-nvidia-base-fedora)
 - [cat](#cat)
 - [gameserver](#gameserver)
@@ -82,7 +82,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  1. Boot OS
  2. Visit <ip>:80
 
-## [bootc-k3s-master-amd64](/bootc-k3s-master-amd64/Containerfile)
+## [bootc-k3s-master](/bootc-k3s-master/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
@@ -133,7 +133,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  5. Then use `kubectl` to interact with the server
  Not needed if only using 1 master / no HA.
 
-## [bootc-k3s-node-amd64](/bootc-k3s-node-amd64/Containerfile)
+## [bootc-k3s-node](/bootc-k3s-node/Containerfile)
 
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
