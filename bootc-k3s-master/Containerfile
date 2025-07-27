@@ -70,6 +70,10 @@ COPY usr/ /usr/
 #! Instead there is a oneshot systemd service that sets the hostname on boot
 RUN echo "HOSTNAME=${HOSTNAME}" > /etc/systemd/system/hostname.service.env
 
+#! Set the inotify to a higher value, this is useful / required for some k8s operations
+#! such as running pods with a lot of files (git, syncthing, etc.)
+RUN printf "fs.inotify.max_user_watches = 1048576\nfs.inotify.max_user_instances = 8192\n" > /usr/lib/sysctl.d/99-inotify.conf
+
 #! UNCOMMENT if you want to add auth.json for pulling images from a private registry for bootc
 COPY auth.json /etc/ostree/auth.json
 
