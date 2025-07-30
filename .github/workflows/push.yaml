@@ -30,12 +30,17 @@ jobs:
     - name: Build and push images
       run: |
         ls -lah
-        for dir in */; do
+
+        changed_dirs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d/ -f1 | sort -u)
+
+        for dir in $changed_dirs; do
           repo_name=$(basename "$dir")
+
           if [[ "$repo_name" == bootc-* ]]; then
             echo "Skipping $repo_name: Ignored by pattern"
             continue
           fi
+
           if [ -d "$dir" ]; then
             if [ -f "$dir/Containerfile" ]; then
               echo "Building and pushing $repo_name"
@@ -53,4 +58,3 @@ jobs:
             echo "Skipping $dir: Not a directory"
           fi
         done
-
