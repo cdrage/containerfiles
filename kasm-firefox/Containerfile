@@ -1,17 +1,11 @@
 #**Description:**
 #
-# Using KASM (basically web-based VNC) to run OBS.
+# Using KASM (basically web-based VNC) to run Firefox.
 # 
-# This is NOT meant for using a local camera, etc. I use the solely for remote streaming.
-#
 # **IMPORTANT:**
 # 
 # There is **NO AUTHENTICATION** and **NO SSL** in this container. This is meant for local use only, or when you have a reverse proxy in front of it.
 # In my use-case, I am using nginx with Let's Encrypt and basic auth, so I do not need the VNC server to have its own authentication.
-#
-# **NOTE:**
-# - Any additional plugins (except OBS DroidCam) will be discarded on container restart.. the ONLY persistent data is OBS configuration, which is symlinked to `/mnt/obs-config`.
-#
 #
 # **Running:**
 #
@@ -20,7 +14,7 @@
 #  -p 6901:6901 \
 #  -v /path/to/obs-config:/mnt/obs-config \
 #  --shm-size=2g \
-#  ghcr.io/cdrage/kasm-obs:latest
+#  ghcr.io/cdrage/kasm-firefox:latest
 # ```
 
 FROM kasmweb/core-ubuntu-jammy:1.17.0-rolling-daily
@@ -32,48 +26,9 @@ ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
 
-#! Add OBS Studio PPA and install OBS with minimal dependencies
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:obsproject/obs-studio -y && \
-    apt-get update && \
-    apt-get install -y  \
-        zip \
-        unzip \
-        sudo \
-        obs-studio \
-        ffmpeg \
-        v4l2loopback-dkms \
-        v4l2loopback-utils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-#! ffmpeg in Ubuntu is really old.. so we are going to download ffmpeg 7+
-#! and use that instead, including using ln to force it to be used as the default ffmpeg
-RUN curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o /tmp/ffmpeg.tar.xz && \
-    tar -xf /tmp/ffmpeg.tar.xz -C /tmp && \
-    cp /tmp/ffmpeg-*/ffmpeg /usr/local/bin/ && \
-    cp /tmp/ffmpeg-*/ffprobe /usr/local/bin/ && \
-    rm -rf /tmp/ffmpeg* && \
-    ln -sf /usr/local/bin/ffmpeg /usr/bin/ffmpeg && \
-    ln -sf /usr/local/bin/ffprobe /usr/bin/ffprobe && \
-    ffmpeg -version
-
-#! We are going to git clone droidcam-obs-plugin, and built it ourselves. This is because the pre-built version does not work with the latest OBS Studio.
-#! First install the dependencies
-RUN apt-get update && \
-    apt-get install -y \
-        build-essential \
-        pkg-config \
-        libturbojpeg0-dev libusbmuxd-dev libimobiledevice-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
-
-RUN git clone https://github.com/dev47apps/droidcam-obs-plugin && \
-    cd droidcam-obs-plugin && \
-    git checkout tags/2.4.0 && \
-    mkdir build && \
-    make && \
-    mkdir -p ~/.config/obs-studio/plugins/droidcam-obs/bin/64bit && \
-    cp build/droidcam-obs.so ~/.config/obs-studio/plugins/droidcam-obs/bin/64bit/
+COPY install_firefox.sh $INST_SCRIPTS/install_firefox.sh
+RUN chmod +x $INST_SCRIPTS/install_firefox.sh
+RUN $INST_SCRIPTS/install_firefox.sh
 
 #! Add to sudo users so we can actually do "sudo" within the container
 RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
