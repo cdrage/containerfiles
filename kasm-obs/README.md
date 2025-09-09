@@ -20,5 +20,5 @@
   -p 6901:6901 \
   -v /path/to/obs-config:/mnt/obs-config \
   --shm-size=2g \
-  ghcr.io/cdrage/kasm-obs-no-https-no-auth:latest
+  ghcr.io/cdrage/kasm-obs:latest
  ```

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="firefox"
-PGREP="firefox"
+START_COMMAND="chromium"
+PGREP="chromium"
 MAXIMIZE="true"
 DEFAULT_ARGS=""
 
