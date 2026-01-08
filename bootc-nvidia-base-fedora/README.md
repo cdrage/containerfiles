@@ -1,6 +1,18 @@
  **Description:**
  > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 
+ ```
+    .---.
+   / ᵔᴥᵔ \
+ >(       )
+   '-----'
+  ____________
+ |          / |
+ |  (ᵔᴥᵔ)   | |
+ |  bootc   | |
+ |__________|/
+ ```
+
  This is a "base" container that installs the nvidia drivers and the nvidia container toolkit. 
  This is meant to be used as a base for other containers that need GPU access.
 

@@ -1,6 +1,18 @@
 # **Description:**
 # > IMPORTANT NOTE: This is BOOTC. This is meant for bootable container applications. See: https://github.com/containers/podman-desktop-extension-bootc
 #
+# ```
+#    .---.
+#   / ᵔᴥᵔ \
+# >(       )
+#   '-----'
+#  ____________
+# |          / |
+# |  (ᵔᴥᵔ)   | |
+# |  bootc   | |
+# |__________|/
+# ```
+#
 # This Containerfile creates a k3s master on AMD64 bootc fedora 42 image. So you can run a k8s server on boot.
 #
 # In my setup, I have networking done on the ROUTER side where it will automatically assign an IP address based on the MAC.
