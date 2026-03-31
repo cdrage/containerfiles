@@ -64,15 +64,16 @@
 #! Or other base images such as rhel9
 #! FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 #! We use Fedora 42 as we find it the most stable for Kubernetes
-FROM quay.io/fedora/fedora-bootc:42
+FROM quay.io/fedora/fedora-bootc:44
 
 #! ARGUMENTS
 ARG HOSTNAME
 ARG K3S_TOKEN
-# Not needed if only using 1 master / no HA.
-ARG K3S_URL
 ARG SSH_PUBLIC_KEY
-ARG K8S_VERSION=1.32.3
+ARG K8S_VERSION=1.35.3
+
+#! K3S_URL Not needed if only using 1 master / no HA.
+ARG K3S_URL
 
 #! Copy over all usr files
 COPY usr/ /usr/
