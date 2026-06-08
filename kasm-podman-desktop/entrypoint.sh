@@ -17,16 +17,19 @@ if [ -n "$PODMAN_VERSION" ]; then
     echo "Podman version: $(podman --version)"
 fi
 
-# If a volume is mounted at /mnt/pnpm-store, use it as pnpm's store.
-# On first run, seed it from the baked-in store so nothing re-downloads.
+# Use the baked-in store at /opt/pnpm-store by default.
+# If a volume is mounted at /mnt/pnpm-store, seed it from the baked-in store
+# on first run, then use the volume going forward.
 if [ -d /mnt/pnpm-store ]; then
-    BUILTIN_STORE=$(pnpm store path 2>/dev/null)
-    if [ -z "$(ls -A /mnt/pnpm-store 2>/dev/null)" ] && [ -d "$BUILTIN_STORE" ]; then
+    if [ -z "$(ls -A /mnt/pnpm-store 2>/dev/null)" ] && [ -d /opt/pnpm-store ]; then
         echo "Seeding pnpm store volume from image cache..."
-        cp -a "$BUILTIN_STORE/." /mnt/pnpm-store/
+        cp -a /opt/pnpm-store/. /mnt/pnpm-store/
     fi
     pnpm config set store-dir /mnt/pnpm-store
     echo "Using pnpm store at /mnt/pnpm-store"
+else
+    pnpm config set store-dir /opt/pnpm-store
+    echo "Using baked-in pnpm store at /opt/pnpm-store"
 fi
 
 cd /opt/podman-desktop
@@ -50,7 +53,8 @@ sed -i 's/ && playwright install chromium//' package.json
 rm -rf node_modules
 
 echo "Running pnpm install..."
-pnpm install
+pnpm install --ignore-scripts
+npx electron install
 
 echo "Building Podman Desktop..."
 pnpm run build
