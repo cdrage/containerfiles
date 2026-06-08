@@ -53,8 +53,7 @@ sed -i 's/ && playwright install chromium//' package.json
 rm -rf node_modules
 
 echo "Running pnpm install..."
-pnpm install --ignore-scripts
-npx electron install
+pnpm install
 
 echo "Building Podman Desktop..."
 pnpm run build
@@ -64,6 +63,14 @@ echo "Build complete, starting Podman socket and VNC..."
 # Start rootless Podman socket so Podman Desktop can connect
 mkdir -p /run/user/1000/podman
 podman system service --time=0 unix:///run/user/1000/podman/podman.sock &
+for i in $(seq 1 10); do
+    [ -S /run/user/1000/podman/podman.sock ] && break
+    sleep 1
+done
+if [ ! -S /run/user/1000/podman/podman.sock ]; then
+    echo "ERROR: Podman socket failed to start"
+    exit 1
+fi
 
 # Hand off to the original Kasm entrypoint
 exec /dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@"
