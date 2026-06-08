@@ -1,31 +1,31 @@
-# kasm-podman-desktop
+**Description:**
 
-KASM (web-based VNC) container for testing Podman Desktop pull requests. Based on Fedora 43 with Podman pre-installed.
+ Using KASM (basically web-based VNC) to test Podman Desktop pull requests.
 
-Pass a PR number via the `PR_NUMBER` environment variable. The container fetches the PR, runs `pnpm install`, builds Podman Desktop, and launches it.
+ On startup, pass a PR number via the PR_NUMBER environment variable.
+ The container will fetch the PR, install dependencies, compile and launch
+ Podman Desktop so you can test it in your browser.
 
-Dependencies are pre-installed on the main branch during image build, so `pnpm install` at startup only needs to resolve changes from the PR.
+ **IMPORTANT:**
 
-## Running
+ There is **NO AUTHENTICATION** and **NO SSL** in this container. This is meant for local use only, or when you have a reverse proxy in front of it.
+ In my use-case, I am using nginx with Let's Encrypt and basic auth, so I do not need the VNC server to have its own authentication.
 
-```sh
-podman run -it --rm \
+ **Running:**
+
+ ```sh
+ podman run -it --rm \
   -e PR_NUMBER=12345 \
   -e PODMAN_VERSION=v5.4.2 \
   -p 6901:6901 \
   -v pnpm-store:/mnt/pnpm-store \
   --shm-size=2g \
   ghcr.io/cdrage/kasm-podman-desktop:latest
-```
+ ```
 
-Then open `http://localhost:6901` in your browser.
-
-| Variable / Volume | Required | Description |
-|---|---|---|
-| `PR_NUMBER` | No | GitHub PR number to test. If not set, uses latest main. |
-| `PODMAN_VERSION` | No | Podman version from [podman-container-tools releases](https://github.com/podman-container-tools/podman/releases) (e.g. `v5.4.2`). If not set, uses Fedora's default. |
-| `-v ...:/mnt/pnpm-store` | No | Shared pnpm package cache. Seeded from the baked-in store on first run, then reused across containers so subsequent PRs skip re-downloading. |
-
-## Security
-
-There is **NO AUTHENTICATION** and **NO SSL**. This is meant for local use only, or behind a reverse proxy with its own auth (e.g. nginx + Let's Encrypt + basic auth).
+ PR_NUMBER is optional. If not set, uses latest main.
+ PODMAN_VERSION is optional. If set, downloads a static build from
+ https://github.com/podman-container-tools/podman/releases
+ If not set, uses Fedora's default Podman.
+ -v pnpm-store:/mnt/pnpm-store is optional. If mounted, seeds from the
+ baked-in store on first run, then shares cached packages across containers.

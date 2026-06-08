@@ -57,4 +57,3 @@
  3. See that it creates the k3s server on boot
  4. To test the k8s server, you can retrieve the kubeconfig file from /etc/rancher/k3s/k3s.yaml from within the server (scp, ssh, etc.)
  5. Then use `kubectl` to interact with the server
- Not needed if only using 1 master / no HA.

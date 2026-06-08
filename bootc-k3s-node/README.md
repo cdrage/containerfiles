@@ -45,4 +45,3 @@
  2. Boot OS
  3. See that it creates the k3s agent on boot / connects to the k8s server
  4. use kubectl get nodes and you should see your server.
- COPY auth.json /etc/ostree/auth.json
