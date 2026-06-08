@@ -31,24 +31,30 @@
         IP Copied to Clipboard!
       </h1>
     {:else}
-      <h1 class={hStyle}>IP</h1>
+      <h1 class={hStyle}>Join Address</h1>
     {/if}
   </div>
   {#await data.streamed.publicIP}
     <div class={pStyle}>Loading...</div>
   {:then value}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
-      class={pStyle}
-      on:click={() => copyToClipboard(`${value}:${data.port}`)}
-      style="cursor: pointer;"
-    >
-      {`${value}:${data.port}`}
-    </div>
+    {#if value}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div
+        class={pStyle}
+        on:click={() => copyToClipboard(`${value}:${data.port}`)}
+        style="cursor: pointer;"
+      >
+        {`${value}:${data.port}`}
+      </div>
+    {:else}
+      <div class="{pStyle} text-yellow-400">
+        Unavailable
+      </div>
+    {/if}
   {:catch error}
-    <div class={pStyle}>
-      {error.message}
+    <div class="{pStyle} text-yellow-400">
+      Unavailable
     </div>
   {/await}
 
