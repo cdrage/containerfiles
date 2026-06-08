@@ -1,0 +1,123 @@
+#**Description:**
+#
+# Using KASM (basically web-based VNC) to test Podman Desktop pull requests.
+#
+# On startup, pass a PR number via the PR_NUMBER environment variable.
+# The container will fetch the PR, install dependencies, compile and launch
+# Podman Desktop so you can test it in your browser.
+#
+# **IMPORTANT:**
+#
+# There is **NO AUTHENTICATION** and **NO SSL** in this container. This is meant for local use only, or when you have a reverse proxy in front of it.
+# In my use-case, I am using nginx with Let's Encrypt and basic auth, so I do not need the VNC server to have its own authentication.
+#
+# **Running:**
+#
+# ```sh
+# podman run -it --rm \
+#  -e PR_NUMBER=12345 \
+#  -e PODMAN_VERSION=v5.4.2 \
+#  -p 6901:6901 \
+#  -v pnpm-store:/mnt/pnpm-store \
+#  --shm-size=2g \
+#  ghcr.io/cdrage/kasm-podman-desktop:latest
+# ```
+#
+# PR_NUMBER is optional. If not set, uses latest main.
+# PODMAN_VERSION is optional. If set, downloads a static build from
+# https://github.com/podman-container-tools/podman/releases
+# If not set, uses Fedora's default Podman.
+# -v pnpm-store:/mnt/pnpm-store is optional. If mounted, seeds from the
+# baked-in store on first run, then shares cached packages across containers.
+
+FROM kasmweb/core-fedora-43:develop
+
+#! Initial setup
+USER root
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+#! Install Podman and rootless dependencies
+RUN dnf install -y \
+        podman \
+        fuse-overlayfs \
+        slirp4netns && \
+    dnf clean all
+
+#! Setup rootless podman for kasm-user
+RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
+    echo "kasm-user:100000:65536" >> /etc/subgid && \
+    mkdir -p /run/user/1000 && \
+    chown 1000:1000 /run/user/1000
+
+ENV XDG_RUNTIME_DIR=/run/user/1000
+
+#! Install Node.js 24 and build dependencies for Electron native modules
+RUN curl -fsSL https://rpm.nodesource.com/setup_24.x | bash - && \
+    dnf install -y \
+        nodejs \
+        gcc-c++ \
+        make \
+        python3 \
+        pkgconf-pkg-config \
+        libsecret-devel \
+        nss \
+        at-spi2-atk \
+        alsa-lib \
+        mesa-libgbm && \
+    npm install -g pnpm && \
+    dnf clean all
+
+#! Skip Playwright browser downloads (not needed for UI testing, saves ~500MB)
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
+#! Make pnpm non-interactive (no prompts about reinstalling modules)
+ENV CI=true
+
+#! Electron needs no-sandbox in containers
+ENV ELECTRON_DISABLE_SANDBOX=1
+
+#! Clone podman-desktop and pre-install dependencies on main branch to speed up PR checkout
+RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-desktop/podman-desktop.git /opt/podman-desktop && \
+    cd /opt/podman-desktop && \
+    sed -i 's/ && playwright install chromium//' package.json && \
+    pnpm install && \
+    chown -R 1000:0 /opt/podman-desktop
+
+#! Add to sudo users so we can actually do "sudo" within the container
+RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+#! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
+RUN ln -s /usr/bin/true /usr/local/bin/pcscd
+
+
+COPY custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+#! For deploying on Kubernetes, we disable SSL by default so that we can access it via HTTP (reverse proxy + let's encrypt
+#! We do this by changing required_ssl in /usr/share/kasmvnc/kasmvnc_defaults.yaml from required_ssl: true to required_ssl: false
+RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml
+RUN cat /usr/share/kasmvnc/kasmvnc_defaults.yaml
+
+#! Remove "-sslOnly" from the VNC startup script and replace it with "-disableBasicAuth"
+#! WARNING: This is DANGEROUS and NOT SECURE. The ONLY reason why I am doing this, is that I am using nginx reverse proxy + let's encrypt + basic auth
+#! already, so I do not need the VNC server to have its own authentication + SSL.
+RUN sed -i.bak 's/-sslOnly/-disableBasicAuth/' /dockerstartup/vnc_startup.sh
+
+#! Default user
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["--wait"]
