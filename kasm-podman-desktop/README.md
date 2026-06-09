@@ -21,7 +21,6 @@
   -e PR_NUMBER=12345 \
   -e PODMAN_VERSION=v5.4.2 \
   -p 6901:6901 \
-  -v pnpm-store:/mnt/pnpm-store \
   --shm-size=2g \
   ghcr.io/cdrage/kasm-podman-desktop:latest
  ```
@@ -32,5 +31,5 @@
  PODMAN_VERSION is optional. If set, downloads a static build from
  https://github.com/podman-container-tools/podman/releases
  If not set, uses Fedora's default Podman.
- -v pnpm-store:/mnt/pnpm-store is optional. If mounted, seeds from the
- baked-in store on first run, then shares cached packages across containers.
+ NPM_CONFIG_REGISTRY is optional. If set, pnpm fetches packages from this
+ registry (e.g. a Verdaccio instance) instead of the public npm registry.

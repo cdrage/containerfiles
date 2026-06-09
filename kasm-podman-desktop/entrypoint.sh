@@ -8,6 +8,7 @@ sudo chown "$(id -u):$(id -g)" "$HOME/.local" "$HOME/.local/share" "$HOME/.local
 # (Kasm profile copy may not carry it from build-time)
 mkdir -p "$HOME/.config/containers"
 mkdir -p "$HOME/.local/share/containers"
+sudo ln -sf "$HOME/.local/share/containers/storage" /var/lib/containers/storage
 cp -n /etc/containers/storage.conf "$HOME/.config/containers/storage.conf" 2>/dev/null || true
 cp -n /etc/containers/containers.conf "$HOME/.config/containers/containers.conf" 2>/dev/null || true
 
@@ -42,13 +43,18 @@ cd /opt/podman-desktop
 git checkout -- .
 git clean -fd
 
+BASE_BRANCH="${BASE_BRANCH:-main}"
+git fetch origin "$BASE_BRANCH"
 if [ -n "$PR_NUMBER" ]; then
     echo "Fetching PR #$PR_NUMBER..."
     git fetch origin "pull/$PR_NUMBER/head:pr-$PR_NUMBER"
     git checkout "pr-$PR_NUMBER"
+    echo "Rebasing onto latest $BASE_BRANCH..."
+    git rebase "origin/$BASE_BRANCH" || { echo "Rebase failed, continuing without rebase"; git rebase --abort; }
 else
-    echo "No PR_NUMBER set, pulling latest main..."
-    git pull origin main
+    echo "No PR_NUMBER set, pulling latest $BASE_BRANCH..."
+    git checkout "$BASE_BRANCH"
+    git reset --hard "origin/$BASE_BRANCH"
 fi
 
 # Strip playwright install from postinstall script
@@ -61,6 +67,11 @@ echo "Building Podman Desktop..."
 pnpm run build
 
 echo "Build complete, starting Podman socket and VNC..."
+
+# Start systemd-journald so Podman's journald log driver works
+# (needed for kind/bootc which run systemd inside nested containers)
+sudo mkdir -p /run/systemd/journal /var/log/journal
+sudo /usr/lib/systemd/systemd-journald &
 
 # Start rootless Podman socket so Podman Desktop can connect
 mkdir -p /run/user/1000/podman

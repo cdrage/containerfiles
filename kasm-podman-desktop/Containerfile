@@ -76,9 +76,7 @@ RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
 RUN mkdir -p /etc/containers $HOME/.config/containers && \
     printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\nmountopt = "nodev,fsync=0"\n' > /etc/containers/storage.conf && \
     cp /etc/containers/storage.conf $HOME/.config/containers/storage.conf && \
-#!    - containers.conf: k8s-file is Podman's file-based log driver (works without
-#!      systemd/journald). The other options are: journald, none, passthrough.
-    printf '[engine]\nlog_driver = "k8s-file"\n\n[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
+    printf '[containers]\nlog_driver = "journald"\n\n[engine]\nevents_logger = "journald"\n\n[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
 
 #! 4. XDG_RUNTIME_DIR is required for the rootless Podman socket
 ENV XDG_RUNTIME_DIR=/run/user/1000
@@ -144,7 +142,7 @@ RUN mkdir -p $HOME/Desktop && \
     chmod +x $HOME/Desktop/*.desktop
 
 #! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
-RUN ln -s /usr/bin/true /usr/local/bin/pcscd
+RUN ln -sf /usr/bin/true /usr/local/sbin/pcscd
 
 
 COPY custom_startup.sh $STARTUPDIR/custom_startup.sh
