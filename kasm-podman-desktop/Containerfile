@@ -126,6 +126,9 @@ RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-
     node node_modules/electron/install.js && \
     chown -R 1000:0 /opt/podman-desktop /opt/pnpm-store /opt/electron-cache /opt/pnpm-home
 
+#! Workspace for extension builds (populated at runtime by entrypoint.sh)
+RUN mkdir -p /opt/extension-src && chown 1000:0 /opt/extension-src
+
 #! Add to sudo users so we can actually do "sudo" within the container
 RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
