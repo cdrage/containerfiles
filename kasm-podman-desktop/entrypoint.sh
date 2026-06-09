@@ -4,6 +4,7 @@ set -ex
 # Ensure rootless podman config is in the current user's home
 # (Kasm profile copy may not carry it from build-time)
 mkdir -p "$HOME/.config/containers"
+mkdir -p "$HOME/.local/share/containers"
 cp -n /etc/containers/storage.conf "$HOME/.config/containers/storage.conf" 2>/dev/null || true
 cp -n /etc/containers/containers.conf "$HOME/.config/containers/containers.conf" 2>/dev/null || true
 

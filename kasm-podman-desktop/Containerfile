@@ -17,6 +17,7 @@
 # podman run -it --rm \
 #  --device /dev/fuse \
 #  --security-opt label=disable \
+#  --security-opt unmask=ALL \
 #  -e PR_NUMBER=12345 \
 #  -e PODMAN_VERSION=v5.4.2 \
 #  -p 6901:6901 \
@@ -25,8 +26,8 @@
 #  ghcr.io/cdrage/kasm-podman-desktop:latest
 # ```
 #
-# --device /dev/fuse and --security-opt label=disable are required for
-# rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
+# --device /dev/fuse, --security-opt label=disable, and --security-opt unmask=ALL
+# are required for rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
 # PR_NUMBER is optional. If not set, uses latest main.
 # PODMAN_VERSION is optional. If set, downloads a static build from
 # https://github.com/podman-container-tools/podman/releases
@@ -74,7 +75,7 @@ RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
 #!    - storage.conf: use fuse-overlayfs as the mount program
 #!    - containers.conf: use slirp4netns instead of pasta for networking
 RUN mkdir -p /etc/containers $HOME/.config/containers && \
-    printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\n' > /etc/containers/storage.conf && \
+    printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\nmountopt = "nodev,fsync=0"\n' > /etc/containers/storage.conf && \
     cp /etc/containers/storage.conf $HOME/.config/containers/storage.conf && \
     printf '[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
 
@@ -164,6 +165,11 @@ RUN $STARTUPDIR/set_user_permission.sh $HOME
 ENV HOME /home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+#! Inner Podman storage must live on a non-overlay filesystem to avoid
+#! overlay-on-overlay failures. VOLUME creates an automatic anonymous volume
+#! for podman/docker run; for Kubernetes, an emptyDir is mounted at this path.
+VOLUME /home/kasm-user/.local/share/containers
 
 USER 1000
 

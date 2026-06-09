@@ -447,6 +447,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  podman run -it --rm \
   --device /dev/fuse \
   --security-opt label=disable \
+  --security-opt unmask=ALL \
   -e PR_NUMBER=12345 \
   -e PODMAN_VERSION=v5.4.2 \
   -p 6901:6901 \
@@ -455,8 +456,8 @@ Below is a general overview (with instructions) on each Docker container I use. 
   ghcr.io/cdrage/kasm-podman-desktop:latest
  ```
 
- --device /dev/fuse and --security-opt label=disable are required for
- rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
+ --device /dev/fuse, --security-opt label=disable, and --security-opt unmask=ALL
+ are required for rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
  PR_NUMBER is optional. If not set, uses latest main.
  PODMAN_VERSION is optional. If set, downloads a static build from
  https://github.com/podman-container-tools/podman/releases
