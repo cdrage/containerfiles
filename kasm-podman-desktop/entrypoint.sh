@@ -58,7 +58,7 @@ if [ -n "$EXTENSION_REPO" ] && [ -n "$EXTENSION_PR_NUMBER" ]; then
     podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
 
     EXTENSION_NAME="${EXTENSION_REPO##*/}"
-    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/-.')
+    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
     INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
     mkdir -p "$INSTALL_DIR"
     podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
@@ -96,37 +96,7 @@ pnpm install --prefer-offline
 echo "Building Podman Desktop..."
 pnpm run build
 
-echo "Build complete, starting Podman socket and VNC..."
-
-# Start systemd-journald so Podman's journald log driver works
-# (needed for kind/bootc which run systemd inside nested containers)
-sudo mkdir -p /run/systemd/journal /var/log/journal
-sudo /usr/lib/systemd/systemd-journald &
-
-# Start rootless Podman socket so Podman Desktop can connect
-mkdir -p /run/user/1000/podman
-podman system service --time=0 unix:///run/user/1000/podman/podman.sock &
-for i in $(seq 1 10); do
-    [ -S /run/user/1000/podman/podman.sock ] && break
-    sleep 1
-done
-if [ ! -S /run/user/1000/podman/podman.sock ]; then
-    echo "ERROR: Podman socket failed to start"
-    exit 1
-fi
-
-# Start rootful Podman socket (needed by kind — systemd won't start in a user namespace)
-sudo mkdir -p /run/podman
-sudo podman system service --time=0 unix:///run/podman/podman.sock &
-for i in $(seq 1 10); do
-    sudo test -S /run/podman/podman.sock && break
-    sleep 1
-done
-if [ ! -S /run/podman/podman.sock ]; then
-    echo "ERROR: Rootful Podman socket failed to start"
-    exit 1
-fi
-sudo chmod 666 /run/podman/podman.sock
+echo "Build complete, starting VNC..."
 
 # Generate kubeconfig from mounted ServiceAccount token (read-only, pd-testing namespace only)
 if [ "$INCLUDE_K8S" = "true" ] && [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
@@ -159,5 +129,65 @@ KUBEEOF
     echo "Kubeconfig written to $HOME/.kube/config"
 fi
 
-# Hand off to the original Kasm entrypoint
-exec /dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@"
+# Tail Podman Desktop logs to container stdout in the background
+PD_LOG_DIR="$HOME/.local/share/containers/podman-desktop/logs"
+mkdir -p "$PD_LOG_DIR"
+(while true; do
+    tail -F "$PD_LOG_DIR"/*.log 2>/dev/null
+    sleep 2
+done) &
+
+# Start journald + Podman sockets after Kasm initializes (Kasm cleans /run during startup)
+(
+    sleep 10
+
+    # Start journald and wait for socket (required for podman events + log driver)
+    sudo mkdir -p /run/systemd/journal /var/log/journal
+    sudo /usr/lib/systemd/systemd-journald &
+    for i in $(seq 1 30); do
+        [ -S /run/systemd/journal/socket ] && break
+        sleep 1
+    done
+    if [ ! -S /run/systemd/journal/socket ]; then
+        echo "WARNING: journald socket not ready"
+    else
+        echo "journald socket ready"
+    fi
+
+    # Grant kasm-user read access to journal (needed for podman events via API)
+    sudo chmod -R o+rx /var/log/journal/ /run/log/journal/ 2>/dev/null
+    sudo setfacl -R -m u:kasm-user:rx /var/log/journal/ /run/log/journal/ 2>/dev/null
+
+    # Start rootless Podman socket
+    mkdir -p /run/user/1000/podman
+    podman system service --time=0 unix:///run/user/1000/podman/podman.sock &
+    for i in $(seq 1 10); do
+        [ -S /run/user/1000/podman/podman.sock ] && break
+        sleep 1
+    done
+    echo "Rootless Podman socket ready"
+
+    # Start rootful Podman socket (needed by kind)
+    sudo mkdir -p /run/podman
+    sudo podman system service --time=0 unix:///run/podman/podman.sock &
+    for i in $(seq 1 10); do
+        sudo test -S /run/podman/podman.sock && break
+        sleep 1
+    done
+    sudo chmod 666 /run/podman/podman.sock
+    echo "Rootful Podman socket ready"
+
+    # Verify events work
+    podman pull quay.io/podman/hello > /dev/null 2>&1
+    podman rmi quay.io/podman/hello > /dev/null 2>&1
+    EVENT_COUNT=$(podman events --since 30s --stream=false 2>/dev/null | wc -l)
+    if [ "$EVENT_COUNT" -gt 0 ]; then
+        echo "Podman events working ($EVENT_COUNT events)"
+    else
+        echo "WARNING: Podman events not working"
+    fi
+) &
+
+# Hand off to the original Kasm entrypoint (silence its output, PD logs come from tail above)
+/dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@" > /dev/null 2>&1 &
+wait

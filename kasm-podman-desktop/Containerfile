@@ -129,8 +129,9 @@ RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-
 #! Workspace for extension builds (populated at runtime by entrypoint.sh)
 RUN mkdir -p /opt/extension-src && chown 1000:0 /opt/extension-src
 
-#! Add to sudo users so we can actually do "sudo" within the container
-RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+#! Add to sudo users and systemd-journal group (needed for podman events/logging)
+RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
+    usermod -aG systemd-journal kasm-user
 
 #! Skip Podman Desktop welcome/onboarding screen and create managed config directory
 RUN mkdir -p $HOME/.local/share/containers/podman-desktop/configuration && \
@@ -145,7 +146,8 @@ RUN mkdir -p $HOME/Desktop && \
     chmod +x $HOME/Desktop/*.desktop
 
 #! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
-RUN ln -sf /usr/bin/true /usr/local/sbin/pcscd
+#! Kasm monitors pcscd and restarts it if it exits, so we need a stub that stays alive
+RUN printf '#!/bin/sh\nexec sleep infinity\n' > /usr/local/sbin/pcscd && chmod +x /usr/local/sbin/pcscd
 
 
 COPY custom_startup.sh $STARTUPDIR/custom_startup.sh
