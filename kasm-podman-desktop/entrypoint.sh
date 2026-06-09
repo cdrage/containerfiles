@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -ex
 
+# Ensure rootless podman config is in the current user's home
+# (Kasm profile copy may not carry it from build-time)
+mkdir -p "$HOME/.config/containers"
+cp -n /etc/containers/storage.conf "$HOME/.config/containers/storage.conf" 2>/dev/null || true
+cp -n /etc/containers/containers.conf "$HOME/.config/containers/containers.conf" 2>/dev/null || true
+
 # Install a specific Podman version from podman-container-tools static builds
 if [ -n "$PODMAN_VERSION" ]; then
     ARCH=$(uname -m)
@@ -34,8 +40,9 @@ fi
 
 cd /opt/podman-desktop
 
-# Restore package.json (build-time sed dirtied it)
-git checkout -- package.json
+# Clean any dirty files from previous builds or config changes
+git checkout -- .
+git clean -fd
 
 if [ -n "$PR_NUMBER" ]; then
     echo "Fetching PR #$PR_NUMBER..."
@@ -49,11 +56,8 @@ fi
 # Strip playwright install from postinstall script
 sed -i 's/ && playwright install chromium//' package.json
 
-# Clean node_modules so pnpm recreates from store (fast, just hard links)
-rm -rf node_modules
-
 echo "Running pnpm install..."
-pnpm install
+pnpm install --prefer-offline
 
 echo "Building Podman Desktop..."
 pnpm run build

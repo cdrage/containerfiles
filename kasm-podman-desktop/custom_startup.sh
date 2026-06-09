@@ -12,10 +12,7 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
-                npx electron . --no-sandbox 2>&1 &
-                    sleep 3
-                    wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz 2>/dev/null
-                    wait
+                npx electron . --no-sandbox 2>&1
                 set -e
             fi
             sleep 1

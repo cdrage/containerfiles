@@ -15,6 +15,8 @@
 #
 # ```sh
 # podman run -it --rm \
+#  --device /dev/fuse \
+#  --security-opt label=disable \
 #  -e PR_NUMBER=12345 \
 #  -e PODMAN_VERSION=v5.4.2 \
 #  -p 6901:6901 \
@@ -23,6 +25,8 @@
 #  ghcr.io/cdrage/kasm-podman-desktop:latest
 # ```
 #
+# --device /dev/fuse and --security-opt label=disable are required for
+# rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
 # PR_NUMBER is optional. If not set, uses latest main.
 # PODMAN_VERSION is optional. If set, downloads a static build from
 # https://github.com/podman-container-tools/podman/releases
@@ -39,7 +43,17 @@ ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
 
-#! Install Podman and rootless dependencies
+#! ===== Podman-in-Podman setup =====
+#! Running rootless Podman inside a container requires several workarounds.
+#! Reference: https://www.redhat.com/en/blog/podman-inside-container
+#!
+#! At runtime, the container must be launched with:
+#!   --device /dev/fuse --security-opt label=disable
+#! or --privileged (for Kubernetes).
+#!
+#! 1. Install Podman and rootless dependencies
+#!    - fuse-overlayfs: storage driver for nested containers (native overlay-on-overlay doesn't work)
+#!    - slirp4netns: rootless networking backend (pasta's close_range() syscall is blocked by seccomp)
 RUN dnf install -y \
         podman \
         fuse-overlayfs \
@@ -47,12 +61,24 @@ RUN dnf install -y \
         wmctrl && \
     dnf clean all
 
-#! Setup rootless podman for kasm-user
+#! 2. Setup subuid/subgid ranges for rootless user namespace mapping
+#!    chmod u+s on newuidmap/newgidmap: these need the setuid bit to map
+#!    user namespaces inside a container (otherwise: "Operation not permitted")
 RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
     echo "kasm-user:100000:65536" >> /etc/subgid && \
+    chmod u+s /usr/sbin/newuidmap /usr/sbin/newgidmap && \
     mkdir -p /run/user/1000 && \
     chown 1000:1000 /run/user/1000
 
+#! 3. Configure storage and networking for nested operation
+#!    - storage.conf: use fuse-overlayfs as the mount program
+#!    - containers.conf: use slirp4netns instead of pasta for networking
+RUN mkdir -p /etc/containers $HOME/.config/containers && \
+    printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\n' > /etc/containers/storage.conf && \
+    cp /etc/containers/storage.conf $HOME/.config/containers/storage.conf && \
+    printf '[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
+
+#! 4. XDG_RUNTIME_DIR is required for the rootless Podman socket
 ENV XDG_RUNTIME_DIR=/run/user/1000
 
 #! Install Node.js 24 and build dependencies for Electron native modules
@@ -68,7 +94,7 @@ RUN curl -fsSL https://rpm.nodesource.com/setup_24.x | bash - && \
         at-spi2-atk \
         alsa-lib \
         mesa-libgbm && \
-    npm install -g pnpm && \
+    npm install -g pnpm@10 && \
     dnf clean all
 
 #! Skip Playwright browser downloads (not needed for UI testing, saves ~500MB)
@@ -99,9 +125,17 @@ RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-
 #! Add to sudo users so we can actually do "sudo" within the container
 RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-#! Skip Podman Desktop welcome/onboarding screen
+#! Skip Podman Desktop welcome/onboarding screen and create managed config directory
 RUN mkdir -p $HOME/.local/share/containers/podman-desktop/configuration && \
-    echo '{ "welcome.version": "initial" }' > $HOME/.local/share/containers/podman-desktop/configuration/settings.json
+    echo '{ "welcome.version": "initial" }' > $HOME/.local/share/containers/podman-desktop/configuration/settings.json && \
+    mkdir -p /usr/share/podman-desktop
+
+#! Desktop shortcuts
+RUN mkdir -p $HOME/Desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Podman Desktop\nExec=sh -c "cd /opt/podman-desktop && npx electron . --no-sandbox"\nIcon=utilities-terminal\nTerminal=false\nCategories=Development;\n' > $HOME/Desktop/podman-desktop.desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Terminal\nExec=xfce4-terminal\nIcon=utilities-terminal\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/terminal.desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Managed Config\nExec=xfce4-terminal --working-directory=/usr/share/podman-desktop\nIcon=folder\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/managed-config.desktop && \
+    chmod +x $HOME/Desktop/*.desktop
 
 #! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
 RUN ln -s /usr/bin/true /usr/local/bin/pcscd
