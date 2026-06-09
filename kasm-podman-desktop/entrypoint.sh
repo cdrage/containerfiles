@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 set -ex
 
+# Fix ownership of directories the VOLUME directive created as root
+sudo chown "$(id -u):$(id -g)" "$HOME/.local" "$HOME/.local/share" "$HOME/.local/share/containers" 2>/dev/null || true
+
 # Ensure rootless podman config is in the current user's home
 # (Kasm profile copy may not carry it from build-time)
 mkdir -p "$HOME/.config/containers"
 mkdir -p "$HOME/.local/share/containers"
 cp -n /etc/containers/storage.conf "$HOME/.config/containers/storage.conf" 2>/dev/null || true
 cp -n /etc/containers/containers.conf "$HOME/.config/containers/containers.conf" 2>/dev/null || true
+
+# If /var/lib/containers-storage exists (Kubernetes emptyDir), point Podman
+# storage there directly so there's no mount under $HOME.
+if [ -d /var/lib/containers-storage ]; then
+    sudo chown "$(id -u):$(id -g)" /var/lib/containers-storage
+    sed -i 's|^\[storage\]|[storage]\ngraphroot = "/var/lib/containers-storage"|' "$HOME/.config/containers/storage.conf"
+fi
 
 # Install a specific Podman version from podman-container-tools static builds
 if [ -n "$PODMAN_VERSION" ]; then
@@ -24,20 +34,7 @@ if [ -n "$PODMAN_VERSION" ]; then
     echo "Podman version: $(podman --version)"
 fi
 
-# Use the baked-in store at /opt/pnpm-store by default.
-# If a volume is mounted at /mnt/pnpm-store, seed it from the baked-in store
-# on first run, then use the volume going forward.
-if [ -d /mnt/pnpm-store ]; then
-    if [ -z "$(ls -A /mnt/pnpm-store 2>/dev/null)" ] && [ -d /opt/pnpm-store ]; then
-        echo "Seeding pnpm store volume from image cache..."
-        cp -a /opt/pnpm-store/. /mnt/pnpm-store/
-    fi
-    pnpm config set store-dir /mnt/pnpm-store
-    echo "Using pnpm store at /mnt/pnpm-store"
-else
-    pnpm config set store-dir /opt/pnpm-store
-    echo "Using baked-in pnpm store at /opt/pnpm-store"
-fi
+pnpm config set store-dir /opt/pnpm-store
 
 cd /opt/podman-desktop
 

@@ -21,7 +21,6 @@
 #  -e PR_NUMBER=12345 \
 #  -e PODMAN_VERSION=v5.4.2 \
 #  -p 6901:6901 \
-#  -v pnpm-store:/mnt/pnpm-store \
 #  --shm-size=2g \
 #  ghcr.io/cdrage/kasm-podman-desktop:latest
 # ```
@@ -32,8 +31,8 @@
 # PODMAN_VERSION is optional. If set, downloads a static build from
 # https://github.com/podman-container-tools/podman/releases
 # If not set, uses Fedora's default Podman.
-# -v pnpm-store:/mnt/pnpm-store is optional. If mounted, seeds from the
-# baked-in store on first run, then shares cached packages across containers.
+# NPM_CONFIG_REGISTRY is optional. If set, pnpm fetches packages from this
+# registry (e.g. a Verdaccio instance) instead of the public npm registry.
 
 FROM kasmweb/core-fedora-43:develop
 
@@ -77,7 +76,9 @@ RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
 RUN mkdir -p /etc/containers $HOME/.config/containers && \
     printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\nmountopt = "nodev,fsync=0"\n' > /etc/containers/storage.conf && \
     cp /etc/containers/storage.conf $HOME/.config/containers/storage.conf && \
-    printf '[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
+#!    - containers.conf: k8s-file is Podman's file-based log driver (works without
+#!      systemd/journald). The other options are: journald, none, passthrough.
+    printf '[engine]\nlog_driver = "k8s-file"\n\n[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
 
 #! 4. XDG_RUNTIME_DIR is required for the rootless Podman socket
 ENV XDG_RUNTIME_DIR=/run/user/1000
