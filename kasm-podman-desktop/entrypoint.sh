@@ -38,16 +38,19 @@ pnpm config set store-dir /opt/pnpm-store
 
 # Extension mode: build extension container first so we fail early if it doesn't compile.
 # podman build only needs the binary + storage config (both ready at this point), not the socket.
-if [ -n "$EXTENSION_REPO" ] && [ -n "$EXTENSION_PR_NUMBER" ]; then
-    echo "=== Extension mode: building $EXTENSION_REPO PR #$EXTENSION_PR_NUMBER ==="
-
+if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_MAIN" = "true" ]; }; then
     EXTENSION_DIR="/opt/extension-src"
     mkdir -p "$EXTENSION_DIR"
     git clone --depth 1 "https://github.com/$EXTENSION_REPO.git" "$EXTENSION_DIR"
     cd "$EXTENSION_DIR"
 
-    git fetch origin "pull/$EXTENSION_PR_NUMBER/head:pr-$EXTENSION_PR_NUMBER"
-    git checkout "pr-$EXTENSION_PR_NUMBER"
+    if [ -n "$EXTENSION_PR_NUMBER" ]; then
+        echo "=== Extension mode: building $EXTENSION_REPO PR #$EXTENSION_PR_NUMBER ==="
+        git fetch origin "pull/$EXTENSION_PR_NUMBER/head:pr-$EXTENSION_PR_NUMBER"
+        git checkout "pr-$EXTENSION_PR_NUMBER"
+    else
+        echo "=== Extension mode: building $EXTENSION_REPO from main ==="
+    fi
 
     if [ -n "$EXTENSION_CONTAINERFILE" ]; then
         CONTAINERFILE="$EXTENSION_CONTAINERFILE"
