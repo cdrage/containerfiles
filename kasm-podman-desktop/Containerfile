@@ -58,17 +58,20 @@ RUN dnf install -y \
         podman \
         fuse-overlayfs \
         slirp4netns \
-        polkit \
         wmctrl \
         scrot \
         firefox && \
     dnf clean all
 
-#! 1b. Allow kasm-user to use pkexec without a password prompt
+#! 1b. Replace pkexec with a sudo wrapper
 #!     Podman Desktop extensions (kind, kubectl-cli, compose) use pkexec
-#!     to install binaries into /usr/local/bin.
-RUN mkdir -p /etc/polkit-1/rules.d && \
-    printf 'polkit.addRule(function(action, subject) {\n    if (subject.user == "kasm-user") {\n        return polkit.Result.YES;\n    }\n});\n' > /etc/polkit-1/rules.d/49-nopasswd.rules
+#!     to install binaries into /usr/local/bin. Real pkexec crashes in
+#!     containers due to a polkit assertion on process start time
+#!     (polkit_unix_process_get_start_time). Since kasm-user has NOPASSWD
+#!     sudo, we shim pkexec to delegate to sudo instead.
+RUN mv /usr/bin/pkexec /usr/bin/pkexec.real && \
+    printf '#!/bin/sh\nexec sudo "$@"\n' > /usr/bin/pkexec && \
+    chmod +x /usr/bin/pkexec
 
 #! 2. Setup subuid/subgid ranges for rootless user namespace mapping
 #!    chmod u+s on newuidmap/newgidmap: these need the setuid bit to map

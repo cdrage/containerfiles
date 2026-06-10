@@ -167,10 +167,6 @@ for i in $(seq 1 60); do
     sleep 1
 done
 
-# Start system D-Bus (required for polkitd, which pkexec needs to install binaries)
-sudo mkdir -p /run/dbus
-sudo dbus-daemon --system --fork
-
 # Start journald and wait for socket (required for podman events + log driver)
 sudo mkdir -p /run/systemd/journal /var/log/journal
 sudo /usr/lib/systemd/systemd-journald &
