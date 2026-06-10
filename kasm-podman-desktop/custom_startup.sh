@@ -125,6 +125,10 @@ kasm_startup() {
                     set -e
                     pkill -f "watch\.mjs" 2>/dev/null || true
                     pkill -f "svelte-package" 2>/dev/null || true
+                    pkill -f "pnpm watch" 2>/dev/null || true
+                    pkill -f "vite build --watch" 2>/dev/null || true
+                    pkill -f "electron.*podman-desktop" 2>/dev/null || true
+                    sleep 1
                 fi
             else
                 if ! pgrep -f "electron.*podman-desktop" > /dev/null; then
