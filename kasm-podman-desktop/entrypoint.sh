@@ -189,10 +189,8 @@ sudo setfacl -R -m u:kasm-user:rx /var/log/journal/ /run/log/journal/ 2>/dev/nul
 # where PD misses events (connections randomly dispatch between services).
 mkdir -p /run/user/1000/podman
 
-# Only start rootful Podman socket when explicitly requested.
-# PD auto-discovers /run/podman/podman.sock and registers a second provider,
-# which causes random disconnects as connections dispatch between two services.
 if [ "$ROOTFUL_PODMAN" = "true" ]; then
+    # Start the rootful podman service
     sudo mkdir -p /run/podman
     sudo podman system service --time=0 unix:///run/podman/podman.sock &
     for i in $(seq 1 10); do
@@ -200,8 +198,25 @@ if [ "$ROOTFUL_PODMAN" = "true" ]; then
         sleep 1
     done
     sudo chmod 666 /run/podman/podman.sock
-    echo "Rootful mode: redirecting PD to rootful podman socket"
-    ln -sf /run/podman/podman.sock /run/user/1000/podman/podman.sock
+
+    # PD's podman extension spawns "podman system service --time=0" on Linux
+    # and waits for /run/user/<uid>/podman/podman.sock. That clobbers any
+    # symlink we create here. Fix: wrap the podman binary so that when PD
+    # tries to start a rootless service, we just point the socket at the
+    # rootful one and sleep forever (PD expects the process to stay alive).
+    REAL_PODMAN="$(which podman)"
+    sudo mv "$REAL_PODMAN" "${REAL_PODMAN}.real"
+    sudo tee "$REAL_PODMAN" > /dev/null <<'WRAPPER'
+#!/bin/bash
+if [ "$ROOTFUL_PODMAN" = "true" ] && [ "${1:-}" = "system" ] && [ "${2:-}" = "service" ]; then
+    mkdir -p "/run/user/$(id -u)/podman"
+    ln -sf /run/podman/podman.sock "/run/user/$(id -u)/podman/podman.sock"
+    exec sleep infinity
+fi
+exec "$(dirname "$(readlink -f "$0")")/podman.real" "$@"
+WRAPPER
+    sudo chmod +x "$REAL_PODMAN"
+    echo "Rootful mode: podman wrapper installed, PD will use rootful socket"
 fi
 
 echo "All sockets ready, PD can now connect to events"
