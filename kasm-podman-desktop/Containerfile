@@ -58,7 +58,9 @@ RUN dnf install -y \
         podman \
         fuse-overlayfs \
         slirp4netns \
-        wmctrl && \
+        wmctrl \
+        scrot \
+        firefox && \
     dnf clean all
 
 #! 2. Setup subuid/subgid ranges for rootless user namespace mapping
@@ -143,7 +145,13 @@ RUN mkdir -p $HOME/Desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Podman Desktop\nExec=sh -c "cd /opt/podman-desktop && npx electron . --no-sandbox"\nIcon=utilities-terminal\nTerminal=false\nCategories=Development;\n' > $HOME/Desktop/podman-desktop.desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Terminal\nExec=xfce4-terminal\nIcon=utilities-terminal\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/terminal.desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Managed Config\nExec=xfce4-terminal --working-directory=/usr/share/podman-desktop\nIcon=folder\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/managed-config.desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Firefox\nExec=firefox --no-remote\nIcon=firefox\nTerminal=false\nCategories=Network;WebBrowser;\n' > $HOME/Desktop/firefox.desktop && \
     chmod +x $HOME/Desktop/*.desktop
+
+#! Desktop wallpaper
+COPY wallpaper.png /usr/share/backgrounds/wallpaper.png
+RUN mkdir -p $HOME/.config/xfce4/xfconf/xfce-perchannel-xml && \
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-desktop" version="1.0">\n  <property name="backdrop" type="empty">\n    <property name="screen0" type="empty">\n      <property name="monitorVNC-0" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n      <property name="monitornone" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n    </property>\n  </property>\n</channel>\n' > $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
 #! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
 #! Kasm monitors pcscd and restarts it if it exits, so we need a stub that stays alive

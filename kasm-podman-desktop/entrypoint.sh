@@ -49,7 +49,21 @@ if [ -n "$EXTENSION_REPO" ] && [ -n "$EXTENSION_PR_NUMBER" ]; then
     git fetch origin "pull/$EXTENSION_PR_NUMBER/head:pr-$EXTENSION_PR_NUMBER"
     git checkout "pr-$EXTENSION_PR_NUMBER"
 
-    CONTAINERFILE="${EXTENSION_CONTAINERFILE:-build/Containerfile}"
+    if [ -n "$EXTENSION_CONTAINERFILE" ]; then
+        CONTAINERFILE="$EXTENSION_CONTAINERFILE"
+    elif [ -f "build/Containerfile" ]; then
+        CONTAINERFILE="build/Containerfile"
+    elif [ -f "Containerfile" ]; then
+        CONTAINERFILE="Containerfile"
+    elif [ -f "Dockerfile" ]; then
+        CONTAINERFILE="Dockerfile"
+    elif [ -f "build/Dockerfile" ]; then
+        CONTAINERFILE="build/Dockerfile"
+    else
+        echo "ERROR: No Containerfile found in extension repo"
+        ls -la build/ 2>/dev/null || echo "No build/ directory"
+        exit 1
+    fi
     IMAGE_TAG="localhost/extension-under-test:latest"
     echo "Building extension container from $CONTAINERFILE..."
     podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
@@ -137,37 +151,48 @@ mkdir -p "$PD_LOG_DIR"
     sleep 2
 done) &
 
-# Start journald + Podman sockets after Kasm initializes (Kasm cleans /run during startup)
-(
-    sleep 10
+# Start Kasm/VNC in the background first so it begins initializing
+/dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@" > /dev/null 2>&1 &
+KASM_PID=$!
 
-    # Start journald and wait for socket (required for podman events + log driver)
-    sudo mkdir -p /run/systemd/journal /var/log/journal
-    sudo /usr/lib/systemd/systemd-journald &
-    for i in $(seq 1 30); do
-        [ -S /run/systemd/journal/socket ] && break
-        sleep 1
-    done
-    if [ ! -S /run/systemd/journal/socket ]; then
-        echo "WARNING: journald socket not ready"
-    else
-        echo "journald socket ready"
+# Wait for Kasm to finish its /run cleanup before starting sockets.
+# Kasm wipes /run during vnc_startup.sh, so anything started before this
+# point gets killed. We wait until the VNC port is listening.
+echo "Waiting for Kasm to initialize..."
+for i in $(seq 1 60); do
+    if ss -tln 2>/dev/null | grep -q ':6901 '; then
+        echo "Kasm VNC port ready"
+        break
     fi
+    sleep 1
+done
 
-    # Grant kasm-user read access to journal (needed for podman events via API)
-    sudo chmod -R o+rx /var/log/journal/ /run/log/journal/ 2>/dev/null
-    sudo setfacl -R -m u:kasm-user:rx /var/log/journal/ /run/log/journal/ 2>/dev/null
+# Start journald and wait for socket (required for podman events + log driver)
+sudo mkdir -p /run/systemd/journal /var/log/journal
+sudo /usr/lib/systemd/systemd-journald &
+for i in $(seq 1 30); do
+    [ -S /run/systemd/journal/socket ] && break
+    sleep 1
+done
+if [ ! -S /run/systemd/journal/socket ]; then
+    echo "WARNING: journald socket not ready"
+else
+    echo "journald socket ready"
+fi
 
-    # Start rootless Podman socket
-    mkdir -p /run/user/1000/podman
-    podman system service --time=0 unix:///run/user/1000/podman/podman.sock &
-    for i in $(seq 1 10); do
-        [ -S /run/user/1000/podman/podman.sock ] && break
-        sleep 1
-    done
-    echo "Rootless Podman socket ready"
+# Grant kasm-user read access to journal (needed for podman events via API)
+sudo chmod -R o+rx /var/log/journal/ /run/log/journal/ 2>/dev/null
+sudo setfacl -R -m u:kasm-user:rx /var/log/journal/ /run/log/journal/ 2>/dev/null
 
-    # Start rootful Podman socket (needed by kind)
+# Do NOT start a rootless podman socket here — PD manages its own.
+# Starting a second listener on the same path causes event stream splits
+# where PD misses events (connections randomly dispatch between services).
+mkdir -p /run/user/1000/podman
+
+# Only start rootful Podman socket when explicitly requested.
+# PD auto-discovers /run/podman/podman.sock and registers a second provider,
+# which causes random disconnects as connections dispatch between two services.
+if [ "$ROOTFUL_PODMAN" = "true" ]; then
     sudo mkdir -p /run/podman
     sudo podman system service --time=0 unix:///run/podman/podman.sock &
     for i in $(seq 1 10); do
@@ -175,19 +200,10 @@ done) &
         sleep 1
     done
     sudo chmod 666 /run/podman/podman.sock
-    echo "Rootful Podman socket ready"
+    echo "Rootful mode: redirecting PD to rootful podman socket"
+    ln -sf /run/podman/podman.sock /run/user/1000/podman/podman.sock
+fi
 
-    # Verify events work
-    podman pull quay.io/podman/hello > /dev/null 2>&1
-    podman rmi quay.io/podman/hello > /dev/null 2>&1
-    EVENT_COUNT=$(podman events --since 30s --stream=false 2>/dev/null | wc -l)
-    if [ "$EVENT_COUNT" -gt 0 ]; then
-        echo "Podman events working ($EVENT_COUNT events)"
-    else
-        echo "WARNING: Podman events not working"
-    fi
-) &
+echo "All sockets ready, PD can now connect to events"
 
-# Hand off to the original Kasm entrypoint (silence its output, PD logs come from tail above)
-/dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@" > /dev/null 2>&1 &
-wait
+wait $KASM_PID
