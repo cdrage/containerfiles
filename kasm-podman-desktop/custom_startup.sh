@@ -15,17 +15,18 @@ if [ -f "$WALLPAPER" ]; then
 fi
 
 center_podman_window() {
-    for _ in $(seq 1 30); do
+    LAST_RES=""
+    while true; do
         WIN_LINE=$(wmctrl -lG 2>/dev/null | grep -i "podman" | head -1)
         if [ -n "$WIN_LINE" ]; then
-            sleep 3
-            for _ in $(seq 1 5); do
+            SCREEN_RES=$(xrandr 2>/dev/null | grep '\*' | head -1 | awk '{print $1}')
+            if [ -n "$SCREEN_RES" ] && [ "$SCREEN_RES" != "$LAST_RES" ]; then
+                sleep 1
                 WIN_LINE=$(wmctrl -lG 2>/dev/null | grep -i "podman" | head -1)
-                [ -z "$WIN_LINE" ] && break
+                [ -z "$WIN_LINE" ] && { sleep 2; continue; }
                 WIN_ID=$(echo "$WIN_LINE" | awk '{print $1}')
                 WIN_W=$(echo "$WIN_LINE" | awk '{print $5}')
                 WIN_H=$(echo "$WIN_LINE" | awk '{print $6}')
-                SCREEN_RES=$(xrandr 2>/dev/null | grep '\*' | head -1 | awk '{print $1}')
                 SCREEN_W=$(echo "$SCREEN_RES" | cut -dx -f1)
                 SCREEN_H=$(echo "$SCREEN_RES" | cut -dx -f2)
                 if [ -n "$SCREEN_W" ] && [ -n "$SCREEN_H" ] && [ -n "$WIN_W" ] && [ -n "$WIN_H" ]; then
@@ -35,11 +36,10 @@ center_podman_window() {
                     [ "$Y" -lt 0 ] && Y=0
                     wmctrl -i -r "$WIN_ID" -e "0,$X,$Y,$WIN_W,$WIN_H"
                 fi
-                sleep 2
-            done
-            return
+                LAST_RES="$SCREEN_RES"
+            fi
         fi
-        sleep 1
+        sleep 2
     done
 }
 
