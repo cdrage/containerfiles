@@ -463,6 +463,9 @@ Below is a general overview (with instructions) on each Docker container I use. 
  If not set, uses Fedora's default Podman.
  NPM_CONFIG_REGISTRY is optional. If set, pnpm fetches packages from this
  registry (e.g. a Verdaccio instance) instead of the public npm registry.
+ DEV_MODE is optional. If set to "true", uses `pnpm watch` instead of
+ `pnpm build` + `electron`. This enables Vite's dev server with HMR
+ so UI changes are reflected instantly without a full rebuild.
 
 ## [rickroll](/rickroll/Containerfile)
 

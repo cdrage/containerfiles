@@ -110,10 +110,18 @@ sed -i 's/ && playwright install chromium//' package.json
 echo "Running pnpm install..."
 pnpm install --prefer-offline
 
-echo "Building Podman Desktop..."
-pnpm run build
+if [ "$DEV_MODE" = "true" ]; then
+    echo "Dev mode: skipping full build (pnpm watch will compile and launch)..."
+    sed -i "s/'--remote-debugging-port=9223'/'--no-sandbox', '--remote-debugging-port=9223'/" scripts/watch.mjs
+    sed -i 's|npx electron . --no-sandbox|pnpm watch|' /home/kasm-default-profile/Desktop/podman-desktop.desktop
+    echo "Pre-building UI package (watch.mjs doesn't await its first build)..."
+    pnpm run build:ui
+else
+    echo "Building Podman Desktop..."
+    pnpm run build
+fi
 
-echo "Build complete, starting VNC..."
+echo "Starting VNC..."
 
 # Generate kubeconfig from mounted ServiceAccount token (read-only, pd-testing namespace only)
 if [ "$INCLUDE_K8S" = "true" ] && [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
