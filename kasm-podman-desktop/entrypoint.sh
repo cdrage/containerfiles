@@ -189,8 +189,34 @@ sudo setfacl -R -m u:kasm-user:rx /var/log/journal/ /run/log/journal/ 2>/dev/nul
 # where PD misses events (connections randomly dispatch between services).
 mkdir -p /run/user/1000/podman
 
+#! ===== Rootful podman wrapper (ROOTFUL_PODMAN=true) =====
+#!
+#! Problem: PD on Linux hardcodes the rootless socket path
+#! (/run/user/<uid>/podman/podman.sock) and spawns its own
+#! "podman system service --time=0" to create it. There is no config
+#! option to point PD at a rootful socket. Meanwhile, CLI tools like
+#! Kind shell out to `podman` directly — they never touch the socket
+#! API — so they also run rootlessly by default.
+#!
+#! Hack: we replace the podman binary with a wrapper that does two things:
+#!
+#!   1. Intercepts "podman system service" calls (from PD's podman
+#!      extension). Instead of starting a second service, it symlinks
+#!      the rootless socket path to the rootful socket and sleeps
+#!      forever. PD expects the process to stay alive, so sleep
+#!      satisfies its lifecycle check. PD then connects via Dockerode
+#!      to what it thinks is a rootless socket but is actually the
+#!      rootful one.
+#!
+#!   2. For every other podman command (run, build, info, ...), it sets
+#!      CONTAINER_HOST to the rootful socket before exec'ing the real
+#!      binary. This forces the CLI into remote mode, so Kind and any
+#!      other tool that shells out to `podman` talks to the rootful
+#!      service and gets proper cgroup delegation.
+#!
+#! The real binary lives at podman.real next to the wrapper.
+#!
 if [ "$ROOTFUL_PODMAN" = "true" ]; then
-    # Start the rootful podman service
     sudo mkdir -p /run/podman
     sudo podman system service --time=0 unix:///run/podman/podman.sock &
     for i in $(seq 1 10); do
@@ -199,21 +225,18 @@ if [ "$ROOTFUL_PODMAN" = "true" ]; then
     done
     sudo chmod 666 /run/podman/podman.sock
 
-    # PD's podman extension spawns "podman system service --time=0" on Linux
-    # and waits for /run/user/<uid>/podman/podman.sock. That clobbers any
-    # symlink we create here. Fix: wrap the podman binary so that when PD
-    # tries to start a rootless service, we just point the socket at the
-    # rootful one and sleep forever (PD expects the process to stay alive).
     REAL_PODMAN="$(which podman)"
     sudo mv "$REAL_PODMAN" "${REAL_PODMAN}.real"
     sudo tee "$REAL_PODMAN" > /dev/null <<'WRAPPER'
 #!/bin/bash
+REAL="$(dirname "$(readlink -f "$0")")/podman.real"
 if [ "$ROOTFUL_PODMAN" = "true" ] && [ "${1:-}" = "system" ] && [ "${2:-}" = "service" ]; then
     mkdir -p "/run/user/$(id -u)/podman"
     ln -sf /run/podman/podman.sock "/run/user/$(id -u)/podman/podman.sock"
     exec sleep infinity
 fi
-exec "$(dirname "$(readlink -f "$0")")/podman.real" "$@"
+export CONTAINER_HOST=unix:///run/podman/podman.sock
+exec "$REAL" "$@"
 WRAPPER
     sudo chmod +x "$REAL_PODMAN"
     echo "Rootful mode: podman wrapper installed, PD will use rootful socket"
