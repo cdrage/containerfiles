@@ -2,3 +2,4 @@
 build-args.conf
 auth.json
 .DS_Store
+.claude
