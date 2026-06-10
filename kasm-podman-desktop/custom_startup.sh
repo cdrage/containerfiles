@@ -133,7 +133,7 @@ kasm_startup() {
                     /usr/bin/desktop_ready
                     center_podman_window &
                     set +e
-                    xfce4-terminal --disable-server --title="Terminal" --working-directory=/opt/podman-desktop -e "pnpm watch" 2>&1
+                    xfce4-terminal --disable-server --title="Terminal" --font="Monospace 8" --working-directory=/opt/podman-desktop -e "pnpm watch" 2>&1
                     set -e
                     pkill -f "watch\.mjs" 2>/dev/null || true
                     pkill -f "svelte-package" 2>/dev/null || true
