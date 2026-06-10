@@ -95,7 +95,7 @@ git checkout -- .
 git clean -fd
 
 BASE_BRANCH="${BASE_BRANCH:-main}"
-git fetch origin "$BASE_BRANCH"
+git fetch origin "$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
 if [ -n "$PR_NUMBER" ]; then
     echo "Fetching PR #$PR_NUMBER..."
     git fetch origin "pull/$PR_NUMBER/head:pr-$PR_NUMBER"

@@ -50,7 +50,7 @@ try_arrange_dev() {
     screen_w=$(echo "$screen_res" | cut -dx -f1)
     screen_h=$(echo "$screen_res" | cut -dx -f2)
 
-    local pd_line pd_id pd_w pd_h pd_x pd_y gap dt_y dt_h dt_w dt_x
+    local pd_line pd_id pd_w pd_h pd_x pd_y
     pd_line=$(wmctrl -lG 2>/dev/null | grep -i "podman desktop" | head -1)
     if [ -n "$pd_line" ]; then
         pd_id=$(echo "$pd_line" | awk '{print $1}')
@@ -64,16 +64,28 @@ try_arrange_dev() {
 
     local titlebar=30
     local gap=10
-    local dt_line dt_id
+    local cascade=30
+
+    local dt_line dt_id dt_w dt_x dt_y dt_h
     dt_line=$(wmctrl -lG 2>/dev/null | grep -i "developer tools" | head -1)
+    dt_w=${pd_w:-$(echo "$dt_line" | awk '{print $5}')}
+    [ -z "$dt_w" ] && return 1
+    dt_x=${pd_x:-$(( (screen_w - dt_w) / 2 ))}
+    dt_y=$(( ${pd_y:-40} + ${pd_h:-600} + titlebar + gap ))
+    dt_h=$(( screen_h - dt_y - 10 ))
+    [ "$dt_h" -lt 200 ] && dt_h=200
+
+    local term_line term_id
+    term_line=$(wmctrl -lG 2>/dev/null | grep " Terminal$" | head -1)
+    if [ -n "$term_line" ]; then
+        term_id=$(echo "$term_line" | awk '{print $1}')
+        wmctrl -i -r "$term_id" -e "0,$((dt_x + cascade)),$((dt_y + cascade)),$dt_w,$dt_h"
+    fi
+
     if [ -n "$dt_line" ]; then
         dt_id=$(echo "$dt_line" | awk '{print $1}')
-        dt_w=${pd_w:-$(echo "$dt_line" | awk '{print $5}')}
-        dt_x=${pd_x:-$(( (screen_w - dt_w) / 2 ))}
-        dt_y=$(( ${pd_y:-40} + ${pd_h:-600} + titlebar + gap ))
-        dt_h=$(( screen_h - dt_y - 10 ))
-        [ "$dt_h" -lt 200 ] && dt_h=200
         wmctrl -i -r "$dt_id" -e "0,$dt_x,$dt_y,$dt_w,$dt_h"
+        wmctrl -i -a "$dt_id"
     fi
 }
 
@@ -121,7 +133,7 @@ kasm_startup() {
                     /usr/bin/desktop_ready
                     center_podman_window &
                     set +e
-                    pnpm watch 2>&1
+                    xfce4-terminal --disable-server --title="Terminal" --working-directory=/opt/podman-desktop -e "pnpm watch" 2>&1
                     set -e
                     pkill -f "watch\.mjs" 2>/dev/null || true
                     pkill -f "svelte-package" 2>/dev/null || true
