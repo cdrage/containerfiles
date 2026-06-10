@@ -63,8 +63,14 @@ RUN dnf install -y \
         slirp4netns \
         wmctrl \
         scrot \
-        firefox && \
+        firefox \
+        xdg-utils && \
     dnf clean all
+
+RUN xdg-settings set default-web-browser firefox.desktop 2>/dev/null || true && \
+    mkdir -p $HOME/.local/share/applications && \
+    xdg-mime default firefox.desktop x-scheme-handler/http 2>/dev/null || true && \
+    xdg-mime default firefox.desktop x-scheme-handler/https 2>/dev/null || true
 
 #! 1b. Replace pkexec with a sudo wrapper
 #!     Podman Desktop extensions (kind, kubectl-cli, compose) use pkexec
