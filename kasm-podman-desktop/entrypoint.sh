@@ -68,6 +68,10 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
         exit 1
     fi
     IMAGE_TAG="localhost/extension-under-test:latest"
+    if [ -n "$NPM_CONFIG_REGISTRY" ]; then
+        echo "Injecting npm registry cache ($NPM_CONFIG_REGISTRY) into $CONTAINERFILE..."
+        sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"
+    fi
     echo "Building extension container from $CONTAINERFILE..."
     podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
 

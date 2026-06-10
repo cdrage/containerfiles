@@ -134,6 +134,10 @@ ENV ELECTRON_CACHE=/opt/electron-cache
 #! keep it outside $HOME so it survives the Kasm profile copy
 ENV PNPM_HOME=/opt/pnpm-home
 
+#! Optional: pass --build-arg NPM_REGISTRY=http://verdaccio:4873/ to use a
+#! local npm cache during image build. Only affects build-time installs.
+ARG NPM_REGISTRY=""
+
 #! Clone podman-desktop and pre-install dependencies on main branch to speed up PR checkout
 #! Use an explicit pnpm store outside $HOME so it survives the Kasm profile copy
 RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-desktop/podman-desktop.git /opt/podman-desktop && \
@@ -142,7 +146,8 @@ RUN git clone --single-branch --branch main --depth 1 https://github.com/podman-
     sed -i 's/ && playwright install chromium//' package.json && \
 #! --ignore-scripts: postinstall scripts segfault under QEMU when cross-building amd64 on ARM.
 #! Scripts run at container startup on native x86 instead.
-    pnpm install --ignore-scripts && \
+    if [ -n "$NPM_REGISTRY" ]; then NPM_CONFIG_REGISTRY="$NPM_REGISTRY" pnpm install --ignore-scripts; \
+    else pnpm install --ignore-scripts; fi && \
     mkdir -p /opt/electron-cache && \
     node node_modules/electron/install.js && \
     chown -R 1000:0 /opt/podman-desktop /opt/pnpm-store /opt/electron-cache /opt/pnpm-home
