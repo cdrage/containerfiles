@@ -159,6 +159,10 @@ RUN mkdir -p $HOME/.local/share/containers/podman-desktop/configuration && \
     echo '{ "welcome.version": "initial" }' > $HOME/.local/share/containers/podman-desktop/configuration/settings.json && \
     mkdir -p /usr/share/podman-desktop
 
+#! Pre-select Console tab in Developer Tools (dev mode)
+RUN mkdir -p "$HOME/.config/Podman Desktop" && \
+    echo '{"electron":{"devtools":{"preferences":{"panel-selected-tab":"\"console\"","currentDockState":"\"undocked\""}}}}' > "$HOME/.config/Podman Desktop/Preferences"
+
 #! Desktop shortcuts
 RUN mkdir -p $HOME/Desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Podman Desktop\nExec=sh -c "cd /opt/podman-desktop && npx electron . --no-sandbox"\nIcon=utilities-terminal\nTerminal=false\nCategories=Development;\n' > $HOME/Desktop/podman-desktop.desktop && \
