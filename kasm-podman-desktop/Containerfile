@@ -185,7 +185,9 @@ RUN mkdir -p $HOME/Desktop && \
 #! Desktop wallpaper
 COPY wallpaper.png /usr/share/backgrounds/wallpaper.png
 RUN mkdir -p $HOME/.config/xfce4/xfconf/xfce-perchannel-xml && \
-    printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-desktop" version="1.0">\n  <property name="backdrop" type="empty">\n    <property name="screen0" type="empty">\n      <property name="monitorVNC-0" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n      <property name="monitornone" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n    </property>\n  </property>\n</channel>\n' > $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-desktop" version="1.0">\n  <property name="backdrop" type="empty">\n    <property name="screen0" type="empty">\n      <property name="monitorVNC-0" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n      <property name="monitornone" type="empty">\n        <property name="workspace0" type="empty">\n          <property name="last-image" type="string" value="/usr/share/backgrounds/wallpaper.png"/>\n          <property name="image-style" type="int" value="5"/>\n        </property>\n      </property>\n    </property>\n  </property>\n</channel>\n' > $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml && \
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xsettings" version="1.0">\n  <property name="Net" type="empty">\n    <property name="EnableEventSounds" type="bool" value="false"/>\n    <property name="EnableInputFeedbackSounds" type="bool" value="false"/>\n  </property>\n</channel>\n' > $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml && \
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-notifyd" version="1.0">\n  <property name="do-not-disturb" type="bool" value="true"/>\n</channel>\n' > $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-notifyd.xml
 
 #! Silence pcscd spam from vnc_startup.sh (smartcard daemon not needed)
 #! Kasm monitors pcscd and restarts it if it exits, so we need a stub that stays alive
@@ -200,7 +202,8 @@ RUN chmod +x /entrypoint.sh
 
 #! For deploying on Kubernetes, we disable SSL by default so that we can access it via HTTP (reverse proxy + let's encrypt
 #! We do this by changing required_ssl in /usr/share/kasmvnc/kasmvnc_defaults.yaml from required_ssl: true to required_ssl: false
-RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml
+RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml && \
+    sed -i '/^runtime_configuration:/a\  bell: false' /usr/share/kasmvnc/kasmvnc_defaults.yaml
 RUN cat /usr/share/kasmvnc/kasmvnc_defaults.yaml
 
 #! Remove "-sslOnly" from the VNC startup script and replace it with "-disableBasicAuth"

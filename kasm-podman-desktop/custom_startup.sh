@@ -3,6 +3,9 @@ set -ex
 
 cd /opt/podman-desktop
 
+# Disable X11 bell and PC speaker beep
+xset b off 2>/dev/null || true
+
 # Apply wallpaper to whatever monitor XFCE detected
 WALLPAPER="/usr/share/backgrounds/wallpaper.png"
 if [ -f "$WALLPAPER" ]; then
