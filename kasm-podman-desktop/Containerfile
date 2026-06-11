@@ -202,8 +202,7 @@ RUN chmod +x /entrypoint.sh
 
 #! For deploying on Kubernetes, we disable SSL by default so that we can access it via HTTP (reverse proxy + let's encrypt
 #! We do this by changing required_ssl in /usr/share/kasmvnc/kasmvnc_defaults.yaml from required_ssl: true to required_ssl: false
-RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml && \
-    sed -i '/^runtime_configuration:/a\  bell: false' /usr/share/kasmvnc/kasmvnc_defaults.yaml
+RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml
 RUN cat /usr/share/kasmvnc/kasmvnc_defaults.yaml
 
 #! Remove "-sslOnly" from the VNC startup script and replace it with "-disableBasicAuth"
