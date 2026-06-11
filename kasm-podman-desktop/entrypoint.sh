@@ -18,22 +18,6 @@ if [ -d /var/lib/containers-storage ]; then
     sed -i 's|^\[storage\]|[storage]\ngraphroot = "/var/lib/containers-storage"|' "$HOME/.config/containers/storage.conf"
 fi
 
-# Install a specific Podman version from podman-container-tools static builds
-if [ -n "$PODMAN_VERSION" ]; then
-    ARCH=$(uname -m)
-    case "$ARCH" in
-        x86_64)  ARCH_SUFFIX="amd64" ;;
-        aarch64) ARCH_SUFFIX="arm64" ;;
-        *)       echo "Unsupported architecture: $ARCH"; exit 1 ;;
-    esac
-
-    echo "Installing Podman $PODMAN_VERSION ($ARCH_SUFFIX)..."
-    curl -fsSL "https://github.com/podman-container-tools/podman/releases/download/${PODMAN_VERSION}/podman-linux-${ARCH_SUFFIX}.tar.gz" -o /tmp/podman.tar.gz
-    sudo tar -xzf /tmp/podman.tar.gz -C /usr/local
-    rm -f /tmp/podman.tar.gz
-    echo "Podman version: $(podman --version)"
-fi
-
 pnpm config set store-dir /opt/pnpm-store
 
 # Extension mode: build extension container first so we fail early if it doesn't compile.
