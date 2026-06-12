@@ -59,7 +59,7 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
     # trying to pull from a (potentially private) remote registry.
     BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
     if [ -f "$BUILDER_FILE" ]; then
-        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{print $2}')
+        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
         echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
         podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
     fi
