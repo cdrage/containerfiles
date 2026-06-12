@@ -111,7 +111,6 @@ echo "Running pnpm install..."
 pnpm install --prefer-offline
 
 if [ "$DEV_MODE" = "true" ]; then
-    echo "Dev mode: skipping full build (pnpm watch will compile and launch)..."
     sed -i "s/'--remote-debugging-port=9223'/'--no-sandbox', '--remote-debugging-port=9223'/" scripts/watch.mjs
     sed -i 's|npx electron . --no-sandbox|pnpm watch|' /home/kasm-default-profile/Desktop/podman-desktop.desktop
     echo "Pre-building UI package (watch.mjs doesn't await its first build)..."

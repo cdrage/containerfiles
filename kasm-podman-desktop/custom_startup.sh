@@ -129,20 +129,37 @@ kasm_startup() {
     if [ -z "$DISABLE_CUSTOM_STARTUP" ]; then
         echo "Entering process startup loop"
         set +x
+        FAIL_COUNT=0
+        MAX_FAST_FAILS=3
+        FAST_FAIL_THRESHOLD=30
         while true; do
             if [ "$DEV_MODE" = "true" ]; then
                 if ! pgrep -f "watch\.mjs" > /dev/null; then
                     /usr/bin/filter_ready
                     /usr/bin/desktop_ready
                     center_podman_window &
+                    START_TIME=$(date +%s)
                     set +e
                     xfce4-terminal --disable-server --title="Terminal" --font="Monospace 8" --working-directory=/opt/podman-desktop -e "pnpm watch" 2>&1
                     set -e
+                    ELAPSED=$(( $(date +%s) - START_TIME ))
                     pkill -f "watch\.mjs" 2>/dev/null || true
                     pkill -f "svelte-package" 2>/dev/null || true
                     pkill -f "pnpm watch" 2>/dev/null || true
                     pkill -f "vite build --watch" 2>/dev/null || true
                     pkill -f "electron.*podman-desktop" 2>/dev/null || true
+                    if [ "$ELAPSED" -lt "$FAST_FAIL_THRESHOLD" ]; then
+                        FAIL_COUNT=$((FAIL_COUNT + 1))
+                        echo "pnpm watch exited after ${ELAPSED}s (fast fail $FAIL_COUNT/$MAX_FAST_FAILS)"
+                        if [ "$FAIL_COUNT" -ge "$MAX_FAST_FAILS" ]; then
+                            echo "pnpm watch crashed $MAX_FAST_FAILS times in under ${FAST_FAIL_THRESHOLD}s — stopping restart loop."
+                            echo "Opening a shell for debugging. Run 'pnpm watch' manually to retry."
+                            xfce4-terminal --disable-server --title="Debug Terminal" --font="Monospace 8" --working-directory=/opt/podman-desktop
+                            break
+                        fi
+                    else
+                        FAIL_COUNT=0
+                    fi
                     sleep 1
                 fi
             else
