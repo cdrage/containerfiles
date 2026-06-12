@@ -18,14 +18,17 @@
 #  --device /dev/fuse \
 #  --security-opt label=disable \
 #  --security-opt unmask=ALL \
+#  --security-opt seccomp=unconfined \
 #  -e PR_NUMBER=12345 \
 #  -p 6901:6901 \
 #  --shm-size=2g \
 #  ghcr.io/cdrage/kasm-podman-desktop:latest
 # ```
 #
-# --device /dev/fuse, --security-opt label=disable, and --security-opt unmask=ALL
-# are required for rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
+# --device /dev/fuse, --security-opt label=disable, --security-opt unmask=ALL,
+# and --security-opt seccomp=unconfined are required for rootless Podman inside
+# the container (see https://www.redhat.com/en/blog/podman-inside-container).
+# seccomp=unconfined is needed for pasta networking (close_range() syscall).
 # PR_NUMBER is optional. If not set, uses latest main.
 # NPM_CONFIG_REGISTRY is optional. If set, pnpm fetches packages from this
 # registry (e.g. a Verdaccio instance) instead of the public npm registry.
@@ -52,11 +55,11 @@ WORKDIR $HOME
 #!
 #! 1. Install Podman and rootless dependencies
 #!    - fuse-overlayfs: storage driver for nested containers (native overlay-on-overlay doesn't work)
-#!    - slirp4netns: rootless networking backend (pasta's close_range() syscall is blocked by seccomp)
+#!    - passt: rootless networking backend (default, requires seccomp=unconfined for close_range() syscall)
 RUN dnf install -y \
         podman \
         fuse-overlayfs \
-        slirp4netns \
+        passt \
         wmctrl \
         scrot \
         firefox \
@@ -89,11 +92,11 @@ RUN echo "kasm-user:100000:65536" >> /etc/subuid && \
 
 #! 3. Configure storage and networking for nested operation
 #!    - storage.conf: use fuse-overlayfs as the mount program
-#!    - containers.conf: use slirp4netns instead of pasta for networking
+#!    - containers.conf: logging config (pasta is the default networking backend)
 RUN mkdir -p /etc/containers $HOME/.config/containers && \
     printf '[storage]\ndriver = "overlay"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\nmountopt = "nodev,fsync=0"\n' > /etc/containers/storage.conf && \
     cp /etc/containers/storage.conf $HOME/.config/containers/storage.conf && \
-    printf '[containers]\nlog_driver = "journald"\n\n[engine]\nevents_logger = "journald"\n\n[network]\ndefault_rootless_network_cmd = "slirp4netns"\n' > /etc/containers/containers.conf
+    printf '[containers]\nlog_driver = "journald"\n\n[engine]\nevents_logger = "journald"\n' > /etc/containers/containers.conf
 
 #! 4. XDG_RUNTIME_DIR is required for the rootless Podman socket
 ENV XDG_RUNTIME_DIR=/run/user/1000

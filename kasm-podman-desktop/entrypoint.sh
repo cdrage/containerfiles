@@ -52,6 +52,18 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
         exit 1
     fi
     IMAGE_TAG="localhost/extension-under-test:latest"
+
+    # If a Containerfile.builder exists alongside the Containerfile, build it
+    # locally first. We tag it with the same name the main Containerfile
+    # expects in its FROM line, so podman uses the local image instead of
+    # trying to pull from a (potentially private) remote registry.
+    BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
+    if [ -f "$BUILDER_FILE" ]; then
+        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{print $2}')
+        echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
+        podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
+    fi
+
     if [ -n "$NPM_CONFIG_REGISTRY" ]; then
         echo "Injecting npm registry cache ($NPM_CONFIG_REGISTRY) into $CONTAINERFILE..."
         sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"

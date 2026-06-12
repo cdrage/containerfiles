@@ -448,14 +448,17 @@ Below is a general overview (with instructions) on each Docker container I use. 
   --device /dev/fuse \
   --security-opt label=disable \
   --security-opt unmask=ALL \
+  --security-opt seccomp=unconfined \
   -e PR_NUMBER=12345 \
   -p 6901:6901 \
   --shm-size=2g \
   ghcr.io/cdrage/kasm-podman-desktop:latest
  ```
 
- --device /dev/fuse, --security-opt label=disable, and --security-opt unmask=ALL
- are required for rootless Podman inside the container (see https://www.redhat.com/en/blog/podman-inside-container).
+ --device /dev/fuse, --security-opt label=disable, --security-opt unmask=ALL,
+ and --security-opt seccomp=unconfined are required for rootless Podman inside
+ the container (see https://www.redhat.com/en/blog/podman-inside-container).
+ seccomp=unconfined is needed for pasta networking (close_range() syscall).
  PR_NUMBER is optional. If not set, uses latest main.
  NPM_CONFIG_REGISTRY is optional. If set, pnpm fetches packages from this
  registry (e.g. a Verdaccio instance) instead of the public npm registry.
