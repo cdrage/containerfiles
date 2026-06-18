@@ -19,7 +19,7 @@ fi
 
 get_screen_res() {
     local line w h
-    line=$(wmctrl -lG 2>/dev/null | grep -i "Desktop" | grep -vi "podman" | head -1)
+    line=$(wmctrl -lG 2>/dev/null | awk '{t=$8; for(i=9;i<=NF;i++) t=t" "$i} tolower(t)=="desktop"' | head -1)
     [ -z "$line" ] && return 1
     w=$(echo "$line" | awk '{print $5}')
     h=$(echo "$line" | awk '{print $6}')
@@ -28,7 +28,7 @@ get_screen_res() {
 
 try_center() {
     local win_line win_id win_w win_h screen_res screen_w screen_h x y
-    win_line=$(wmctrl -lG 2>/dev/null | grep -iE "podman|electron" | head -1)
+    win_line=$(wmctrl -lG 2>/dev/null | awk '{t=$8; for(i=9;i<=NF;i++) t=t" "$i} tolower(t)~/podman|electron/' | head -1)
     [ -z "$win_line" ] && return 1
     screen_res=$(get_screen_res)
     [ -z "$screen_res" ] && return 1
@@ -103,7 +103,7 @@ center_podman_window() {
         ARRANGE_FN=try_arrange_dev
     else
         for i in $(seq 1 60); do
-            wmctrl -lG 2>/dev/null | grep -qiE "podman|electron" && break
+            wmctrl -lG 2>/dev/null | awk '{t=$8; for(i=9;i<=NF;i++) t=t" "$i} tolower(t)~/podman|electron/{found=1} END{exit !found}' && break
             sleep 1
         done
         ARRANGE_FN=try_center
@@ -133,10 +133,6 @@ kasm_startup() {
         MAX_FAST_FAILS=3
         FAST_FAIL_THRESHOLD=30
         while true; do
-            if [ -f /tmp/auto-update-in-progress ]; then
-                sleep 1
-                continue
-            fi
             if [ "$DEV_MODE" = "true" ]; then
                 if ! pgrep -f "watch\.mjs" > /dev/null; then
                     /usr/bin/filter_ready
