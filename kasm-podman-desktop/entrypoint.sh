@@ -254,4 +254,8 @@ fi
 
 echo "All sockets ready, PD can now connect to events"
 
+if [ "$AUTO_UPDATE" = "true" ]; then
+    /auto-update.sh &
+fi
+
 wait $KASM_PID

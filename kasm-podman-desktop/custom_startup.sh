@@ -133,6 +133,10 @@ kasm_startup() {
         MAX_FAST_FAILS=3
         FAST_FAIL_THRESHOLD=30
         while true; do
+            if [ -f /tmp/auto-update-in-progress ]; then
+                sleep 1
+                continue
+            fi
             if [ "$DEV_MODE" = "true" ]; then
                 if ! pgrep -f "watch\.mjs" > /dev/null; then
                     /usr/bin/filter_ready
