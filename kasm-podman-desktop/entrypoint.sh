@@ -84,6 +84,58 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
     echo "Extension installed to $INSTALL_DIR"
 fi
 
+# Custom extension mode: build extension from a fork branch (not a PR)
+if [ -n "$CUSTOM_EXTENSION_REPO" ] && [ -n "$CUSTOM_EXTENSION_BRANCH" ]; then
+    EXTENSION_DIR="/opt/extension-src"
+    mkdir -p "$EXTENSION_DIR"
+    echo "=== Custom extension mode: building $CUSTOM_EXTENSION_REPO branch $CUSTOM_EXTENSION_BRANCH ==="
+    git clone -b "$CUSTOM_EXTENSION_BRANCH" "https://github.com/$CUSTOM_EXTENSION_REPO.git" "$EXTENSION_DIR"
+    cd "$EXTENSION_DIR"
+
+    if [ -n "$EXTENSION_CONTAINERFILE" ]; then
+        CONTAINERFILE="$EXTENSION_CONTAINERFILE"
+    elif [ -f "build/Containerfile" ]; then
+        CONTAINERFILE="build/Containerfile"
+    elif [ -f "Containerfile" ]; then
+        CONTAINERFILE="Containerfile"
+    elif [ -f "Dockerfile" ]; then
+        CONTAINERFILE="Dockerfile"
+    elif [ -f "build/Dockerfile" ]; then
+        CONTAINERFILE="build/Dockerfile"
+    else
+        echo "ERROR: No Containerfile found in extension repo"
+        ls -la build/ 2>/dev/null || echo "No build/ directory"
+        exit 1
+    fi
+    IMAGE_TAG="localhost/extension-under-test:latest"
+
+    BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
+    if [ -f "$BUILDER_FILE" ]; then
+        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
+        echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
+        podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
+    fi
+
+    if [ -n "$NPM_CONFIG_REGISTRY" ]; then
+        echo "Injecting npm registry cache ($NPM_CONFIG_REGISTRY) into $CONTAINERFILE..."
+        sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"
+    fi
+    echo "Building extension container from $CONTAINERFILE..."
+    podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
+
+    CONTAINER_NAME="ext-extract-$$"
+    podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
+
+    EXTENSION_NAME="${CUSTOM_EXTENSION_REPO##*/}"
+    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
+    INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
+    mkdir -p "$INSTALL_DIR"
+    podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
+    podman rm "$CONTAINER_NAME"
+
+    echo "Extension installed to $INSTALL_DIR"
+fi
+
 cd /opt/podman-desktop
 
 # Clean any dirty files from previous builds or config changes
@@ -92,7 +144,12 @@ git clean -fd
 
 BASE_BRANCH="${BASE_BRANCH:-main}"
 git fetch origin "$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
-if [ -n "$PR_NUMBER" ]; then
+if [ -n "$CUSTOM_REPO" ] && [ -n "$CUSTOM_BRANCH" ]; then
+    echo "Custom PD mode: building $CUSTOM_REPO branch $CUSTOM_BRANCH"
+    git remote add custom "https://github.com/$CUSTOM_REPO.git"
+    git fetch custom "$CUSTOM_BRANCH"
+    git checkout -b custom-build "custom/$CUSTOM_BRANCH"
+elif [ -n "$PR_NUMBER" ]; then
     echo "Fetching PR #$PR_NUMBER..."
     git fetch origin "pull/$PR_NUMBER/head:pr-$PR_NUMBER"
     git checkout "pr-$PR_NUMBER"
