@@ -31,7 +31,7 @@ jobs:
       run: |
         ls -lah
 
-        changed_dirs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d/ -f1 | sort -u)
+        changed_dirs=$(find . -mindepth 2 -maxdepth 2 -name Containerfile -exec dirname {} \; | sed 's#^\./##' | sort)
 
         for dir in $changed_dirs; do
           repo_name=$(basename "$dir")
