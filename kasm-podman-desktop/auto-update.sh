@@ -28,50 +28,57 @@ LAST_KNOWN_SHA=$(git rev-parse HEAD)
 rebuild_extension() {
     cd /opt/extension-src
 
-    if [ -n "$EXTENSION_CONTAINERFILE" ]; then
-        CONTAINERFILE="$EXTENSION_CONTAINERFILE"
-    elif [ -f "build/Containerfile" ]; then
-        CONTAINERFILE="build/Containerfile"
-    elif [ -f "Containerfile" ]; then
-        CONTAINERFILE="Containerfile"
-    elif [ -f "Dockerfile" ]; then
-        CONTAINERFILE="Dockerfile"
-    elif [ -f "build/Dockerfile" ]; then
-        CONTAINERFILE="build/Dockerfile"
+    if [ "${EXTENSION_BUILD_MODE:-pnpm}" = "container" ]; then
+        if [ -n "$EXTENSION_CONTAINERFILE" ]; then
+            CONTAINERFILE="$EXTENSION_CONTAINERFILE"
+        elif [ -f "build/Containerfile" ]; then
+            CONTAINERFILE="build/Containerfile"
+        elif [ -f "Containerfile" ]; then
+            CONTAINERFILE="Containerfile"
+        elif [ -f "Dockerfile" ]; then
+            CONTAINERFILE="Dockerfile"
+        elif [ -f "build/Dockerfile" ]; then
+            CONTAINERFILE="build/Dockerfile"
+        else
+            echo "ERROR: No Containerfile found in extension repo"
+            return 1
+        fi
+        IMAGE_TAG="localhost/extension-under-test:latest"
+
+        BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
+        if [ -f "$BUILDER_FILE" ]; then
+            BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
+            echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
+            podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
+        fi
+
+        if [ -n "$NPM_CONFIG_REGISTRY" ]; then
+            git checkout -- "$CONTAINERFILE" 2>/dev/null || true
+            sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"
+        fi
+
+        echo "Building extension container from $CONTAINERFILE..."
+        podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
+
+        CONTAINER_NAME="ext-update-$$"
+        podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
+
+        EXTENSION_NAME="${EXTENSION_REPO##*/}"
+        FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
+        INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
+        rm -rf "$INSTALL_DIR"
+        mkdir -p "$INSTALL_DIR"
+        podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
+        podman rm "$CONTAINER_NAME"
+
+        echo "Extension reinstalled to $INSTALL_DIR"
     else
-        echo "ERROR: No Containerfile found in extension repo"
-        return 1
+        echo "Running pnpm install..."
+        pnpm install
+        echo "Building extension..."
+        pnpm build
+        echo "Extension rebuilt (development folder already configured in settings.json)"
     fi
-
-    IMAGE_TAG="localhost/extension-under-test:latest"
-
-    BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
-    if [ -f "$BUILDER_FILE" ]; then
-        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
-        echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
-        podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
-    fi
-
-    if [ -n "$NPM_CONFIG_REGISTRY" ]; then
-        git checkout -- "$CONTAINERFILE" 2>/dev/null || true
-        sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"
-    fi
-
-    echo "Building extension container from $CONTAINERFILE..."
-    podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
-
-    CONTAINER_NAME="ext-update-$$"
-    podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
-
-    EXTENSION_NAME="${EXTENSION_REPO##*/}"
-    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
-    INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
-    rm -rf "$INSTALL_DIR"
-    mkdir -p "$INSTALL_DIR"
-    podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
-    podman rm "$CONTAINER_NAME"
-
-    echo "Extension reinstalled to $INSTALL_DIR"
 }
 
 while true; do

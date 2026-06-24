@@ -20,21 +20,55 @@ fi
 
 pnpm config set store-dir /opt/pnpm-store
 
-# Extension mode: build extension container first so we fail early if it doesn't compile.
-# podman build only needs the binary + storage config (both ready at this point), not the socket.
-if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_MAIN" = "true" ]; }; then
-    EXTENSION_DIR="/opt/extension-src"
-    mkdir -p "$EXTENSION_DIR"
-    git clone --depth 1 "https://github.com/$EXTENSION_REPO.git" "$EXTENSION_DIR"
-    cd "$EXTENSION_DIR"
-
-    if [ -n "$EXTENSION_PR_NUMBER" ]; then
-        echo "=== Extension mode: building $EXTENSION_REPO PR #$EXTENSION_PR_NUMBER ==="
-        git fetch origin "pull/$EXTENSION_PR_NUMBER/head:pr-$EXTENSION_PR_NUMBER"
-        git checkout "pr-$EXTENSION_PR_NUMBER"
-    else
-        echo "=== Extension mode: building $EXTENSION_REPO from main ==="
+# Resolve the extension output directory (the subdir containing the PD extension package.json).
+# Uses EXTENSION_DIR env var if set, otherwise auto-detects by scanning for engines.podman-desktop.
+resolve_extension_output_dir() {
+    local base_dir="$1"
+    if [ -n "$EXTENSION_DIR" ] && [ "$EXTENSION_DIR" != "." ]; then
+        echo "$base_dir/$EXTENSION_DIR"
+        return 0
+    elif [ -n "$EXTENSION_DIR" ]; then
+        echo "$base_dir"
+        return 0
     fi
+    for candidate in "packages/extension" "packages/backend" "podman-desktop-extension" "."; do
+        local check_dir="$base_dir/$candidate"
+        [ "$candidate" = "." ] && check_dir="$base_dir"
+        if [ -f "$check_dir/package.json" ] && \
+           node -e "const p=JSON.parse(require('fs').readFileSync('$check_dir/package.json','utf8'));process.exit(p.engines?.['podman-desktop']?0:1)" 2>/dev/null; then
+            echo "$check_dir"
+            return 0
+        fi
+    done
+    echo "$base_dir"
+}
+
+# Register an extension directory in Podman Desktop's settings.json as a development extension.
+# Writes to both kasm-default-profile (source for Kasm profile copy) and kasm-user (runtime).
+configure_dev_extension() {
+    local ext_dir="$1"
+    local settings_dir=".local/share/containers/podman-desktop/configuration"
+    for base in "/home/kasm-default-profile" "$HOME"; do
+        local settings_file="$base/$settings_dir/settings.json"
+        mkdir -p "$(dirname "$settings_file")"
+        node -e "
+            const fs=require('fs');
+            let s={};try{s=JSON.parse(fs.readFileSync('$settings_file','utf8'))}catch(e){}
+            s['extensions.developmentMode']=true;
+            const f=s['extensions.developmentExtensionsFolders']||[];
+            if(!f.includes('$ext_dir'))f.push('$ext_dir');
+            s['extensions.developmentExtensionsFolders']=f;
+            fs.writeFileSync('$settings_file',JSON.stringify(s,null,2));
+        "
+    done
+    echo "Configured development extension: $ext_dir"
+}
+
+# Build extension via container: find Containerfile, podman build, extract /extension/ to plugins dir.
+build_extension_container() {
+    local src_dir="$1"
+    local repo_name="$2"
+    cd "$src_dir"
 
     if [ -n "$EXTENSION_CONTAINERFILE" ]; then
         CONTAINERFILE="$EXTENSION_CONTAINERFILE"
@@ -53,10 +87,6 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
     fi
     IMAGE_TAG="localhost/extension-under-test:latest"
 
-    # If a Containerfile.builder exists alongside the Containerfile, build it
-    # locally first. We tag it with the same name the main Containerfile
-    # expects in its FROM line, so podman uses the local image instead of
-    # trying to pull from a (potentially private) remote registry.
     BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
     if [ -f "$BUILDER_FILE" ]; then
         BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
@@ -74,66 +104,66 @@ if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_
     CONTAINER_NAME="ext-extract-$$"
     podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
 
-    EXTENSION_NAME="${EXTENSION_REPO##*/}"
-    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
+    FLAT_NAME=$(echo "$repo_name" | tr -d '/.-')
     INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
     mkdir -p "$INSTALL_DIR"
     podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
     podman rm "$CONTAINER_NAME"
 
     echo "Extension installed to $INSTALL_DIR"
+}
+
+# Build extension via pnpm: install, build, register as development extension folder.
+build_extension_pnpm() {
+    local src_dir="$1"
+    cd "$src_dir"
+
+    echo "Running pnpm install..."
+    pnpm install
+    echo "Building extension..."
+    pnpm build
+
+    EXT_OUTPUT=$(resolve_extension_output_dir "$src_dir")
+    configure_dev_extension "$EXT_OUTPUT"
+}
+
+EXTENSION_BUILD_MODE="${EXTENSION_BUILD_MODE:-pnpm}"
+
+# Extension mode: build extension from a PR or main branch.
+if [ -n "$EXTENSION_REPO" ] && { [ -n "$EXTENSION_PR_NUMBER" ] || [ "$EXTENSION_MAIN" = "true" ]; }; then
+    EXTENSION_SRC="/opt/extension-src"
+    mkdir -p "$EXTENSION_SRC"
+    git clone --depth 1 "https://github.com/$EXTENSION_REPO.git" "$EXTENSION_SRC"
+    cd "$EXTENSION_SRC"
+
+    if [ -n "$EXTENSION_PR_NUMBER" ]; then
+        echo "=== Extension mode ($EXTENSION_BUILD_MODE): building $EXTENSION_REPO PR #$EXTENSION_PR_NUMBER ==="
+        git fetch origin "pull/$EXTENSION_PR_NUMBER/head:pr-$EXTENSION_PR_NUMBER"
+        git checkout "pr-$EXTENSION_PR_NUMBER"
+    else
+        echo "=== Extension mode ($EXTENSION_BUILD_MODE): building $EXTENSION_REPO from main ==="
+    fi
+
+    if [ "$EXTENSION_BUILD_MODE" = "container" ]; then
+        build_extension_container "$EXTENSION_SRC" "${EXTENSION_REPO##*/}"
+    else
+        build_extension_pnpm "$EXTENSION_SRC"
+    fi
 fi
 
 # Custom extension mode: build extension from a fork branch (not a PR)
 if [ -n "$CUSTOM_EXTENSION_REPO" ] && [ -n "$CUSTOM_EXTENSION_BRANCH" ]; then
-    EXTENSION_DIR="/opt/extension-src"
-    mkdir -p "$EXTENSION_DIR"
-    echo "=== Custom extension mode: building $CUSTOM_EXTENSION_REPO branch $CUSTOM_EXTENSION_BRANCH ==="
-    git clone -b "$CUSTOM_EXTENSION_BRANCH" "https://github.com/$CUSTOM_EXTENSION_REPO.git" "$EXTENSION_DIR"
-    cd "$EXTENSION_DIR"
+    EXTENSION_SRC="/opt/extension-src"
+    mkdir -p "$EXTENSION_SRC"
+    echo "=== Custom extension mode ($EXTENSION_BUILD_MODE): building $CUSTOM_EXTENSION_REPO branch $CUSTOM_EXTENSION_BRANCH ==="
+    git clone -b "$CUSTOM_EXTENSION_BRANCH" "https://github.com/$CUSTOM_EXTENSION_REPO.git" "$EXTENSION_SRC"
+    cd "$EXTENSION_SRC"
 
-    if [ -n "$EXTENSION_CONTAINERFILE" ]; then
-        CONTAINERFILE="$EXTENSION_CONTAINERFILE"
-    elif [ -f "build/Containerfile" ]; then
-        CONTAINERFILE="build/Containerfile"
-    elif [ -f "Containerfile" ]; then
-        CONTAINERFILE="Containerfile"
-    elif [ -f "Dockerfile" ]; then
-        CONTAINERFILE="Dockerfile"
-    elif [ -f "build/Dockerfile" ]; then
-        CONTAINERFILE="build/Dockerfile"
+    if [ "$EXTENSION_BUILD_MODE" = "container" ]; then
+        build_extension_container "$EXTENSION_SRC" "${CUSTOM_EXTENSION_REPO##*/}"
     else
-        echo "ERROR: No Containerfile found in extension repo"
-        ls -la build/ 2>/dev/null || echo "No build/ directory"
-        exit 1
+        build_extension_pnpm "$EXTENSION_SRC"
     fi
-    IMAGE_TAG="localhost/extension-under-test:latest"
-
-    BUILDER_FILE="$(dirname "$CONTAINERFILE")/Containerfile.builder"
-    if [ -f "$BUILDER_FILE" ]; then
-        BUILDER_TAG=$(grep -m1 '^FROM ' "$CONTAINERFILE" | awk '{for(i=2;i<=NF;i++){if($i !~ /^--/){print $i;exit}}}')
-        echo "Building builder image as $BUILDER_TAG from $BUILDER_FILE..."
-        podman build -t "$BUILDER_TAG" -f "$BUILDER_FILE" .
-    fi
-
-    if [ -n "$NPM_CONFIG_REGISTRY" ]; then
-        echo "Injecting npm registry cache ($NPM_CONFIG_REGISTRY) into $CONTAINERFILE..."
-        sed -i "/^FROM /a ENV NPM_CONFIG_REGISTRY=$NPM_CONFIG_REGISTRY" "$CONTAINERFILE"
-    fi
-    echo "Building extension container from $CONTAINERFILE..."
-    podman build -t "$IMAGE_TAG" -f "$CONTAINERFILE" .
-
-    CONTAINER_NAME="ext-extract-$$"
-    podman create --name "$CONTAINER_NAME" "$IMAGE_TAG" true
-
-    EXTENSION_NAME="${CUSTOM_EXTENSION_REPO##*/}"
-    FLAT_NAME=$(echo "$EXTENSION_NAME" | tr -d '/.-')
-    INSTALL_DIR="$HOME/.local/share/containers/podman-desktop/plugins/$FLAT_NAME"
-    mkdir -p "$INSTALL_DIR"
-    podman cp "$CONTAINER_NAME:/extension/." "$INSTALL_DIR/"
-    podman rm "$CONTAINER_NAME"
-
-    echo "Extension installed to $INSTALL_DIR"
 fi
 
 cd /opt/podman-desktop

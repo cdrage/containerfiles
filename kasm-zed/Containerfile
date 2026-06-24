@@ -1,0 +1,111 @@
+#**Description:**
+#
+# Using KASM (basically web-based VNC) to run the Zed editor.
+#
+# Installs the official Zed Linux binary tarball on top of Fedora Kasm.
+# Zed needs Vulkan; this image includes Fedora Mesa Vulkan packages so it can
+# use hardware Vulkan when exposed, or Mesa software rendering when available.
+#
+# **IMPORTANT:**
+#
+# There is **NO AUTHENTICATION** and **NO SSL** in this container. This is meant for local use only, or when you have a reverse proxy in front of it.
+# In my use-case, I am using nginx with Let's Encrypt and basic auth, so I do not need the VNC server to have its own authentication.
+#
+# **Running:**
+#
+# ```sh
+# podman run -it --rm \
+#  -p 6901:6901 \
+#  -v /path/to/workspace:/home/kasm-user/workspace \
+#  --shm-size=2g \
+#  ghcr.io/cdrage/kasm-zed:latest
+# ```
+#
+# ZED_WORKSPACE is optional. If not set, Zed opens /home/kasm-user/workspace.
+# APP_ARGS is optional and is appended to the Zed startup command.
+
+FROM kasmweb/core-fedora-43:develop
+
+#! Initial setup
+USER root
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+#! Install Zed runtime dependencies and small development conveniences
+RUN dnf install -y \
+        ca-certificates \
+        curl \
+        fd-find \
+        fontconfig \
+        git \
+        glibc-langpack-en \
+        libxkbcommon-x11 \
+        mesa-dri-drivers \
+        mesa-vulkan-drivers \
+        openssl \
+        ripgrep \
+        sudo \
+        vulkan-loader \
+        vulkan-tools \
+        wmctrl \
+        xclip \
+        xdg-utils && \
+    dnf clean all
+
+#! Install the official Zed Linux tarball to /opt so it is independent of $HOME
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    case "$arch" in \
+        x86_64|amd64) zed_arch="x86_64" ;; \
+        aarch64|arm64) zed_arch="aarch64" ;; \
+        *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fL "https://cloud.zed.dev/releases/stable/latest/download?asset=zed&arch=${zed_arch}&os=linux&source=containerfile" -o /tmp/zed-linux.tar.gz; \
+    mkdir -p /opt; \
+    tar -xzf /tmp/zed-linux.tar.gz -C /opt; \
+    rm -f /tmp/zed-linux.tar.gz; \
+    ln -sf /opt/zed.app/bin/zed /usr/local/bin/zed; \
+    install -D /opt/zed.app/share/applications/dev.zed.Zed.desktop /usr/share/applications/dev.zed.Zed.desktop; \
+    sed -i 's|Icon=zed|Icon=/opt/zed.app/share/icons/hicolor/512x512/apps/zed.png|g' /usr/share/applications/dev.zed.Zed.desktop; \
+    sed -i 's|Exec=zed|Exec=/usr/local/bin/zed|g' /usr/share/applications/dev.zed.Zed.desktop
+
+#! Add to sudo users so we can actually do "sudo" within the container
+RUN echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+#! Run as a "single" application
+#! Set background as just plain black
+RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
+    dnf remove -y xfce4-panel && \
+    dnf clean all
+
+#! Desktop shortcuts
+RUN mkdir -p $HOME/Desktop && \
+    cp /usr/share/applications/dev.zed.Zed.desktop $HOME/Desktop/zed.desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Terminal\nExec=xfce4-terminal\nIcon=utilities-terminal\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/terminal.desktop && \
+    chmod +x $HOME/Desktop/*.desktop
+
+COPY custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+
+#! For deploying on Kubernetes, we disable SSL by default so that we can access it via HTTP (reverse proxy + let's encrypt
+#! We do this by changing required_ssl in /usr/share/kasmvnc/kasmvnc_defaults.yaml from required_ssl: true to required_ssl: false
+RUN sed -i -E 's/^([[:space:]]*)require_ssl:[[:space:]]*true/\1require_ssl: false/' /usr/share/kasmvnc/kasmvnc_defaults.yaml
+RUN cat /usr/share/kasmvnc/kasmvnc_defaults.yaml
+
+#! Remove "-sslOnly" from the VNC startup script and replace it with "-disableBasicAuth"
+#! WARNING: This is DANGEROUS and NOT SECURE. The ONLY reason why I am doing this, is that I am using nginx reverse proxy + let's encrypt + basic auth
+#! already, so I do not need the VNC server to have its own authentication + SSL.
+RUN sed -i.bak 's/-sslOnly/-disableBasicAuth/' /dockerstartup/vnc_startup.sh
+
+#! Default user
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+ENV ZED_WORKSPACE /home/kasm-user/workspace
+WORKDIR $HOME
+RUN mkdir -p $HOME/workspace && chown -R 1000:0 $HOME
+
+USER 1000
