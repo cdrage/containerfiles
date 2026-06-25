@@ -13,12 +13,12 @@
 # |__________|/
 # ```
 #
-# This is a "base" container that installs the nvidia drivers and the nvidia container toolkit. 
+# This is a "base" container that installs the nvidia drivers and the nvidia container toolkit.
 # This is meant to be used as a base for other containers that need GPU access.
 #
 # DISABLE SECURE BOOT! You have been warned! Disable boot is **KNOWN** to cause issues with the nvidia drivers.
 # ENABLE 4G DECODING in the BIOS. This is needed for certain nvidia cards to work such as the Tesla P40.
-# 
+#
 # This Fedora 43 as the base image to (hopefully) be as stable as possible.
 #
 # This also supports the 5000 series GPUs from NVIDIA
@@ -33,7 +33,7 @@
 # 2. This will modprobe the nvidia drivers on boot.
 
 
-FROM quay.io/fedora/fedora-bootc:43
+FROM quay.io/fedora/fedora-bootc:44
 
 #! Install rpmfusion free and nonfree repo's for access to the nvidia drivers
 RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -65,7 +65,7 @@ RUN sh -c 'echo "%_with_kmod_nvidia_open 1" > /etc/rpm/macros.nvidia-kmod'
 RUN echo "options nvidia NVreg_OpenRmEnableUnsupportedGpus=1" > /etc/modprobe.d/nvidia.conf
 
 #! Build kmods which runs on boot.
-#! The reasoning for the script is that sometimes the kernel version is different on the base images vs what is actually on 
+#! The reasoning for the script is that sometimes the kernel version is different on the base images vs what is actually on
 #! dnf update, so we have to "fake it till you make it" scenario.
 RUN dnf install -y dkms
 COPY --chmod=755 dkms.sh /tmp
