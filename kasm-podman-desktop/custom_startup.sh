@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -ex
+source "${PD_SESSION_LIB:-/session.sh}"
 
 cd /opt/podman-desktop
 
@@ -125,6 +126,22 @@ center_podman_window() {
     done
 }
 
+mark_app_ready() {
+    local attempt
+    local max_attempts="${PD_APP_START_TIMEOUT:-60}"
+    for attempt in $(seq 1 "$max_attempts"); do
+        if [ -f "$PD_SESSION_DIR/paused" ]; then
+            return
+        fi
+        if wmctrl -l 2>/dev/null | awk 'tolower($0) ~ /podman desktop/ {found=1} END {exit !found}'; then
+            session_ready
+            return
+        fi
+        sleep 1
+    done
+    session_status failed - - "App window did not appear. Read the session logs."
+}
+
 kasm_startup() {
     if [ -z "$DISABLE_CUSTOM_STARTUP" ]; then
         echo "Entering process startup loop"
@@ -133,29 +150,46 @@ kasm_startup() {
         MAX_FAST_FAILS=3
         FAST_FAIL_THRESHOLD=30
         while true; do
+            if [ -f "$PD_SESSION_DIR/paused" ] || [ "$(status_value phase)" = failed ]; then
+                sleep 1
+                continue
+            fi
             if [ "$DEV_MODE" = "true" ]; then
                 if ! pgrep -f "watch\.mjs" > /dev/null; then
                     /usr/bin/filter_ready
                     /usr/bin/desktop_ready
+                    if [ -f "$PD_SESSION_DIR/paused" ]; then
+                        continue
+                    fi
+                    session_status starting - - ""
                     center_podman_window &
+                    CENTER_PID=$!
+                    mark_app_ready &
                     START_TIME=$(date +%s)
                     set +e
                     xfce4-terminal --disable-server --title="Terminal" --font="Monospace 8" --working-directory=/opt/podman-desktop -e "pnpm watch" 2>&1
                     set -e
+                    kill "$CENTER_PID" 2>/dev/null || true
                     ELAPSED=$(( $(date +%s) - START_TIME ))
                     pkill -f "watch\.mjs" 2>/dev/null || true
                     pkill -f "svelte-package" 2>/dev/null || true
                     pkill -f "pnpm watch" 2>/dev/null || true
                     pkill -f "vite build --watch" 2>/dev/null || true
                     pkill -f "electron.*podman-desktop" 2>/dev/null || true
+                    if [ -f "$PD_SESSION_DIR/paused" ]; then
+                        FAIL_COUNT=0
+                        continue
+                    fi
                     if [ "$ELAPSED" -lt "$FAST_FAIL_THRESHOLD" ]; then
                         FAIL_COUNT=$((FAIL_COUNT + 1))
                         echo "pnpm watch exited after ${ELAPSED}s (fast fail $FAIL_COUNT/$MAX_FAST_FAILS)"
                         if [ "$FAIL_COUNT" -ge "$MAX_FAST_FAILS" ]; then
                             echo "pnpm watch crashed $MAX_FAST_FAILS times in under ${FAST_FAIL_THRESHOLD}s — stopping restart loop."
+                            session_status failed - - "Desktop watch process failed repeatedly. Read the session logs."
                             echo "Opening a shell for debugging. Run 'pnpm watch' manually to retry."
                             xfce4-terminal --disable-server --title="Debug Terminal" --font="Monospace 8" --working-directory=/opt/podman-desktop
-                            break
+                            FAIL_COUNT=0
+                            continue
                         fi
                     else
                         FAIL_COUNT=0
@@ -166,10 +200,21 @@ kasm_startup() {
                 if ! pgrep -f "electron.*podman-desktop" > /dev/null; then
                     /usr/bin/filter_ready
                     /usr/bin/desktop_ready
+                    if [ -f "$PD_SESSION_DIR/paused" ]; then
+                        continue
+                    fi
+                    session_status starting - - ""
                     center_podman_window &
+                    CENTER_PID=$!
+                    mark_app_ready &
                     set +e
-                    npx electron . --no-sandbox 2>&1
+                    npx electron "$PD_DESKTOP_DIR" --no-sandbox 2>&1
+                    APP_EXIT=$?
                     set -e
+                    kill "$CENTER_PID" 2>/dev/null || true
+                    if [ "$APP_EXIT" -ne 0 ] && [ ! -f "$PD_SESSION_DIR/paused" ]; then
+                        session_status failed - - "Electron exited with an error. Read the session logs."
+                    fi
                 fi
             fi
             sleep 1

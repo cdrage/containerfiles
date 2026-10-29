@@ -175,7 +175,7 @@ RUN mkdir -p "$HOME/.config/Podman Desktop" && \
 
 #! Desktop shortcuts
 RUN mkdir -p $HOME/Desktop && \
-    printf '[Desktop Entry]\nType=Application\nName=Podman Desktop\nExec=sh -c "cd /opt/podman-desktop && npx electron . --no-sandbox"\nIcon=utilities-terminal\nTerminal=false\nCategories=Development;\n' > $HOME/Desktop/podman-desktop.desktop && \
+    printf '[Desktop Entry]\nType=Application\nName=Podman Desktop\nExec=sh -c "cd /opt/podman-desktop && npx electron /opt/podman-desktop --no-sandbox"\nIcon=utilities-terminal\nTerminal=false\nCategories=Development;\n' > $HOME/Desktop/podman-desktop.desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Terminal\nExec=xfce4-terminal\nIcon=utilities-terminal\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/terminal.desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Managed Config\nExec=xfce4-terminal --working-directory=/usr/share/podman-desktop\nIcon=folder\nTerminal=false\nCategories=System;\n' > $HOME/Desktop/managed-config.desktop && \
     printf '[Desktop Entry]\nType=Application\nName=Firefox\nExec=firefox --no-remote\nIcon=firefox\nTerminal=false\nCategories=Network;WebBrowser;\n' > $HOME/Desktop/firefox.desktop && \
@@ -198,7 +198,8 @@ RUN chmod +x $STARTUPDIR/custom_startup.sh
 
 COPY entrypoint.sh /entrypoint.sh
 COPY auto-update.sh /auto-update.sh
-RUN chmod +x /entrypoint.sh /auto-update.sh
+COPY session.sh /session.sh
+RUN chmod +x /entrypoint.sh /auto-update.sh /session.sh
 
 #! For deploying on Kubernetes, we disable SSL by default so that we can access it via HTTP (reverse proxy + let's encrypt
 #! We do this by changing required_ssl in /usr/share/kasmvnc/kasmvnc_defaults.yaml from required_ssl: true to required_ssl: false
